@@ -1,0 +1,23 @@
+.avatar {
+  display: inline-grid;
+  place-items: center;
+  flex-shrink: 0;
+  border-radius: var(--radius-full);
+  background: var(--c-avatar-bg, var(--bg-surface-hover));
+  font-weight: var(--weight-semibold);
+  color: var(--ink-inverse);
+  line-height: 1;
+  user-select: none;
+}
+
+.avatar[data-size='sm'] {
+  width: 1.5rem;
+  height: 1.5rem;
+  font-size: var(--text-xs);
+}
+
+.avatar[data-size='base'] {
+  width: 1.75rem;
+  height: 1.75rem;
+  font-size: var(--text-sm);
+}

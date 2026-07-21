@@ -1,33 +1,44 @@
 <script lang="ts">
   import { createMutation, createQuery, useQueryClient } from '@tanstack/svelte-query'
+  import { flip } from 'svelte/animate'
   import { dndzone, type DndEvent } from 'svelte-dnd-action'
+  import { Select as SelectPrimitive } from 'bits-ui'
+  import CheckIcon from '~icons/material-symbols/check'
+  import ExpandIcon from '~icons/material-symbols/expand-more'
   import type { SiteScope } from '@/lib/cms/scopes'
+  import { formatDateOnly } from '@/lib/format'
   import { useLocale } from '@/lib/i18n/context.svelte'
+  import { listManagers } from '@/lib/pocketbase/landing'
   import { normalizeStage, REQUEST_STAGES } from '@/lib/pocketbase/permissions'
-  import { loadRequests, updateRequestStage } from '@/lib/pocketbase/requests'
-  import type { RequestStage, SpaceRequestRecord } from '@/lib/pocketbase/types'
+  import {
+    indexForColumnPosition,
+    loadRequests,
+    patchRequestInList,
+    requestsQueryKey,
+    updateRequestManager,
+    updateRequestPlacement,
+  } from '@/lib/pocketbase/requests'
+  import type { RequestStage, SpaceRequestRecord, StaffRecord } from '@/lib/pocketbase/types'
   import { pushToast } from '@/stores/toastStore.svelte'
+  import Avatar from './Avatar.svelte'
   import './RequestsBoard.css'
 
-  type BoardCard = SpaceRequestRecord & { localKey: string }
+  type BoardCard = SpaceRequestRecord & { id: string }
+
+  const flipDurationMs = 180
 
   let { scope }: { scope: SiteScope } = $props()
 
   const localeCtx = useLocale()
   const queryClient = useQueryClient()
+  const queryKey = $derived(requestsQueryKey(scope))
 
-  let columns = $state<Record<RequestStage, BoardCard[]>>({
-    inquiry: [],
-    confirmed: [],
-    rejected: [],
-    preparation: [],
-    completed: [],
-    cancelled: [],
-  })
-  let hydratedScope = $state<SiteScope | null>(null)
+  /** Local board state for DnD; kept in sync from query when idle. */
+  let columns = $state<Record<RequestStage, BoardCard[]>>(emptyColumns())
+  let dragging = $state(false)
 
-  const toColumns = (records: SpaceRequestRecord[]) => {
-    const next: Record<RequestStage, BoardCard[]> = {
+  function emptyColumns(): Record<RequestStage, BoardCard[]> {
+    return {
       inquiry: [],
       confirmed: [],
       rejected: [],
@@ -35,65 +46,189 @@
       completed: [],
       cancelled: [],
     }
+  }
 
+  const sortByColumnIndex = (cards: BoardCard[]) =>
+    [...cards].sort((a, b) => (b.columnIndex ?? 0) - (a.columnIndex ?? 0))
+
+  const toColumns = (records: SpaceRequestRecord[]) => {
+    const next = emptyColumns()
     for (const record of records) {
       const stage = normalizeStage(record.stage) as RequestStage
       const bucket = REQUEST_STAGES.includes(stage) ? stage : 'inquiry'
-      next[bucket] = [...next[bucket], { ...record, localKey: record.id }]
+      next[bucket] = [...next[bucket], { ...record, id: record.id }]
     }
-
+    for (const stage of REQUEST_STAGES) {
+      next[stage] = sortByColumnIndex(next[stage])
+    }
     return next
   }
 
+  const flattenColumns = (board: Record<RequestStage, BoardCard[]>) =>
+    Object.values(board).flat() as SpaceRequestRecord[]
+
+  /** Top of list = highest columnIndex. */
+  const withColumnIndexes = (stage: RequestStage, items: BoardCard[]): BoardCard[] =>
+    items.map((item, positionFromTop) => ({
+      ...item,
+      stage,
+      columnIndex: indexForColumnPosition(positionFromTop, items.length),
+    }))
+
   const requestsQuery = createQuery(() => ({
-    queryKey: ['requests', scope],
+    queryKey: queryKey,
     queryFn: () => loadRequests(scope),
   }))
 
+  const managersQuery = createQuery(() => ({
+    queryKey: ['managers'],
+    queryFn: () => listManagers() as Promise<StaffRecord[]>,
+  }))
+
+  // Query cache is source of truth. Resync board when not mid-drag.
   $effect(() => {
-    const currentScope = scope
+    if (dragging) return
     if (!requestsQuery.isSuccess || !requestsQuery.data) return
-    if (hydratedScope === currentScope) return
     columns = toColumns(requestsQuery.data)
-    hydratedScope = currentScope
   })
 
-  const stageMutation = createMutation(() => ({
-    mutationFn: async ({ id, stage }: { id: string; stage: RequestStage }) =>
-      updateRequestStage(scope, id, stage),
+  const managers = $derived.by(() => {
+    const byId = new Map<string, StaffRecord>()
+    for (const manager of managersQuery.data ?? []) byId.set(manager.id, manager)
+    for (const record of requestsQuery.data ?? []) {
+      const assigned = record.expand?.manager
+      if (assigned) byId.set(assigned.id, assigned)
+    }
+    return [...byId.values()].sort((a, b) =>
+      (a.name || a.email).localeCompare(b.name || b.email),
+    )
+  })
+
+  const managerLabel = (manager?: StaffRecord | null) =>
+    manager?.name || manager?.email || localeCtx.t.requests.unassigned
+
+  const findManager = (id: string) => managers.find((manager) => manager.id === id)
+
+  const setCache = (list: SpaceRequestRecord[]) => {
+    queryClient.setQueryData<SpaceRequestRecord[]>(queryKey, list)
+  }
+
+  const placementMutation = createMutation(() => ({
+    mutationFn: ({
+      id,
+      stage,
+      columnIndex,
+    }: {
+      id: string
+      stage: RequestStage
+      columnIndex: number
+    }) => updateRequestPlacement(scope, id, { stage, columnIndex }),
+    onMutate: async ({ id, stage, columnIndex }) => {
+      await queryClient.cancelQueries({ queryKey })
+      const previous = queryClient.getQueryData<SpaceRequestRecord[]>(queryKey)
+      const optimistic = (previous ?? []).map((record) =>
+        record.id === id ? { ...record, stage, columnIndex } : record,
+      )
+      setCache(optimistic)
+      return { previous }
+    },
+    onError: (error, _vars, context) => {
+      if (context?.previous) setCache(context.previous)
+      pushToast(error instanceof Error ? error.message : localeCtx.t.common.error, 'error')
+    },
+    onSuccess: (updated) => {
+      setCache(patchRequestInList(queryClient.getQueryData(queryKey), updated))
+    },
+    onSettled: async () => {
+      await queryClient.invalidateQueries({ queryKey })
+    },
+  }))
+
+  const managerMutation = createMutation(() => ({
+    mutationFn: ({ id, managerId }: { id: string; managerId: string }) =>
+      updateRequestManager(scope, id, managerId),
+    onMutate: async ({ id, managerId }) => {
+      await queryClient.cancelQueries({ queryKey })
+      const previous = queryClient.getQueryData<SpaceRequestRecord[]>(queryKey)
+      const manager = managerId ? findManager(managerId) : null
+      const optimistic = (previous ?? []).map((record) =>
+        record.id === id
+          ? {
+              ...record,
+              manager: managerId,
+              expand: {
+                ...record.expand,
+                manager: manager ?? undefined,
+              },
+            }
+          : record,
+      )
+      setCache(optimistic)
+      return { previous }
+    },
+    onError: (error, _vars, context) => {
+      if (context?.previous) setCache(context.previous)
+      pushToast(error instanceof Error ? error.message : localeCtx.t.common.error, 'error')
+    },
+    onSuccess: (updated) => {
+      setCache(patchRequestInList(queryClient.getQueryData(queryKey), updated))
+    },
+    onSettled: async () => {
+      await queryClient.invalidateQueries({ queryKey })
+    },
   }))
 
   const handleConsider = (stage: RequestStage) => (event: CustomEvent<DndEvent<BoardCard>>) => {
+    dragging = true
     columns = { ...columns, [stage]: event.detail.items }
   }
 
-  const handleFinalize = (stage: RequestStage) => async (event: CustomEvent<DndEvent<BoardCard>>) => {
-    const previous = structuredClone(columns)
-    columns = { ...columns, [stage]: event.detail.items }
+  const handleFinalize = (stage: RequestStage) => (event: CustomEvent<DndEvent<BoardCard>>) => {
+    const ordered = withColumnIndexes(stage, event.detail.items)
+    columns = { ...columns, [stage]: ordered }
 
-    const updates = event.detail.items.filter((item) => normalizeStage(item.stage) !== stage)
-    if (!updates.length) return
+    const previous = queryClient.getQueryData<SpaceRequestRecord[]>(queryKey) ?? []
+    const byId = new Map(previous.map((record) => [record.id, record]))
 
-    try {
-      await Promise.all(updates.map((item) => stageMutation.mutateAsync({ id: item.id, stage })))
-      for (const item of updates) item.stage = stage
-      columns = toColumns(
-        Object.values(columns)
-          .flat()
-          .map(({ localKey: _localKey, ...record }) => record),
+    const dirty = ordered.filter((item) => {
+      const before = byId.get(item.id)
+      if (!before) return true
+      return (
+        normalizeStage(before.stage) !== stage ||
+        (before.columnIndex ?? 0) !== (item.columnIndex ?? 0)
       )
-      queryClient.setQueryData(['requests', scope], () =>
-        Object.values(columns)
-          .flat()
-          .map(({ localKey: _localKey, ...record }) => record),
-      )
-    } catch (updateError) {
-      columns = previous
-      pushToast(updateError instanceof Error ? updateError.message : localeCtx.t.common.error, 'error')
+    })
+
+    if (!dirty.length) {
+      dragging = false
+      return
     }
+
+    setCache(flattenColumns(columns))
+
+    void Promise.all(
+      dirty.map((item) =>
+        placementMutation.mutateAsync({
+          id: item.id,
+          stage,
+          columnIndex: item.columnIndex ?? 0,
+        }),
+      ),
+    ).finally(() => {
+      dragging = false
+    })
+  }
+
+  const assignManager = (card: BoardCard, managerId: string) => {
+    if ((card.manager || '') === managerId) return
+    managerMutation.mutate({ id: card.id, managerId })
   }
 
   const stageLabel = (stage: RequestStage) => localeCtx.t.requests.stages[stage] ?? stage
+
+  const stopCardDrag = (event: Event) => {
+    event.stopPropagation()
+  }
 </script>
 
 <section class="requests_board">
@@ -106,7 +241,7 @@
     </div>
   </header>
 
-  <div class="l_container">
+  <div class="l_container" data-size="fluid">
     {#if requestsQuery.isPending}
       <p class="requests_board-status">{localeCtx.t.common.loading}</p>
     {:else if requestsQuery.isError}
@@ -126,14 +261,17 @@
               use:dndzone={{
                 items: columns[stage],
                 type: 'space-requests',
-                flipDurationMs: 150,
-                dropTargetStyle: {},
+                flipDurationMs,
+                dropTargetStyle: {
+                  outline: '1px dashed var(--border-focus)',
+                  outlineOffset: '-2px',
+                },
               }}
               onconsider={handleConsider(stage)}
               onfinalize={handleFinalize(stage)}
             >
-              {#each columns[stage] as card (card.localKey)}
-                <article class="requests_board-card">
+              {#each columns[stage] as card (card.id)}
+                <article class="requests_board-card" animate:flip={{ duration: flipDurationMs }}>
                   <p class="requests_board-card_name">{card.clientName || '—'}</p>
                   <dl class="requests_board-card_meta">
                     <div>
@@ -142,17 +280,106 @@
                     </div>
                     <div>
                       <dt>{localeCtx.t.requests.dateRequested}</dt>
-                      <dd>{card.dateRequested || '—'}</dd>
-                    </div>
-                    <div>
-                      <dt>{localeCtx.t.requests.manager}</dt>
-                      <dd>
-                        {card.expand?.manager?.name ||
-                          card.expand?.manager?.email ||
-                          localeCtx.t.requests.unassigned}
-                      </dd>
+                      <dd>{formatDateOnly(card.dateRequested, localeCtx.locale)}</dd>
                     </div>
                   </dl>
+
+                  <!-- svelte-ignore a11y_no_static_element_interactions a11y_no_noninteractive_element_interactions -->
+                  <div
+                    class="requests_board-manager"
+                    onpointerdown={stopCardDrag}
+                    onmousedown={stopCardDrag}
+                    ontouchstart={stopCardDrag}
+                  >
+                    <span class="requests_board-manager_label">{localeCtx.t.requests.manager}</span>
+                    <SelectPrimitive.Root
+                      type="single"
+                      value={String(card.manager || '')}
+                      items={[
+                        { value: '', label: localeCtx.t.requests.unassigned },
+                        ...managers.map((manager) => ({
+                          value: manager.id,
+                          label: managerLabel(manager),
+                        })),
+                      ]}
+                      onValueChange={(next) => {
+                        assignManager(card, String(next ?? ''))
+                      }}
+                    >
+                      <SelectPrimitive.Trigger
+                        class="requests_board-manager_trigger"
+                        aria-label={localeCtx.t.requests.manager}
+                      >
+                        {@const assigned =
+                          card.expand?.manager ||
+                          (card.manager ? findManager(String(card.manager)) : null)}
+                        {#if assigned}
+                          <Avatar name={assigned.name} email={assigned.email} id={assigned.id} size="sm" />
+                          <span class="requests_board-manager_value">{managerLabel(assigned)}</span>
+                        {:else}
+                          <span class="requests_board-manager_empty" aria-hidden="true">?</span>
+                          <span class="requests_board-manager_value" data-placeholder="true">
+                            {localeCtx.t.requests.unassigned}
+                          </span>
+                        {/if}
+                        <span class="requests_board-manager_chevron" aria-hidden="true">
+                          <ExpandIcon width="16" height="16" />
+                        </span>
+                      </SelectPrimitive.Trigger>
+
+                      <SelectPrimitive.Portal>
+                        <SelectPrimitive.Content
+                          class="requests_board-manager_content"
+                          sideOffset={6}
+                          align="start"
+                        >
+                          <SelectPrimitive.Viewport class="requests_board-manager_viewport">
+                            <SelectPrimitive.Item
+                              class="requests_board-manager_item"
+                              value=""
+                              label={localeCtx.t.requests.unassigned}
+                            >
+                              {#snippet children({ selected })}
+                                <span class="requests_board-manager_empty" aria-hidden="true">?</span>
+                                <span class="requests_board-manager_item_label">
+                                  {localeCtx.t.requests.unassigned}
+                                </span>
+                                {#if selected}
+                                  <span class="requests_board-manager_check" aria-hidden="true">
+                                    <CheckIcon width="16" height="16" />
+                                  </span>
+                                {/if}
+                              {/snippet}
+                            </SelectPrimitive.Item>
+                            {#each managers as manager (manager.id)}
+                              <SelectPrimitive.Item
+                                class="requests_board-manager_item"
+                                value={manager.id}
+                                label={managerLabel(manager)}
+                              >
+                                {#snippet children({ selected })}
+                                  <Avatar
+                                    name={manager.name}
+                                    email={manager.email}
+                                    id={manager.id}
+                                    size="sm"
+                                  />
+                                  <span class="requests_board-manager_item_label">
+                                    {managerLabel(manager)}
+                                  </span>
+                                  {#if selected}
+                                    <span class="requests_board-manager_check" aria-hidden="true">
+                                      <CheckIcon width="16" height="16" />
+                                    </span>
+                                  {/if}
+                                {/snippet}
+                              </SelectPrimitive.Item>
+                            {/each}
+                          </SelectPrimitive.Viewport>
+                        </SelectPrimitive.Content>
+                      </SelectPrimitive.Portal>
+                    </SelectPrimitive.Root>
+                  </div>
                 </article>
               {/each}
             </div>

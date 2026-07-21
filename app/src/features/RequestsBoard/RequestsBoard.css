@@ -6,6 +6,8 @@
 
 .admin_shell-content:has(.requests_board) {
   padding-top: 0;
+  /* Drag ghost must cross column bounds; hidden x-clip made cards vanish mid-drag. */
+  overflow-x: auto;
 }
 
 .requests_board-toolbar {
@@ -47,23 +49,24 @@
 }
 
 .requests_board-board {
-  display: grid;
-  grid-auto-flow: column;
-  grid-auto-columns: minmax(15rem, 17rem);
-  gap: var(--space-2);
-  align-items: start;
+  /* Flex + stretch: every column matches the tallest sibling. */
+  display: flex;
+  align-items: stretch;
   overflow-x: auto;
   padding-block: var(--space-10);
+  min-height: 28rem;
 }
 
 .requests_board-column {
   display: flex;
   flex-direction: column;
   gap: var(--space-4);
-  min-height: 22rem;
+  flex: 0 0 17rem;
+  width: 17rem;
   padding-block: var(--space-2);
   padding-inline: var(--space-5);
   border-left: 1px solid var(--border-base);
+  border-radius: 0 var(--radius-md) var(--radius-md) 0;
 }
 
 .requests_board-column_header {
@@ -71,6 +74,7 @@
   align-items: baseline;
   justify-content: space-between;
   gap: var(--space-3);
+  flex-shrink: 0;
 }
 
 .requests_board-column_title {
@@ -92,7 +96,9 @@
 .requests_board-list {
   display: flex;
   flex-direction: column;
+  border-radius: var(--radius-md);
   gap: var(--space-3);
+  flex: 1 1 auto;
   min-height: 12rem;
 }
 
@@ -101,6 +107,7 @@
   border: 1px solid var(--border-base);
   border-radius: var(--radius-md);
   background: var(--bg-surface);
+  box-shadow: var(--shadow-close);
   cursor: grab;
 }
 
@@ -122,7 +129,7 @@
 .requests_board-card_meta {
   display: grid;
   gap: var(--space-2);
-  margin: 0;
+  margin: 0 0 var(--space-3);
 }
 
 .requests_board-card_meta > div {
@@ -141,5 +148,118 @@
 .requests_board-card_meta dd {
   margin: 0;
   font-size: var(--text-sm);
+  color: var(--ink-muted);
+}
+
+.requests_board-manager {
+  display: grid;
+  gap: var(--space-1);
+}
+
+.requests_board-manager_label {
+  font-size: var(--text-xs);
+  font-weight: var(--weight-medium);
+  color: var(--ink-faint);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.requests_board-manager_trigger {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  width: 100%;
+  min-height: 2.25rem;
+  padding: var(--space-1) var(--space-2);
+  border: 1px solid var(--border-base);
+  border-radius: var(--radius-md);
+  background: var(--bg-page);
+  color: var(--ink-main);
+  font: inherit;
+  text-align: start;
+  cursor: pointer;
+}
+
+.requests_board-manager_trigger:focus-visible {
+  outline: 2px solid var(--border-focus);
+  outline-offset: 1px;
+}
+
+.requests_board-manager_value {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: var(--text-sm);
+}
+
+.requests_board-manager_value[data-placeholder='true'] {
+  color: var(--ink-muted);
+}
+
+.requests_board-manager_empty {
+  display: inline-grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: var(--radius-full);
+  background: var(--bg-surface);
+  border: 1px dashed var(--border-base);
+  color: var(--ink-faint);
+  font-size: var(--text-xs);
+  font-weight: var(--weight-semibold);
+}
+
+.requests_board-manager_chevron {
+  display: inline-flex;
+  color: var(--ink-muted);
+}
+
+.requests_board-manager_content {
+  z-index: var(--z-dropdown);
+  min-width: var(--bits-select-anchor-width);
+  max-width: 18rem;
+  overflow: hidden;
+  border: 1px solid var(--border-base);
+  border-radius: var(--radius-md);
+  background: var(--bg-surface);
+  box-shadow: var(--shadow-base);
+}
+
+.requests_board-manager_viewport {
+  max-height: 16rem;
+  overflow-y: auto;
+  padding: var(--space-1);
+}
+
+.requests_board-manager_item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  width: 100%;
+  padding: var(--space-2);
+  border-radius: calc(var(--radius-md) - 2px);
+  color: var(--ink-main);
+  font-size: var(--text-sm);
+  cursor: pointer;
+  outline: none;
+}
+
+.requests_board-manager_item[data-highlighted] {
+  background: var(--bg-surface-hover);
+}
+
+.requests_board-manager_item_label {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.requests_board-manager_check {
+  display: inline-flex;
   color: var(--ink-muted);
 }
