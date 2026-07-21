@@ -1,9 +1,10 @@
 <script lang="ts">
   import * as v from 'valibot'
   import Button from '@/components/Button/Button.svelte'
-  import AppSelect from '../../components/ui/AppSelect/AppSelect.svelte'
-  import FormField from '../../components/ui/FormField/FormField.svelte'
-  import StatusBanner from '../../components/ui/StatusBanner/StatusBanner.svelte'
+  import Checkbox from '@/components/Checkbox/Checkbox.svelte'
+  import FormField from '@/components/FormField/FormField.svelte'
+  import Select from '@/components/Select/Select.svelte'
+  import StatusBanner from '@/components/StatusBanner/StatusBanner.svelte'
   import { createFormState } from '../../lib/forms/form-state.svelte'
   import { useLocale } from '../../lib/i18n/context.svelte'
   import { normalizeRole } from '../../lib/pocketbase/auth'
@@ -155,18 +156,12 @@
           />
           <FormField label={localeCtx.t.staff.name} name="name" bind:value={form.values.name} />
           <FormField label={localeCtx.t.staff.phoneNumber} name="phoneNumber" bind:value={form.values.phoneNumber} />
-          <AppSelect label={localeCtx.t.staff.role} name="role" bind:value={form.values.role} options={roleOptions} />
+          <Select label={localeCtx.t.staff.role} name="role" bind:value={form.values.role} options={roleOptions} />
 
           <fieldset class="staff_manager-scope_list">
             <legend>{localeCtx.t.staff.scope}</legend>
-            <label class="staff_manager-checkbox">
-              <input type="checkbox" bind:checked={form.values.scopeTheater} />
-              {localeCtx.t.staff.scopes.theater}
-            </label>
-            <label class="staff_manager-checkbox">
-              <input type="checkbox" bind:checked={form.values.scopeSpace} />
-              {localeCtx.t.staff.scopes.space}
-            </label>
+            <Checkbox bind:checked={form.values.scopeTheater} label={localeCtx.t.staff.scopes.theater} />
+            <Checkbox bind:checked={form.values.scopeSpace} label={localeCtx.t.staff.scopes.space} />
           </fieldset>
           {#if form.errors.scopeSpace}
             <p class="form_field-error">{form.errors.scopeSpace}</p>

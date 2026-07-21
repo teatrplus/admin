@@ -3,9 +3,10 @@
   import Button from '@/components/Button/Button.svelte'
   import NavIcon from '@/components/NavIcon/NavIcon.svelte'
   import RawSvg from '@/components/RawSvg/RawSvg.svelte'
+  import Select from '@/components/Select/Select.svelte'
   import ThemeToggle from '@/components/ThemeToggle/ThemeToggle.svelte'
   import '@/components/RawSvg/RawSvg.css'
-  import { LOCALES, LOCALE_LABELS } from '@/lib/i18n/config'
+  import { LOCALES, LOCALE_LABELS, type Locale } from '@/lib/i18n/config'
   import { useLocale } from '@/lib/i18n/context.svelte'
   import { getCurrentUser, logout } from '@/lib/pocketbase/auth'
   import { navSectionsForUser } from '@/lib/pocketbase/permissions'
@@ -21,6 +22,7 @@
   const user = $derived(getCurrentUser())
   const navSections = $derived(navSectionsForUser())
   const currentRoute = $derived(getRoute())
+  const localeOptions = $derived(LOCALES.map((locale) => ({ value: locale, label: LOCALE_LABELS[locale] })))
 
   const readCollapsed = () => {
     try {
@@ -106,19 +108,16 @@
       <div class="admin_shell-user">{user?.name || user?.email}</div>
       <div class="admin_shell-header_actions">
         <ThemeToggle />
-        <label class="u_sr_only" for="locale-select">{localeCtx.t.common.language}</label>
         <div class="admin_shell-locale_control">
           <NavIcon name="language" label={localeCtx.t.common.language} size={18} />
-          <select
-            id="locale-select"
+          <Select
             class="admin_shell-locale_select"
+            aria-label={localeCtx.t.common.language}
+            size="sm"
             value={localeCtx.locale}
-            onchange={(event) => localeCtx.setLocale(event.currentTarget.value as typeof localeCtx.locale)}
-          >
-            {#each LOCALES as locale}
-              <option value={locale}>{LOCALE_LABELS[locale]}</option>
-            {/each}
-          </select>
+            options={localeOptions}
+            onValueChange={(next) => localeCtx.setLocale(next as Locale)}
+          />
         </div>
         <Button
           variant="outline"

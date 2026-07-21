@@ -1,7 +1,8 @@
 <script lang="ts">
   import Button from '@/components/Button/Button.svelte'
-  import FormField from '../../components/ui/FormField/FormField.svelte'
-  import StatusBanner from '../../components/ui/StatusBanner/StatusBanner.svelte'
+  import Checkbox from '@/components/Checkbox/Checkbox.svelte'
+  import FormField from '@/components/FormField/FormField.svelte'
+  import StatusBanner from '@/components/StatusBanner/StatusBanner.svelte'
   import type { SiteScope } from '../../lib/cms/scopes'
   import { useLocale } from '../../lib/i18n/context.svelte'
   import {
@@ -305,22 +306,17 @@
         <fieldset class="landing_editor-checkbox_list">
           <legend>{localeCtx.t.landing.contactManagers}</legend>
           {#each managerOptions as option}
-            <label class="landing_editor-checkbox">
-              <input
-                type="checkbox"
-                value={option.value}
-                checked={form.contactManagerIds.includes(option.value)}
-                onchange={(event) => {
-                  const checked = (event.currentTarget as HTMLInputElement).checked
-                  if (checked) {
-                    form.contactManagerIds = [...form.contactManagerIds, option.value]
-                  } else {
-                    form.contactManagerIds = form.contactManagerIds.filter((id) => id !== option.value)
-                  }
-                }}
-              />
-              {option.label}
-            </label>
+            <Checkbox
+              label={option.label}
+              checked={form.contactManagerIds.includes(option.value)}
+              onCheckedChange={(checked) => {
+                if (checked) {
+                  form.contactManagerIds = [...form.contactManagerIds, option.value]
+                } else {
+                  form.contactManagerIds = form.contactManagerIds.filter((id) => id !== option.value)
+                }
+              }}
+            />
           {/each}
         </fieldset>
       </section>

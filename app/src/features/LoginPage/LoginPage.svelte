@@ -1,7 +1,7 @@
 <script lang="ts">
   import * as v from 'valibot'
   import Button from '@/components/Button/Button.svelte'
-  import FormField from '../../components/ui/FormField/FormField.svelte'
+  import FormField from '@/components/FormField/FormField.svelte'
   import { createFormState } from '../../lib/forms/form-state.svelte'
   import { useLocale } from '../../lib/i18n/context.svelte'
   import { login } from '../../lib/pocketbase/auth'

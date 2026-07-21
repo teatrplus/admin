@@ -1,6 +1,6 @@
 <script lang="ts">
   import { dndzone, type DndEvent } from 'svelte-dnd-action'
-  import StatusBanner from '../../components/ui/StatusBanner/StatusBanner.svelte'
+  import StatusBanner from '@/components/StatusBanner/StatusBanner.svelte'
   import type { SiteScope } from '../../lib/cms/scopes'
   import { useLocale } from '../../lib/i18n/context.svelte'
   import { normalizeStage, REQUEST_STAGES } from '../../lib/pocketbase/permissions'

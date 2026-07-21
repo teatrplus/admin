@@ -73,7 +73,8 @@
   --theme-light-intent-warning-subtle: color-mix(in srgb, var(--palette-yellow-500), var(--palette-white) 85%);
   --theme-light-intent-critical-subtle: color-mix(in srgb, var(--palette-red-500), var(--palette-white) 85%);
 
-  --theme-light-mix-contrast: black;
+  --theme-light-mix-main: #fff;
+  --theme-light-mix-contrast: #000;
 
   /* DARK CONSTANTS */
   --theme-dark-bg-page: var(--palette-stone-950);
@@ -101,7 +102,8 @@
   --theme-dark-intent-warning-subtle: color-mix(in srgb, var(--palette-yellow-500), var(--palette-stone-900) 85%);
   --theme-dark-intent-critical-subtle: color-mix(in srgb, var(--palette-red-500), var(--palette-stone-900) 85%);
 
-  --theme-dark-mix-contrast: white;
+  --theme-dark-mix-main: #000;
+  --theme-dark-mix-contrast: #fff;
 
   /* ========================================================= */
   /* 3. SEMANTICS (The Public Contract)                        */
@@ -268,6 +270,7 @@
   --intent-warning-subtle: var(--theme-light-intent-warning-subtle);
   --intent-critical-subtle: var(--theme-light-intent-critical-subtle);
 
+  --mix-main: var(--theme-light-mix-main);
   --mix-contrast: var(--theme-light-mix-contrast);
 }
 
@@ -302,6 +305,7 @@
   --intent-warning-subtle: var(--theme-dark-intent-warning-subtle);
   --intent-critical-subtle: var(--theme-dark-intent-critical-subtle);
 
+  --mix-main: var(--theme-dark-mix-main);
   --mix-contrast: var(--theme-dark-mix-contrast);
 }
 
