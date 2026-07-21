@@ -1,0 +1,106 @@
+@property --c-toast-item-offset-top {
+  syntax: '<length>';
+  inherits: false;
+  initial-value: 0px;
+}
+
+.toast_list {
+  --c-toast-top-offset: var(--space-4);
+
+  position: fixed;
+  inset-inline: 0;
+  top: 0;
+  z-index: var(--z-toast);
+  pointer-events: none;
+  transform: translateY(var(--c-toast-top-offset));
+}
+
+.toast_list-stack {
+  position: relative;
+}
+
+.toast_list-item {
+  --c-toast-item-offset-top: 0px;
+
+  position: absolute;
+  inset-inline: 0;
+  top: var(--c-toast-item-offset-top);
+  transition: --c-toast-item-offset-top var(--duration-base) var(--ease-standard);
+}
+
+.toast_list-item[data-exiting='true'] {
+  pointer-events: none;
+  transition: none;
+}
+
+.toast_list-alert {
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-base);
+  border-inline-start-width: 3px;
+  background-color: color-mix(in srgb, var(--c-toast-bg-base), transparent 15%);
+  backdrop-filter: blur(var(--blur-faint));
+  box-shadow: var(--shadow-base);
+  color: var(--ink-main);
+  pointer-events: auto;
+  animation: toast_list-enter var(--duration-base) var(--ease-enter) forwards;
+}
+
+.toast_list-item[data-exiting='true'] .toast_list-alert {
+  animation: toast_list-exit var(--duration-base) var(--ease-standard) forwards;
+  pointer-events: none;
+}
+
+.toast_list-alert[data-type='success'] {
+  --c-toast-bg-base: var(--intent-success-subtle);
+  border-inline-start-color: var(--intent-success-base);
+}
+
+.toast_list-alert[data-type='error'] {
+  --c-toast-bg-base: var(--intent-critical-subtle);
+  border-inline-start-color: var(--intent-critical-base);
+}
+
+.toast_list-alert[data-type='warning'] {
+  --c-toast-bg-base: var(--intent-warning-subtle);
+  border-inline-start-color: var(--intent-warning-base);
+}
+
+.toast_list-alert[data-type='info'] {
+  --c-toast-bg-base: var(--bg-surface);
+  border-inline-start-color: var(--border-focus);
+}
+
+.toast_list-icon {
+  flex-shrink: 0;
+  font-size: var(--text-lg);
+  line-height: 1;
+}
+
+.toast_list-message {
+  margin: 0;
+  font-size: var(--text-sm);
+  line-height: var(--leading-base);
+}
+
+@keyframes toast_list-enter {
+  from {
+    opacity: 0;
+    transform: translateY(calc(var(--space-2) * -1));
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes toast_list-exit {
+  from {
+    opacity: 1;
+  }
+
+  to {
+    opacity: 0;
+  }
+}

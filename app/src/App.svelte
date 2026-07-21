@@ -11,6 +11,7 @@
   import LoginPage from './features/LoginPage/LoginPage.svelte'
   import RequestsBoard from './features/RequestsBoard/RequestsBoard.svelte'
   import StaffManager from './features/StaffManager/StaffManager.svelte'
+  import ToastList from './components/ToastList/ToastList.svelte'
 
   initLocaleContext()
 
@@ -75,4 +76,6 @@
       <ForbiddenPage />
     </AdminShell>
   {/if}
+
+  <ToastList />
 </QueryClientProvider>

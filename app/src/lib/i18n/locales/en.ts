@@ -14,6 +14,7 @@ export const en: TranslationSchema = {
     backHome: 'Go home',
     language: 'Language',
     toggleTheme: 'Toggle theme',
+    notifications: 'Notifications',
     saved: 'Saved',
     error: 'Error',
   },

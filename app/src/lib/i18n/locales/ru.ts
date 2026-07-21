@@ -14,6 +14,7 @@ export const ru: TranslationSchema = {
     backHome: 'На главную',
     language: 'Язык',
     toggleTheme: 'Переключить тему',
+    notifications: 'Уведомления',
     saved: 'Сохранено',
     error: 'Ошибка',
   },

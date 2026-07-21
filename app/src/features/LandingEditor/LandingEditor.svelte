@@ -5,7 +5,6 @@
   import Checkbox from '@/components/Checkbox/Checkbox.svelte'
   import FormField from '@/components/FormField/FormField.svelte'
   import MediaDropzone from '@/components/MediaDropzone/MediaDropzone.svelte'
-  import Toast from '@/components/Toast/Toast.svelte'
   import type { SiteScope } from '@/lib/cms/scopes'
   import { useLocale } from '@/lib/i18n/context.svelte'
   import {
@@ -19,6 +18,7 @@
     type PendingPartnerFile,
   } from '@/lib/pocketbase/landing'
   import type { StaffRecord } from '@/lib/pocketbase/types'
+  import { pushToast } from '@/stores/toastStore.svelte'
   import './LandingEditor.css'
 
   let { scope }: { scope: SiteScope } = $props()
@@ -27,9 +27,6 @@
   const queryClient = useQueryClient()
 
   let form = $state<LandingFormState>(landingToForm(null))
-  let toastOpen = $state(false)
-  let toastTone = $state<'success' | 'error'>('success')
-  let toastMessage = $state('')
   let hydratedScope = $state<SiteScope | null>(null)
 
   const newRow = (): HeadBodyRow => ({ localId: crypto.randomUUID(), head: '', body: '' })
@@ -57,14 +54,10 @@
       queryClient.setQueryData(['landing', scope], (current: { landing: unknown; staff: StaffRecord[] } | undefined) =>
         current ? { ...current, landing: saved } : { landing: saved, staff: [] },
       )
-      toastTone = 'success'
-      toastMessage = localeCtx.t.common.saved
-      toastOpen = true
+      pushToast(localeCtx.t.common.saved, 'success')
     },
     onError: (saveError) => {
-      toastTone = 'error'
-      toastMessage = saveError instanceof Error ? saveError.message : localeCtx.t.common.error
-      toastOpen = true
+      pushToast(saveError instanceof Error ? saveError.message : localeCtx.t.common.error, 'error')
     },
   }))
 
@@ -450,5 +443,3 @@
     {/if}
   </div>
 </section>
-
-<Toast bind:open={toastOpen} tone={toastTone}>{toastMessage}</Toast>

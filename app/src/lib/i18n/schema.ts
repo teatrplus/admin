@@ -12,6 +12,7 @@ export type TranslationSchema = {
     backHome: string
     language: string
     toggleTheme: string
+    notifications: string
     saved: string
     error: string
   }
