@@ -1,51 +1,25 @@
 <script lang="ts">
   import { createMutation, createQuery, useQueryClient } from '@tanstack/svelte-query'
   import * as v from 'valibot'
+  import EditIcon from '~icons/material-symbols/edit-outline'
+  import TrashIcon from '~icons/material-symbols/delete-outline'
   import Button from '@/components/Button/Button.svelte'
   import Checkbox from '@/components/Checkbox/Checkbox.svelte'
   import FormField from '@/components/FormField/FormField.svelte'
   import Select from '@/components/Select/Select.svelte'
   import { createFormState } from '@/lib/forms/form-state.svelte'
   import { useLocale } from '@/lib/i18n/context.svelte'
-  import { normalizeRole } from '@/lib/pocketbase/auth'
-  import { createStaff, listStaff } from '@/lib/pocketbase/staff-api'
-  import type { StaffRole, StaffScope } from '@/lib/pocketbase/types'
+  import { getCurrentUser, normalizeRole } from '@/lib/pocketbase/auth'
+  import { createStaff, deleteStaff, listStaff, updateStaff } from '@/lib/pocketbase/staff-api'
+  import type { StaffRecord, StaffRole, StaffScope } from '@/lib/pocketbase/types'
   import { pushToast } from '@/stores/toastStore.svelte'
   import './StaffManager.css'
 
   const localeCtx = useLocale()
   const queryClient = useQueryClient()
+  const currentUserId = getCurrentUser()?.id
 
-  const schema = v.pipe(
-    v.object({
-      email: v.pipe(v.string(), v.nonEmpty(), v.email()),
-      password: v.pipe(v.string(), v.minLength(8)),
-      passwordConfirm: v.pipe(v.string(), v.minLength(8)),
-      name: v.optional(v.string()),
-      phoneNumber: v.optional(v.string()),
-      role: v.picklist(['admin', 'moderator', 'manager']),
-      scopeTheater: v.boolean(),
-      scopeSpace: v.boolean(),
-    }),
-    v.forward(
-      v.partialCheck(
-        [['password'], ['passwordConfirm']],
-        (input) => input.password === input.passwordConfirm,
-        'Passwords must match',
-      ),
-      ['passwordConfirm'],
-    ),
-    v.forward(
-      v.partialCheck(
-        [['scopeTheater'], ['scopeSpace']],
-        (input) => input.scopeTheater || input.scopeSpace,
-        'Select at least one scope',
-      ),
-      ['scopeSpace'],
-    ),
-  )
-
-  const form = createFormState({
+  const emptyValues = {
     email: '',
     password: '',
     passwordConfirm: '',
@@ -54,7 +28,48 @@
     role: 'manager' as StaffRole,
     scopeTheater: false,
     scopeSpace: true,
-  })
+  }
+
+  let editingId = $state<string | null>(null)
+  const isEditing = $derived(editingId !== null)
+
+  const schema = $derived(
+    v.pipe(
+      v.object({
+        email: v.pipe(v.string(), v.nonEmpty(), v.email()),
+        password: v.string(),
+        passwordConfirm: v.string(),
+        name: v.optional(v.string()),
+        phoneNumber: v.optional(v.string()),
+        role: v.picklist(['admin', 'moderator', 'manager']),
+        scopeTheater: v.boolean(),
+        scopeSpace: v.boolean(),
+      }),
+      v.forward(
+        v.partialCheck(
+          [['password'], ['passwordConfirm']],
+          (input) => {
+            const password = input.password ?? ''
+            const confirm = input.passwordConfirm ?? ''
+            if (!password && !confirm) return isEditing
+            return password === confirm && password.length >= 8
+          },
+          'Passwords must match',
+        ),
+        ['passwordConfirm'],
+      ),
+      v.forward(
+        v.partialCheck(
+          [['scopeTheater'], ['scopeSpace']],
+          (input) => input.scopeTheater || input.scopeSpace,
+          'Select at least one scope',
+        ),
+        ['scopeSpace'],
+      ),
+    ),
+  )
+
+  const form = createFormState({ ...emptyValues })
 
   const roleOptions = $derived(
     (['admin', 'moderator', 'manager'] as StaffRole[]).map((role) => ({
@@ -68,42 +83,90 @@
     queryFn: () => listStaff(),
   }))
 
-  const createStaffMutation = createMutation(() => ({
-    mutationFn: async () => {
-      const scopes: StaffScope[] = []
-      if (form.values.scopeTheater) scopes.push('theater')
-      if (form.values.scopeSpace) scopes.push('space')
+  const staff = $derived(staffQuery.data ?? [])
 
-      const formData = new FormData()
-      formData.set('email', form.values.email)
+  const buildFormData = () => {
+    const scopes: StaffScope[] = []
+    if (form.values.scopeTheater) scopes.push('theater')
+    if (form.values.scopeSpace) scopes.push('space')
+
+    const formData = new FormData()
+    formData.set('email', form.values.email)
+    formData.set('name', form.values.name)
+    formData.set('phoneNumber', form.values.phoneNumber)
+    formData.set('role', form.values.role)
+    for (const scopeValue of scopes) {
+      formData.append('scope', scopeValue)
+    }
+
+    if (form.values.password) {
       formData.set('password', form.values.password)
       formData.set('passwordConfirm', form.values.passwordConfirm)
-      formData.set('name', form.values.name)
-      formData.set('phoneNumber', form.values.phoneNumber)
-      formData.set('role', form.values.role)
-      for (const scopeValue of scopes) {
-        formData.append('scope', scopeValue)
-      }
+    }
 
+    return formData
+  }
+
+  const resetToCreate = () => {
+    editingId = null
+    form.reset({ ...emptyValues })
+  }
+
+  const startEdit = (member: StaffRecord) => {
+    editingId = member.id
+    form.reset({
+      email: member.email ?? '',
+      password: '',
+      passwordConfirm: '',
+      name: member.name ?? '',
+      phoneNumber: member.phoneNumber ?? '',
+      role: normalizeRole(member.role) ?? 'manager',
+      scopeTheater: (member.scope ?? []).includes('theater'),
+      scopeSpace: (member.scope ?? []).includes('space'),
+    })
+  }
+
+  const saveMutation = createMutation(() => ({
+    mutationFn: async () => {
+      const formData = buildFormData()
+      if (editingId) return updateStaff(editingId, formData)
       return createStaff(formData)
     },
     onSuccess: async () => {
-      form.reset()
-      form.values.scopeSpace = true
+      const wasEdit = Boolean(editingId)
+      resetToCreate()
       await queryClient.invalidateQueries({ queryKey: ['staff'] })
-      pushToast(localeCtx.t.staff.created, 'success')
+      pushToast(wasEdit ? localeCtx.t.staff.updated : localeCtx.t.staff.created, 'success')
     },
-    onError: (createError) => {
-      pushToast(createError instanceof Error ? createError.message : localeCtx.t.common.error, 'error')
+    onError: (saveError) => {
+      pushToast(saveError instanceof Error ? saveError.message : localeCtx.t.common.error, 'error')
     },
   }))
 
-  const staff = $derived(staffQuery.data ?? [])
+  const deleteMutation = createMutation(() => ({
+    mutationFn: (id: string) => deleteStaff(id),
+    onSuccess: async () => {
+      if (editingId) resetToCreate()
+      await queryClient.invalidateQueries({ queryKey: ['staff'] })
+      pushToast(localeCtx.t.staff.deleted, 'success')
+    },
+    onError: (deleteError) => {
+      pushToast(deleteError instanceof Error ? deleteError.message : localeCtx.t.common.error, 'error')
+    },
+  }))
 
   const submit = (event: SubmitEvent) => {
     event.preventDefault()
     if (!form.validate(schema).success) return
-    createStaffMutation.mutate()
+    saveMutation.mutate()
+  }
+
+  const confirmDelete = (member: StaffRecord) => {
+    if (member.id === currentUserId) return
+    const label = member.name || member.email
+    const message = localeCtx.t.staff.deleteConfirm.replace('{name}', label)
+    if (!window.confirm(message)) return
+    deleteMutation.mutate(member.id)
   }
 
   const formatScopes = (scopes: StaffScope[] | undefined) =>
@@ -130,20 +193,19 @@
     {:else}
       <div class="staff_manager-body">
         <section class="staff_manager-section">
-          <h2 class="staff_manager-section_title">{localeCtx.t.staff.create}</h2>
+          <h2 class="staff_manager-section_title">
+            {isEditing ? localeCtx.t.staff.edit : localeCtx.t.staff.create}
+          </h2>
           <form class="staff_manager-form" onsubmit={submit}>
             <FormField label={localeCtx.t.staff.name} name="name" bind:value={form.values.name} />
             <FormField label={localeCtx.t.staff.email} name="email" type="email" bind:value={form.values.email} />
-            <FormField
-              label={localeCtx.t.staff.phoneNumber}
-              name="phoneNumber"
-              bind:value={form.values.phoneNumber}
-            />
+            <FormField label={localeCtx.t.staff.phoneNumber} name="phoneNumber" bind:value={form.values.phoneNumber} />
             <FormField
               label={localeCtx.t.staff.password}
               name="password"
               type="password"
               bind:value={form.values.password}
+              hint={isEditing ? localeCtx.t.staff.passwordOptional : undefined}
             />
             <FormField
               label={localeCtx.t.staff.passwordConfirm}
@@ -167,8 +229,13 @@
             </fieldset>
 
             <div class="staff_manager-form_actions">
-              <Button type="submit" isLoading={createStaffMutation.isPending}>
-                {localeCtx.t.staff.create}
+              {#if isEditing}
+                <Button type="button" variant="ghost" color="neutral" onclick={resetToCreate}>
+                  {localeCtx.t.common.cancel}
+                </Button>
+              {/if}
+              <Button type="submit" isLoading={saveMutation.isPending}>
+                {isEditing ? localeCtx.t.common.save : localeCtx.t.staff.create}
               </Button>
             </div>
           </form>
@@ -184,15 +251,41 @@
                   <th>{localeCtx.t.staff.email}</th>
                   <th>{localeCtx.t.staff.role}</th>
                   <th>{localeCtx.t.staff.scope}</th>
+                  <th></th>
                 </tr>
               </thead>
               <tbody>
                 {#each staff as member (member.id)}
-                  <tr>
+                  <tr data-active={editingId === member.id ? 'true' : undefined}>
                     <td>{member.name || '—'}</td>
                     <td>{member.email}</td>
                     <td>{localeCtx.t.staff.roles[normalizeRole(member.role) ?? 'manager']}</td>
                     <td>{formatScopes(member.scope)}</td>
+                    <td class="staff_manager-table_actions">
+                      <Button
+                        variant="ghost"
+                        color="neutral"
+                        size="sm"
+                        shape="square"
+                        title={localeCtx.t.staff.editUser}
+                        aria-label={localeCtx.t.staff.editUser}
+                        onclick={() => startEdit(member)}
+                      >
+                        <EditIcon />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        color="danger"
+                        size="sm"
+                        shape="square"
+                        title={localeCtx.t.staff.deleteUser}
+                        aria-label={localeCtx.t.staff.deleteUser}
+                        disabled={member.id === currentUserId || deleteMutation.isPending}
+                        onclick={() => confirmDelete(member)}
+                      >
+                        <TrashIcon />
+                      </Button>
+                    </td>
                   </tr>
                 {/each}
               </tbody>

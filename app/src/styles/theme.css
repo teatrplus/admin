@@ -89,8 +89,8 @@
 
   --theme-dark-border-base: var(--palette-stone-800);
 
-  --theme-dark-action-neutral: var(--palette-stone-800);
-  --theme-dark-action-neutral-hover: var(--palette-stone-700);
+  --theme-dark-action-neutral: var(--palette-stone-500);
+  --theme-dark-action-neutral-hover: var(--palette-stone-400);
   --theme-dark-action-contrast: var(--palette-stone-100);
   --theme-dark-action-contrast-hover: var(--palette-stone-200);
 

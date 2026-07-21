@@ -80,10 +80,12 @@ export type TranslationSchema = {
   staff: {
     title: string
     create: string
+    edit: string
     list: string
     email: string
     password: string
     passwordConfirm: string
+    passwordOptional: string
     name: string
     phoneNumber: string
     role: string
@@ -91,6 +93,11 @@ export type TranslationSchema = {
     roles: Record<string, string>
     scopes: Record<string, string>
     created: string
+    updated: string
+    deleted: string
+    deleteConfirm: string
+    editUser: string
+    deleteUser: string
   }
   validation: {
     required: string
