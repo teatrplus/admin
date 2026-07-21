@@ -1,6 +1,6 @@
 <script lang="ts">
   import * as v from 'valibot'
-  import ActionButton from '../../components/ui/ActionButton/ActionButton.svelte'
+  import Button from '@/components/Button/Button.svelte'
   import FormField from '../../components/ui/FormField/FormField.svelte'
   import { createFormState } from '../../lib/forms/form-state.svelte'
   import { useLocale } from '../../lib/i18n/context.svelte'
@@ -59,9 +59,9 @@
       {#if error}
         <p class="login_page-error">{error}</p>
       {/if}
-      <ActionButton type="submit" disabled={loading}>
-        {loading ? localeCtx.t.common.loading : localeCtx.t.auth.submit}
-      </ActionButton>
+      <Button type="submit" isLoading={loading}>
+        {localeCtx.t.auth.submit}
+      </Button>
     </form>
   </div>
 </div>

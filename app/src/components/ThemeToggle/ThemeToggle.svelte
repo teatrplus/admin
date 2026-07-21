@@ -2,6 +2,7 @@
   import { onMount } from 'svelte'
   import LightIcon from '~icons/material-symbols/wb-sunny-outline'
   import DarkIcon from '~icons/material-symbols/dark-mode-outline'
+  import Button from '@/components/Button/Button.svelte'
   import { useLocale } from '@/lib/i18n/context.svelte'
   import {
     applyTheme,
@@ -41,10 +42,10 @@
   })
 </script>
 
-<button
+<Button
   id="theme-toggle"
-  class="theme_toggle u_reset_button u_pressable"
-  type="button"
+  variant="unstyled"
+  class="theme_toggle u_pressable"
   aria-label={localeCtx.t.common.toggleTheme}
   title={localeCtx.t.common.toggleTheme}
   onclick={toggleTheme}
@@ -55,4 +56,4 @@
   <span class="theme_toggle-icon" data-theme-icon="dark">
     <DarkIcon width="20" height="20" aria-hidden="true" />
   </span>
-</button>
+</Button>

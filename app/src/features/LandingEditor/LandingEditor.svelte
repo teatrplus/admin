@@ -1,5 +1,5 @@
 <script lang="ts">
-  import ActionButton from '../../components/ui/ActionButton/ActionButton.svelte'
+  import Button from '@/components/Button/Button.svelte'
   import FormField from '../../components/ui/FormField/FormField.svelte'
   import StatusBanner from '../../components/ui/StatusBanner/StatusBanner.svelte'
   import type { SiteScope } from '../../lib/cms/scopes'
@@ -145,20 +145,21 @@
                 bind:value={row.body}
               />
               <div class="landing_editor-row_actions">
-                <ActionButton
+                <Button
                   type="button"
                   variant="ghost"
+                  color="neutral"
                   size="sm"
                   onclick={() => removeHeadBodyRow('venueItems', 'removedVenueIds', row)}
                 >
                   {localeCtx.t.landing.removeRow}
-                </ActionButton>
+                </Button>
               </div>
             </div>
           {/each}
-          <ActionButton type="button" variant="neutral" onclick={() => (form.venueItems = [...form.venueItems, newRow()])}>
+          <Button type="button" color="neutral" onclick={() => (form.venueItems = [...form.venueItems, newRow()])}>
             {localeCtx.t.landing.addRow}
-          </ActionButton>
+          </Button>
         </div>
       </section>
 
@@ -175,24 +176,25 @@
                 bind:value={row.body}
               />
               <div class="landing_editor-row_actions">
-                <ActionButton
+                <Button
                   type="button"
                   variant="ghost"
+                  color="neutral"
                   size="sm"
                   onclick={() => removeHeadBodyRow('advantageItems', 'removedAdvantageIds', row)}
                 >
                   {localeCtx.t.landing.removeRow}
-                </ActionButton>
+                </Button>
               </div>
             </div>
           {/each}
-          <ActionButton
+          <Button
             type="button"
-            variant="neutral"
+            color="neutral"
             onclick={() => (form.advantageItems = [...form.advantageItems, newRow()])}
           >
             {localeCtx.t.landing.addRow}
-          </ActionButton>
+          </Button>
         </div>
       </section>
 
@@ -209,24 +211,25 @@
                 bind:value={row.body}
               />
               <div class="landing_editor-row_actions">
-                <ActionButton
+                <Button
                   type="button"
                   variant="ghost"
+                  color="neutral"
                   size="sm"
                   onclick={() => removeHeadBodyRow('processItems', 'removedProcessIds', row)}
                 >
                   {localeCtx.t.landing.removeRow}
-                </ActionButton>
+                </Button>
               </div>
             </div>
           {/each}
-          <ActionButton
+          <Button
             type="button"
-            variant="neutral"
+            color="neutral"
             onclick={() => (form.processItems = [...form.processItems, newRow()])}
           >
             {localeCtx.t.landing.addRow}
-          </ActionButton>
+          </Button>
         </div>
       </section>
 
@@ -255,19 +258,19 @@
                 {/snippet}
               </FormField>
               <div class="landing_editor-row_actions">
-                <ActionButton type="button" variant="ghost" size="sm" onclick={() => removeGalleryRow(row)}>
+                <Button type="button" variant="ghost" color="neutral" size="sm" onclick={() => removeGalleryRow(row)}>
                   {localeCtx.t.landing.removeRow}
-                </ActionButton>
+                </Button>
               </div>
             </div>
           {/each}
-          <ActionButton
+          <Button
             type="button"
-            variant="neutral"
+            color="neutral"
             onclick={() => (form.galleryItems = [...form.galleryItems, newGalleryRow()])}
           >
             {localeCtx.t.landing.addRow}
-          </ActionButton>
+          </Button>
         </div>
       </section>
 
@@ -323,9 +326,9 @@
       </section>
 
       <div class="landing_editor-actions">
-        <ActionButton type="submit" disabled={saving}>
-          {saving ? localeCtx.t.common.loading : localeCtx.t.common.save}
-        </ActionButton>
+        <Button type="submit" isLoading={saving}>
+          {localeCtx.t.common.save}
+        </Button>
       </div>
     </form>
   {/if}

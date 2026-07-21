@@ -1,0 +1,214 @@
+.button {
+  /* ================== */
+  /* INTERNAL PHYSICS   */
+  /* ================== */
+
+  /* 
+   * THE INK: The structural pigment.
+   * Solid variants use this as the fill.
+   * Outline/Ghost variants use this as the text and border color.
+   */
+  --c-btn-ink: var(--action-primary);
+  --c-btn-ink-hover: var(--action-primary-hover);
+
+  /* 
+   * THE TEXT: The high-contrast foreground.
+   * Strictly consumed by the 'solid' variant to guarantee legibility.
+   * Driven alongside The Ink (e.g., if Ink is light, Text must be dark).
+   */
+  --c-btn-text: var(--ink-inverse);
+
+  /* 
+   * THE ESCAPE HATCH: The actual painted background.
+   * Defaults to The Ink. This abstraction exists solely so parent components 
+   * can inject bespoke backgrounds (e.g., --c-btn-bg: linear-gradient(...)) 
+   * without destroying the button's internal hover/active state logic.
+   */
+  --c-btn-bg: var(--c-btn-ink);
+
+  /* THE SIZE: Used for the button height; sets width for circle and square shapes */
+  --c-btn-size: 2.5rem;
+  --c-btn-font-size: var(--text-base);
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2); /* Spacing between slots and label */
+  height: var(--c-btn-size);
+
+  font-family: inherit;
+  font-weight: var(--weight-medium);
+  font-size: var(--c-btn-font-size);
+  text-align: center;
+  white-space: nowrap;
+
+  background-color: var(--c-btn-bg);
+  border: 1px solid transparent;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+
+  transition:
+    color var(--duration-base) var(--ease-enter),
+    background-color var(--duration-base) var(--ease-enter),
+    border-color var(--duration-base) var(--ease-enter),
+    var(--transition-pressable);
+
+  /* Prevent text selection during rapid clicks */
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+
+  /* ================== */
+  /* THE COLOR MATRIX   */
+  /* ================== */
+  &:where([data-color='contrast']) {
+    --c-btn-ink: var(--action-contrast);
+    --c-btn-ink-hover: var(--action-contrast-hover);
+    --c-btn-text: var(--ink-inverse);
+  }
+
+  &:where([data-color='neutral']) {
+    --c-btn-ink: var(--action-neutral);
+    --c-btn-ink-hover: var(--action-neutral-hover);
+    --c-btn-text: var(--ink-main);
+  }
+
+  &:where([data-color='danger']) {
+    --c-btn-ink: var(--action-danger);
+    --c-btn-ink-hover: var(--action-danger-hover);
+    --c-btn-text: var(--ink-inverse);
+  }
+
+  /* ================== */
+  /* THE VARIANTS       */
+  /* ================== */
+  &:where([data-variant='solid']) {
+    color: var(--c-btn-text);
+    box-shadow: var(--shadow-close);
+  }
+
+  &:where([data-variant='outline']) {
+    --c-btn-bg: transparent;
+    border-color: var(--c-btn-ink);
+    color: var(--c-btn-ink);
+  }
+  &:where([data-variant='outline'][data-color='neutral']) {
+    color: var(--c-btn-text);
+  }
+
+  &:where([data-variant='ghost']) {
+    --c-btn-bg: transparent;
+    color: var(--c-btn-ink);
+  }
+
+  &:where([data-variant='link']) {
+    background-color: transparent;
+    color: var(--c-btn-ink);
+    padding: 0 !important; /* Links don't have padding */
+    height: auto !important;
+  }
+
+  &:where([data-variant='link']):hover {
+    text-decoration: underline;
+  }
+
+  /* ================== */
+  /* SIZES & SHAPES     */
+  /* ================== */
+  &:where([data-size='sm']) {
+    --c-btn-size: 2rem;
+    --c-btn-font-size: var(--text-sm);
+    padding: 0 var(--space-3);
+  }
+
+  &:where([data-size='base']) {
+    --c-btn-size: 2.5rem;
+    --c-btn-font-size: var(--text-base);
+    padding: 0 var(--space-4);
+  }
+
+  &:where([data-size='lg']) {
+    --c-btn-size: 3rem;
+    --c-btn-font-size: var(--text-lg);
+    padding: 0 var(--space-6);
+  }
+
+  /* Icon Buttons */
+  &:where([data-shape='square']),
+  &:where([data-shape='circle']) {
+    padding: 0;
+    width: var(--c-btn-size);
+  }
+
+  &:where([data-shape='circle']) {
+    border-radius: var(--radius-full); /* Pill/Circle */
+  }
+
+  /* ================== */
+  /* INTERACTIVE STATES */
+  /* ================== */
+
+  /* Focus Visible ensures accessibility without ugly mouse-click outlines */
+  &:focus-visible {
+    outline: 2px solid var(--border-focus);
+    outline-offset: 2px;
+
+    &[data-color='danger'] {
+      outline-color: var(--action-danger);
+    }
+  }
+
+  /* Not Disabled, Not Loading -> Active Hover States */
+  &:not([aria-disabled='true']):not([data-loading='true']) {
+    &:hover:where([data-variant='solid']) {
+      --c-btn-bg: var(--c-btn-ink-hover);
+    }
+    &:hover:where([data-variant='outline']),
+    &:hover:where([data-variant='ghost']) {
+      background-color: var(--bg-surface-hover);
+    }
+  }
+
+  /* ================== */
+  /* DISABLED / LOADING */
+  /* ================== */
+  &[aria-disabled='true'] {
+    opacity: 0.5;
+    cursor: not-allowed;
+    box-shadow: none;
+  }
+
+  &:where([data-loading='true']) {
+    cursor: wait;
+  }
+}
+
+.button-label {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Internal Slot Physics */
+.button-icon_slot {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  /* Standard size for icons sitting next to text */
+  width: 1.25em;
+  height: 1.25em;
+
+  /* * The Solo Modifier 
+   * Automatically triggered when shape="square" or "circle"
+   */
+  &[data-solo='true'] {
+    width: 1.5em; /* Slightly larger to properly fill the empty space */
+    height: 1.5em;
+  }
+
+  /* Force the raw SVG inside the slot to respect the dimensions */
+  & > svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+}

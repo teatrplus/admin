@@ -1,5 +1,6 @@
 <script lang="ts">
   import type { Snippet } from 'svelte'
+  import Button from '@/components/Button/Button.svelte'
   import NavIcon from '@/components/NavIcon/NavIcon.svelte'
   import RawSvg from '@/components/RawSvg/RawSvg.svelte'
   import ThemeToggle from '@/components/ThemeToggle/ThemeToggle.svelte'
@@ -65,9 +66,9 @@
           <p class="admin_shell-section_label">{sectionLabel(section.labelKey)}</p>
           <div class="admin_shell-section_rule" aria-hidden="true"></div>
           {#each section.items as item}
-            <button
+            <Button
+              variant="unstyled"
               class="admin_shell-nav_link"
-              type="button"
               data-active={currentRoute === item.route ? 'true' : 'false'}
               title={itemLabel(item.labelKey)}
               aria-label={itemLabel(item.labelKey)}
@@ -75,18 +76,17 @@
             >
               <NavIcon name={item.icon} label={itemLabel(item.labelKey)} />
               <span class="admin_shell-nav_label">{itemLabel(item.labelKey)}</span>
-            </button>
+            </Button>
           {/each}
         </section>
       {/each}
     </nav>
 
     <div class="admin_shell-sidebar_footer">
-      <button
+      <Button
+        variant="unstyled"
         class="admin_shell-collapse_button"
-        type="button"
         onclick={toggleSidebar}
-        aria-hidden="true"
         aria-expanded={!collapsed}
         title={collapsed ? localeCtx.t.nav.expand : localeCtx.t.nav.collapse}
       >
@@ -97,7 +97,7 @@
         <span class="admin_shell-collapse_label">
           {collapsed ? localeCtx.t.nav.expand : localeCtx.t.nav.collapse}
         </span>
-      </button>
+      </Button>
     </div>
   </aside>
 
@@ -107,7 +107,7 @@
       <div class="admin_shell-header_actions">
         <ThemeToggle />
         <label class="u_sr_only" for="locale-select">{localeCtx.t.common.language}</label>
-        <div class="admin_shell-header_button">
+        <div class="admin_shell-locale_control">
           <NavIcon name="language" label={localeCtx.t.common.language} size={18} />
           <select
             id="locale-select"
@@ -120,10 +120,18 @@
             {/each}
           </select>
         </div>
-        <button class="admin_shell-header_button" type="button" onclick={signOut} title={localeCtx.t.common.logout}>
-          <NavIcon name="logout" label={localeCtx.t.common.logout} size={18} />
-          <span>{localeCtx.t.common.logout}</span>
-        </button>
+        <Button
+          variant="outline"
+          color="neutral"
+          size="sm"
+          title={localeCtx.t.common.logout}
+          onclick={signOut}
+        >
+          {#snippet leftIcon()}
+            <NavIcon name="logout" label={localeCtx.t.common.logout} size={18} />
+          {/snippet}
+          {localeCtx.t.common.logout}
+        </Button>
       </div>
     </header>
     <main class="admin_shell-content">

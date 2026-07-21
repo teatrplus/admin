@@ -1,6 +1,6 @@
 <script lang="ts">
   import * as v from 'valibot'
-  import ActionButton from '../../components/ui/ActionButton/ActionButton.svelte'
+  import Button from '@/components/Button/Button.svelte'
   import AppSelect from '../../components/ui/AppSelect/AppSelect.svelte'
   import FormField from '../../components/ui/FormField/FormField.svelte'
   import StatusBanner from '../../components/ui/StatusBanner/StatusBanner.svelte'
@@ -172,9 +172,9 @@
             <p class="form_field-error">{form.errors.scopeSpace}</p>
           {/if}
 
-          <ActionButton type="submit" disabled={saving}>
-            {saving ? localeCtx.t.common.loading : localeCtx.t.staff.create}
-          </ActionButton>
+          <Button type="submit" isLoading={saving}>
+            {localeCtx.t.staff.create}
+          </Button>
         </form>
       </section>
 
