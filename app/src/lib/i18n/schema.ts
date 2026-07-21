@@ -72,6 +72,12 @@ export type TranslationSchema = {
     removeRow: string
     deleteImage: string
     savedToast: string
+    validationHeaderPhone: string
+    validationMinItems: string
+    validationItemLocales: string
+    validationGalleryFile: string
+    validationFailed: string
+    noChanges: string
   }
   requests: {
     title: string
@@ -105,6 +111,7 @@ export type TranslationSchema = {
     deleteConfirm: string
     editUser: string
     deleteUser: string
+    validationFailed: string
   }
   validation: {
     required: string

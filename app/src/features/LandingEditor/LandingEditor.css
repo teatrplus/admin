@@ -94,6 +94,16 @@
   letter-spacing: 0.04em;
 }
 
+.landing_editor-section_error {
+  margin: 0;
+  font-size: var(--text-xs);
+  color: var(--intent-critical-strong);
+}
+
+.landing_editor-media_preview[data-invalid='true'] {
+  border-color: var(--intent-critical-base);
+}
+
 .landing_editor-replace_btn {
   background-color: color-mix(in srgb, var(--bg-surface), transparent 40%);
   backdrop-filter: blur(var(--blur-dense));

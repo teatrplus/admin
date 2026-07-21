@@ -74,6 +74,12 @@ export const ru: TranslationSchema = {
     removeRow: 'Удалить',
     deleteImage: 'Удалить изображение',
     savedToast: 'Сохранено. Изменения появятся на лендинге через 1–2 минуты.',
+    validationHeaderPhone: 'Выберите контакт для телефона в шапке.',
+    validationMinItems: 'Добавьте хотя бы один элемент в раздел «{section}».',
+    validationItemLocales: 'Заполните все поля RU / EN / UZ в разделе «{section}».',
+    validationGalleryFile: 'У каждого элемента галереи должно быть изображение.',
+    validationFailed: 'Исправьте выделенные поля перед сохранением.',
+    noChanges: 'Нет изменений для сохранения.',
   },
   requests: {
     title: 'Заявки',
@@ -121,6 +127,7 @@ export const ru: TranslationSchema = {
     deleteConfirm: 'Удалить {name}? Это действие нельзя отменить.',
     editUser: 'Редактировать',
     deleteUser: 'Удалить',
+    validationFailed: 'Исправьте выделенные поля перед сохранением.',
   },
   validation: {
     required: 'Обязательное поле',

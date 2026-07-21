@@ -9,6 +9,11 @@
   color: var(--ink-main);
 }
 
+.form_field-required {
+  margin-inline-start: 0.15em;
+  color: var(--intent-critical-strong);
+}
+
 .form_field-control {
   width: 100%;
   min-height: 2.5rem;

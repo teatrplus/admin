@@ -11,8 +11,12 @@
   import { getCurrentUser } from '@/lib/pocketbase/auth'
   import {
     CONTENT_LOCALES,
+    collectLandingFieldErrors,
     emptyGalleryRow,
     emptyHeadBodyRow,
+    fillBlankLocales,
+    firstIncompleteContentLocale,
+    hasLandingFieldErrors,
     landingToForm,
     listManagers,
     loadLanding,
@@ -21,11 +25,13 @@
     type ContentLocale,
     type GalleryRow,
     type HeadBodyRow,
+    type LandingFieldErrors,
     type LandingFormState,
     type PendingPartnerFile,
   } from '@/lib/pocketbase/landing'
   import type { StaffRecord } from '@/lib/pocketbase/types'
   import { pushToast } from '@/stores/toastStore.svelte'
+  import LocalizedField from './LocalizedField.svelte'
   import './LandingEditor.css'
 
   let { scope }: { scope: SiteScope } = $props()
@@ -38,22 +44,33 @@
   let baseline = $state(serializeLandingForm(emptyForm))
   let hydratedScope = $state<SiteScope | null>(null)
   let contentLocale = $state<ContentLocale>('ru')
+  let showErrors = $state(false)
 
   const isDirty = $derived(serializeLandingForm(form) !== baseline)
 
-  const headKey = $derived(
-    contentLocale === 'ru' ? 'headRu' : contentLocale === 'en' ? 'headEn' : 'headUz',
-  )
-  const bodyKey = $derived(
-    contentLocale === 'ru' ? 'bodyRu' : contentLocale === 'en' ? 'bodyEn' : 'bodyUz',
-  )
-  const captionKey = $derived(
-    contentLocale === 'ru' ? 'captionRu' : contentLocale === 'en' ? 'captionEn' : 'captionUz',
-  )
+  const fieldErrors = $derived.by((): LandingFieldErrors => {
+    if (!showErrors) return {}
+    return collectLandingFieldErrors(form)
+  })
+
+  const requiredMsg = $derived(localeCtx.t.validation.required)
+
+  const fieldError = (path: string) => (fieldErrors[path] ? requiredMsg : undefined)
+
+  const sectionError = (section: 'venues' | 'advantages' | 'process' | 'gallery') => {
+    if (!fieldErrors[section]) return undefined
+    return localeCtx.t.landing.validationMinItems.replace('{section}', localeCtx.t.landing[section])
+  }
+
+  const galleryFileError = (row: GalleryRow) =>
+    fieldErrors[`galleryItems.${row.localId}.file`]
+      ? localeCtx.t.landing.validationGalleryFile
+      : undefined
 
   const applyForm = (next: LandingFormState) => {
     form = next
     baseline = serializeLandingForm(next)
+    showErrors = false
   }
 
   const landingQuery = createQuery(() => ({
@@ -122,6 +139,7 @@
     removedKey: 'removedVenueIds' | 'removedAdvantageIds' | 'removedProcessIds',
     row: HeadBodyRow,
   ) => {
+    if (form[key].length <= 1) return
     if (row.id) {
       form[removedKey] = [...form[removedKey], row.id]
     }
@@ -133,6 +151,7 @@
   }
 
   const removeGalleryRow = (row: GalleryRow) => {
+    if (form.galleryItems.length <= 1) return
     revokePreview(row.previewUrl)
     if (row.id) {
       form.removedGalleryIds = [...form.removedGalleryIds, row.id]
@@ -179,7 +198,31 @@
 
   const submit = (event: SubmitEvent) => {
     event.preventDefault()
+
+    if (!isDirty) {
+      pushToast(localeCtx.t.landing.noChanges, 'info')
+      return
+    }
+
+    showErrors = true
+    const errors = collectLandingFieldErrors(form)
+    if (hasLandingFieldErrors(errors)) {
+      const incompleteLocale = firstIncompleteContentLocale(errors)
+      if (incompleteLocale) contentLocale = incompleteLocale
+      pushToast(localeCtx.t.landing.validationFailed, 'error')
+      return
+    }
+
+    fillBlankLocales(form)
     saveMutation.mutate()
+  }
+
+  const onSaveClick = (event: MouseEvent) => {
+    // Button uses aria-disabled (not native disabled), so still receive clicks when clean.
+    if (!isDirty || saveMutation.isPending) {
+      event.preventDefault()
+      if (!isDirty) pushToast(localeCtx.t.landing.noChanges, 'info')
+    }
   }
 </script>
 
@@ -214,7 +257,8 @@
             type="submit"
             form="landing-editor-form"
             isLoading={saveMutation.isPending}
-            disabled={!isDirty || saveMutation.isPending}
+            disabled={saveMutation.isPending}
+            onclick={onSaveClick}
           >
             {localeCtx.t.common.save}
           </Button>
@@ -230,7 +274,7 @@
         {landingQuery.error instanceof Error ? landingQuery.error.message : localeCtx.t.common.error}
       </p>
     {:else}
-      <form id="landing-editor-form" class="landing_editor-form" onsubmit={submit}>
+      <form id="landing-editor-form" class="landing_editor-form" novalidate onsubmit={submit}>
         <section class="landing_editor-section">
           <h2 class="landing_editor-section_title">{localeCtx.t.landing.general}</h2>
           <div class="landing_editor-grid">
@@ -238,8 +282,10 @@
               label={localeCtx.t.landing.headerPhoneManager}
               name="headerPhoneManager"
               bind:value={form.headerPhoneManagerId}
-              options={staffSelectOptions}
+              options={staffOptions}
               placeholder={localeCtx.t.landing.none}
+              error={fieldErrors.headerPhoneManager ? localeCtx.t.landing.validationHeaderPhone : undefined}
+              required
             />
             <Select
               label={localeCtx.t.landing.telegramManager}
@@ -258,19 +304,36 @@
 
         <section class="landing_editor-section">
           <h2 class="landing_editor-section_title">{localeCtx.t.landing.venues}</h2>
+          {#if sectionError('venues')}
+            <p class="landing_editor-section_error">{sectionError('venues')}</p>
+          {/if}
           {#each form.venueItems as row (row.localId)}
             <div class="landing_editor-item">
               <div class="landing_editor-item_fields">
-                <FormField
+                <LocalizedField
+                  locale={contentLocale}
                   label={localeCtx.t.landing.head}
-                  name={`venue-head-${row.localId}-${contentLocale}`}
-                  bind:value={row[headKey]}
+                  nameBase={`venue-head-${row.localId}`}
+                  bind:ru={row.headRu}
+                  bind:en={row.headEn}
+                  bind:uz={row.headUz}
+                  errorRu={fieldError(`venueItems.${row.localId}.headRu`)}
+                  errorEn={fieldError(`venueItems.${row.localId}.headEn`)}
+                  errorUz={fieldError(`venueItems.${row.localId}.headUz`)}
+                  required
                 />
-                <FormField
+                <LocalizedField
+                  locale={contentLocale}
                   label={localeCtx.t.landing.body}
-                  name={`venue-body-${row.localId}-${contentLocale}`}
+                  nameBase={`venue-body-${row.localId}`}
+                  bind:ru={row.bodyRu}
+                  bind:en={row.bodyEn}
+                  bind:uz={row.bodyUz}
+                  errorRu={fieldError(`venueItems.${row.localId}.bodyRu`)}
+                  errorEn={fieldError(`venueItems.${row.localId}.bodyEn`)}
+                  errorUz={fieldError(`venueItems.${row.localId}.bodyUz`)}
                   multiline
-                  bind:value={row[bodyKey]}
+                  required
                 />
               </div>
               <Button
@@ -281,6 +344,7 @@
                 shape="square"
                 title={localeCtx.t.landing.removeRow}
                 aria-label={localeCtx.t.landing.removeRow}
+                disabled={form.venueItems.length <= 1}
                 onclick={() => removeHeadBodyRow('venueItems', 'removedVenueIds', row)}
               >
                 <TrashIcon />
@@ -302,19 +366,36 @@
 
         <section class="landing_editor-section">
           <h2 class="landing_editor-section_title">{localeCtx.t.landing.advantages}</h2>
+          {#if sectionError('advantages')}
+            <p class="landing_editor-section_error">{sectionError('advantages')}</p>
+          {/if}
           {#each form.advantageItems as row (row.localId)}
             <div class="landing_editor-item">
               <div class="landing_editor-item_fields">
-                <FormField
+                <LocalizedField
+                  locale={contentLocale}
                   label={localeCtx.t.landing.head}
-                  name={`adv-head-${row.localId}-${contentLocale}`}
-                  bind:value={row[headKey]}
+                  nameBase={`adv-head-${row.localId}`}
+                  bind:ru={row.headRu}
+                  bind:en={row.headEn}
+                  bind:uz={row.headUz}
+                  errorRu={fieldError(`advantageItems.${row.localId}.headRu`)}
+                  errorEn={fieldError(`advantageItems.${row.localId}.headEn`)}
+                  errorUz={fieldError(`advantageItems.${row.localId}.headUz`)}
+                  required
                 />
-                <FormField
+                <LocalizedField
+                  locale={contentLocale}
                   label={localeCtx.t.landing.body}
-                  name={`adv-body-${row.localId}-${contentLocale}`}
+                  nameBase={`adv-body-${row.localId}`}
+                  bind:ru={row.bodyRu}
+                  bind:en={row.bodyEn}
+                  bind:uz={row.bodyUz}
+                  errorRu={fieldError(`advantageItems.${row.localId}.bodyRu`)}
+                  errorEn={fieldError(`advantageItems.${row.localId}.bodyEn`)}
+                  errorUz={fieldError(`advantageItems.${row.localId}.bodyUz`)}
                   multiline
-                  bind:value={row[bodyKey]}
+                  required
                 />
               </div>
               <Button
@@ -325,6 +406,7 @@
                 shape="square"
                 title={localeCtx.t.landing.removeRow}
                 aria-label={localeCtx.t.landing.removeRow}
+                disabled={form.advantageItems.length <= 1}
                 onclick={() => removeHeadBodyRow('advantageItems', 'removedAdvantageIds', row)}
               >
                 <TrashIcon />
@@ -346,19 +428,36 @@
 
         <section class="landing_editor-section">
           <h2 class="landing_editor-section_title">{localeCtx.t.landing.process}</h2>
+          {#if sectionError('process')}
+            <p class="landing_editor-section_error">{sectionError('process')}</p>
+          {/if}
           {#each form.processItems as row (row.localId)}
             <div class="landing_editor-item">
               <div class="landing_editor-item_fields">
-                <FormField
+                <LocalizedField
+                  locale={contentLocale}
                   label={localeCtx.t.landing.head}
-                  name={`proc-head-${row.localId}-${contentLocale}`}
-                  bind:value={row[headKey]}
+                  nameBase={`proc-head-${row.localId}`}
+                  bind:ru={row.headRu}
+                  bind:en={row.headEn}
+                  bind:uz={row.headUz}
+                  errorRu={fieldError(`processItems.${row.localId}.headRu`)}
+                  errorEn={fieldError(`processItems.${row.localId}.headEn`)}
+                  errorUz={fieldError(`processItems.${row.localId}.headUz`)}
+                  required
                 />
-                <FormField
+                <LocalizedField
+                  locale={contentLocale}
                   label={localeCtx.t.landing.body}
-                  name={`proc-body-${row.localId}-${contentLocale}`}
+                  nameBase={`proc-body-${row.localId}`}
+                  bind:ru={row.bodyRu}
+                  bind:en={row.bodyEn}
+                  bind:uz={row.bodyUz}
+                  errorRu={fieldError(`processItems.${row.localId}.bodyRu`)}
+                  errorEn={fieldError(`processItems.${row.localId}.bodyEn`)}
+                  errorUz={fieldError(`processItems.${row.localId}.bodyUz`)}
                   multiline
-                  bind:value={row[bodyKey]}
+                  required
                 />
               </div>
               <Button
@@ -369,6 +468,7 @@
                 shape="square"
                 title={localeCtx.t.landing.removeRow}
                 aria-label={localeCtx.t.landing.removeRow}
+                disabled={form.processItems.length <= 1}
                 onclick={() => removeHeadBodyRow('processItems', 'removedProcessIds', row)}
               >
                 <TrashIcon />
@@ -390,10 +490,16 @@
 
         <section class="landing_editor-section">
           <h2 class="landing_editor-section_title">{localeCtx.t.landing.gallery}</h2>
+          {#if sectionError('gallery')}
+            <p class="landing_editor-section_error">{sectionError('gallery')}</p>
+          {/if}
           <div class="landing_editor-media_grid">
             {#each form.galleryItems as row (row.localId)}
               <article class="landing_editor-media_card">
-                <div class="landing_editor-media_preview">
+                <div
+                  class="landing_editor-media_preview"
+                  data-invalid={galleryFileError(row) ? 'true' : undefined}
+                >
                   {#if row.previewUrl}
                     <img class="landing_editor-media_image" src={row.previewUrl} alt="" />
                   {:else}
@@ -421,6 +527,7 @@
                       shape="square"
                       title={localeCtx.t.landing.deleteImage}
                       aria-label={localeCtx.t.landing.deleteImage}
+                      disabled={form.galleryItems.length <= 1}
                       onclick={() => removeGalleryRow(row)}
                     >
                       <TrashIcon />
@@ -438,10 +545,20 @@
                     }}
                   />
                 </div>
-                <FormField
+                {#if galleryFileError(row)}
+                  <p class="landing_editor-section_error">{galleryFileError(row)}</p>
+                {/if}
+                <LocalizedField
+                  locale={contentLocale}
                   label={localeCtx.t.landing.caption}
-                  name={`gal-cap-${row.localId}-${contentLocale}`}
-                  bind:value={row[captionKey]}
+                  nameBase={`gal-cap-${row.localId}`}
+                  bind:ru={row.captionRu}
+                  bind:en={row.captionEn}
+                  bind:uz={row.captionUz}
+                  errorRu={fieldError(`galleryItems.${row.localId}.captionRu`)}
+                  errorEn={fieldError(`galleryItems.${row.localId}.captionEn`)}
+                  errorUz={fieldError(`galleryItems.${row.localId}.captionUz`)}
+                  required
                 />
               </article>
             {/each}

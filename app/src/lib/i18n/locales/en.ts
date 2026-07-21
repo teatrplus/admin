@@ -74,6 +74,12 @@ export const en: TranslationSchema = {
     removeRow: 'Remove',
     deleteImage: 'Remove image',
     savedToast: 'Saved. Changes will appear on the landing page in 1–2 minutes.',
+    validationHeaderPhone: 'Select a header phone contact.',
+    validationMinItems: 'Add at least one item to {section}.',
+    validationItemLocales: 'Fill all RU / EN / UZ fields in {section}.',
+    validationGalleryFile: 'Each gallery item needs an image.',
+    validationFailed: 'Fix the highlighted fields before saving.',
+    noChanges: 'No changes to save.',
   },
   requests: {
     title: 'Requests',
@@ -121,6 +127,7 @@ export const en: TranslationSchema = {
     deleteConfirm: 'Delete {name}? This cannot be undone.',
     editUser: 'Edit user',
     deleteUser: 'Delete user',
+    validationFailed: 'Fix the highlighted fields before saving.',
   },
   validation: {
     required: 'Required field',

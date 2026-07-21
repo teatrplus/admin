@@ -9,6 +9,11 @@
   color: var(--ink-main);
 }
 
+.select-required {
+  margin-inline-start: 0.15em;
+  color: var(--intent-critical-strong);
+}
+
 .select-trigger {
   display: inline-flex;
   align-items: center;

@@ -48,7 +48,9 @@
 
 <div class={['select', className].filter(Boolean).join(' ')} data-size={size}>
   {#if label}
-    <Label.Root class="select-label" for={id}>{label}</Label.Root>
+    <Label.Root class="select-label" for={id}>
+      {label}{#if required}<span class="select-required" aria-hidden="true">*</span>{/if}
+    </Label.Root>
   {/if}
 
   <SelectPrimitive.Root

@@ -29,7 +29,9 @@
 </script>
 
 <div class="form_field">
-  <Label.Root class="form_field-label" for={name}>{label}</Label.Root>
+  <Label.Root class="form_field-label" for={name}>
+    {label}{#if required}<span class="form_field-required" aria-hidden="true">*</span>{/if}
+  </Label.Root>
   {#if input}
     {@render input()}
   {:else if multiline}

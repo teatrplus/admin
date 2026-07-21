@@ -37,7 +37,11 @@
   const schema = $derived(
     v.pipe(
       v.object({
-        email: v.pipe(v.string(), v.nonEmpty(), v.email()),
+        email: v.pipe(
+          v.string(),
+          v.nonEmpty(localeCtx.t.validation.required),
+          v.email(localeCtx.t.validation.email),
+        ),
         password: v.string(),
         passwordConfirm: v.string(),
         name: v.optional(v.string()),
@@ -49,14 +53,25 @@
       }),
       v.forward(
         v.partialCheck(
+          [['password']],
+          (input) => {
+            if (isEditing && !(input.password ?? '')) return true
+            return (input.password?.length ?? 0) >= 8
+          },
+          localeCtx.t.validation.minLength,
+        ),
+        ['password'],
+      ),
+      v.forward(
+        v.partialCheck(
           [['password'], ['passwordConfirm']],
           (input) => {
             const password = input.password ?? ''
             const confirm = input.passwordConfirm ?? ''
             if (!password && !confirm) return isEditing
-            return password === confirm && password.length >= 8
+            return password === confirm
           },
-          'Passwords must match',
+          localeCtx.t.validation.passwordMatch,
         ),
         ['passwordConfirm'],
       ),
@@ -64,7 +79,7 @@
         v.partialCheck(
           [['scopeTheater'], ['scopeSpace']],
           (input) => input.scopeTheater || input.scopeSpace,
-          'Select at least one scope',
+          localeCtx.t.validation.required,
         ),
         ['scopeSpace'],
       ),
@@ -161,7 +176,10 @@
 
   const submit = (event: SubmitEvent) => {
     event.preventDefault()
-    if (!form.validate(schema).success) return
+    if (!form.validate(schema).success) {
+      pushToast(localeCtx.t.staff.validationFailed, 'error')
+      return
+    }
     saveMutation.mutate()
   }
 
@@ -202,7 +220,14 @@
           </h2>
           <form class="staff_manager-form" onsubmit={submit}>
             <FormField label={localeCtx.t.staff.name} name="name" bind:value={form.values.name} />
-            <FormField label={localeCtx.t.staff.email} name="email" type="email" bind:value={form.values.email} />
+            <FormField
+              label={localeCtx.t.staff.email}
+              name="email"
+              type="email"
+              bind:value={form.values.email}
+              error={form.errors.email}
+              required
+            />
             <FormField label={localeCtx.t.staff.phoneNumber} name="phoneNumber" bind:value={form.values.phoneNumber} />
             <FormField
               label={localeCtx.t.staff.telegramUsername}
@@ -214,7 +239,9 @@
               name="password"
               type="password"
               bind:value={form.values.password}
+              error={form.errors.password}
               hint={isEditing ? localeCtx.t.staff.passwordOptional : undefined}
+              required={!isEditing}
             />
             <FormField
               label={localeCtx.t.staff.passwordConfirm}
@@ -222,12 +249,22 @@
               type="password"
               bind:value={form.values.passwordConfirm}
               error={form.errors.passwordConfirm}
+              required={!isEditing}
             />
-            <Select label={localeCtx.t.staff.role} name="role" bind:value={form.values.role} options={roleOptions} />
+            <Select
+              label={localeCtx.t.staff.role}
+              name="role"
+              bind:value={form.values.role}
+              options={roleOptions}
+              error={form.errors.role}
+              required
+            />
 
             <fieldset class="staff_manager-scope_list">
               <legend class="u_sr_only">{localeCtx.t.staff.scope}</legend>
-              <p class="staff_manager-scope_label">{localeCtx.t.staff.scope}</p>
+              <p class="staff_manager-scope_label">
+                {localeCtx.t.staff.scope}<span class="form_field-required" aria-hidden="true">*</span>
+              </p>
               <div class="staff_manager-scope_options">
                 <Checkbox bind:checked={form.values.scopeTheater} label={localeCtx.t.staff.scopes.theater} />
                 <Checkbox bind:checked={form.values.scopeSpace} label={localeCtx.t.staff.scopes.space} />
