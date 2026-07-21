@@ -1,4 +1,5 @@
 <script lang="ts">
+  import type { Snippet } from 'svelte'
   import { Label, Select as SelectPrimitive, useId } from 'bits-ui'
   import CheckIcon from '~icons/material-symbols/check'
   import ExpandIcon from '~icons/material-symbols/expand-more'
@@ -24,6 +25,7 @@
     class: className = '',
     'aria-label': ariaLabel,
     onValueChange,
+    leadingIcon,
   }: {
     label?: string
     name?: string
@@ -38,6 +40,7 @@
     class?: string
     'aria-label'?: string
     onValueChange?: (value: string) => void
+    leadingIcon?: Snippet
   } = $props()
 
   const items = $derived(options.map(({ value, label, disabled }) => ({ value, label, disabled })))
@@ -65,6 +68,9 @@
       aria-label={ariaLabel ?? label}
       data-invalid={error ? 'true' : 'false'}
     >
+      {#if leadingIcon}
+        <span class="select-leading" aria-hidden="true">{@render leadingIcon()}</span>
+      {/if}
       <SelectPrimitive.Value class="select-value" {placeholder} />
       <span class="select-chevron" aria-hidden="true">
         <ExpandIcon width="18" height="18" />

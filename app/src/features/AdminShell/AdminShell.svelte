@@ -108,17 +108,18 @@
       <div class="admin_shell-user">{user?.name || user?.email}</div>
       <div class="admin_shell-header_actions">
         <ThemeToggle />
-        <div class="admin_shell-locale_control">
-          <NavIcon name="language" label={localeCtx.t.common.language} size={18} />
-          <Select
-            class="admin_shell-locale_select"
-            aria-label={localeCtx.t.common.language}
-            size="sm"
-            value={localeCtx.locale}
-            options={localeOptions}
-            onValueChange={(next) => localeCtx.setLocale(next as Locale)}
-          />
-        </div>
+        <Select
+          class="admin_shell-locale_select"
+          aria-label={localeCtx.t.common.language}
+          size="sm"
+          value={localeCtx.locale}
+          options={localeOptions}
+          onValueChange={(next) => localeCtx.setLocale(next as Locale)}
+        >
+          {#snippet leadingIcon()}
+            <NavIcon name="language" label={localeCtx.t.common.language} size={20} />
+          {/snippet}
+        </Select>
         <Button
           variant="outline"
           color="neutral"
