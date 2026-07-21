@@ -1,8 +1,9 @@
 <script lang="ts">
-  import MasksTheaterIcon from '~icons/fa7-solid/masks-theater'
   import { useLocale } from '@/lib/i18n/context.svelte'
   import { getCurrentUser } from '@/lib/pocketbase/auth'
   import './HomePage.css'
+  import RawSvg from '@/components/RawSvg/RawSvg.svelte'
+  import schemeRaw from './assets/scheme.svg?raw'
 
   const localeCtx = useLocale()
   const user = $derived(getCurrentUser())
@@ -18,6 +19,6 @@
   </div>
 
   <span class="home_page-deco" aria-hidden="true">
-    <MasksTheaterIcon width="512" height="512" />
+    <RawSvg content={schemeRaw} />
   </span>
 </section>

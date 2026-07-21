@@ -6,6 +6,10 @@
   padding-block-start: var(--space-10);
 }
 
+.admin_shell-content:has(.home_page) {
+  overflow: hidden;
+}
+
 .home_page-copy {
   position: relative;
   z-index: 1;
@@ -38,18 +42,24 @@
   position: absolute;
   right: 0;
   bottom: 0;
-  transform: translate(15%, 25%);
+  transform: translate(27%, 12%);
   z-index: 0;
-  height: min(100rem, 120vh);
+  height: 100vh;
+  width: 130%;
   color: var(--ink-main);
-  opacity: 0.04;
   pointer-events: none;
+  opacity: 0.2;
   line-height: 0;
 
   svg {
     width: 100%;
     height: 100%;
   }
+}
+
+[data-theme='dark'] .home_page-deco {
+  filter: invert(1);
+  opacity: 0.1;
 }
 
 .home_page-deco :global(svg) {
