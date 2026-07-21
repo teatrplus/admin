@@ -12,6 +12,7 @@
     listManagers,
     loadLanding,
     saveLanding,
+    serializeLandingForm,
     type GalleryRow,
     type HeadBodyRow,
     type LandingFormState,
@@ -26,10 +27,18 @@
   const localeCtx = useLocale()
   const queryClient = useQueryClient()
 
-  let form = $state<LandingFormState>(landingToForm(null))
+  const emptyForm = landingToForm(null)
+  let form = $state<LandingFormState>(emptyForm)
+  let baseline = $state(serializeLandingForm(emptyForm))
   let hydratedScope = $state<SiteScope | null>(null)
 
   const newRow = (): HeadBodyRow => ({ localId: crypto.randomUUID(), head: '', body: '' })
+  const isDirty = $derived(serializeLandingForm(form) !== baseline)
+
+  const applyForm = (next: LandingFormState) => {
+    form = next
+    baseline = serializeLandingForm(next)
+  }
 
   const landingQuery = createQuery(() => ({
     queryKey: ['landing', scope],
@@ -43,18 +52,18 @@
     const currentScope = scope
     if (!landingQuery.isSuccess || !landingQuery.data) return
     if (hydratedScope === currentScope) return
-    form = landingToForm(landingQuery.data.landing)
+    applyForm(landingToForm(landingQuery.data.landing))
     hydratedScope = currentScope
   })
 
   const saveMutation = createMutation(() => ({
     mutationFn: () => saveLanding(scope, form),
     onSuccess: (saved) => {
-      form = landingToForm(saved)
+      applyForm(landingToForm(saved))
       queryClient.setQueryData(['landing', scope], (current: { landing: unknown; staff: StaffRecord[] } | undefined) =>
         current ? { ...current, landing: saved } : { landing: saved, staff: [] },
       )
-      pushToast(localeCtx.t.common.saved, 'success')
+      pushToast(localeCtx.t.landing.savedToast, 'success')
     },
     onError: (saveError) => {
       pushToast(saveError instanceof Error ? saveError.message : localeCtx.t.common.error, 'error')
@@ -145,7 +154,12 @@
           <p class="landing_editor-eyebrow">{localeCtx.t.scopes[scope]}</p>
           <h1 class="landing_editor-title">{localeCtx.t.landing.title}</h1>
         </div>
-        <Button type="submit" form="landing-editor-form" isLoading={saveMutation.isPending}>
+        <Button
+          type="submit"
+          form="landing-editor-form"
+          isLoading={saveMutation.isPending}
+          disabled={!isDirty || saveMutation.isPending}
+        >
           {localeCtx.t.common.save}
         </Button>
       </div>
@@ -329,7 +343,7 @@
                     <Button
                       class="landing_editor-delete_btn"
                       type="button"
-                      variant="ghost"
+                      size="sm"
                       color="danger"
                       shape="square"
                       title={localeCtx.t.landing.deleteImage}
