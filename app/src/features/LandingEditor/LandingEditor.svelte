@@ -7,6 +7,7 @@
   import MediaDropzone from '@/components/MediaDropzone/MediaDropzone.svelte'
   import type { SiteScope } from '@/lib/cms/scopes'
   import { useLocale } from '@/lib/i18n/context.svelte'
+  import { getCurrentUser } from '@/lib/pocketbase/auth'
   import {
     landingToForm,
     listManagers,
@@ -71,12 +72,23 @@
   }))
 
   const managers = $derived(landingQuery.data?.staff ?? [])
-  const managerOptions = $derived(
-    managers.map((manager) => ({
-      value: manager.id,
-      label: manager.name || manager.email,
-    })),
-  )
+  const managerOptions = $derived.by(() => {
+    const byId = new Map<string, StaffRecord>()
+    for (const manager of managers) byId.set(manager.id, manager)
+
+    const expanded = landingQuery.data?.landing?.expand?.contactManagers ?? []
+    for (const contact of expanded) byId.set(contact.id, contact)
+
+    const currentUser = getCurrentUser()
+    if (currentUser) byId.set(currentUser.id, currentUser)
+
+    return [...byId.values()]
+      .map((manager) => ({
+        value: manager.id,
+        label: manager.name || manager.email,
+      }))
+      .sort((a, b) => a.label.localeCompare(b.label))
+  })
 
   const removeHeadBodyRow = (
     key: 'venueItems' | 'advantageItems' | 'processItems',
