@@ -1,0 +1,19 @@
+.status_banner {
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-base);
+  background: var(--bg-surface);
+  font-size: var(--text-sm);
+}
+
+.status_banner[data-tone='success'] {
+  border-color: var(--intent-success-base);
+  background: var(--intent-success-subtle);
+  color: var(--intent-success-strong);
+}
+
+.status_banner[data-tone='error'] {
+  border-color: var(--intent-critical-base);
+  background: var(--intent-critical-subtle);
+  color: var(--intent-critical-strong);
+}

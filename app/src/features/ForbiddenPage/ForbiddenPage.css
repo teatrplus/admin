@@ -1,0 +1,14 @@
+.forbidden_page {
+  padding: var(--space-8);
+}
+
+.forbidden_page-title {
+  font-family: var(--font-heading);
+  font-size: var(--text-3xl);
+  margin-bottom: var(--space-3);
+}
+
+.forbidden_page-body {
+  color: var(--ink-muted);
+  margin-bottom: var(--space-6);
+}

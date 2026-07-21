@@ -1,0 +1,32 @@
+.login_page {
+  min-height: 100svh;
+  display: grid;
+  place-items: center;
+  padding: var(--space-6);
+}
+
+.login_page-card {
+  width: min(100%, 24rem);
+  padding: var(--space-6);
+  border: 1px solid var(--border-base);
+  border-radius: var(--radius-lg);
+  background: var(--bg-surface);
+  box-shadow: var(--shadow-base);
+}
+
+.login_page-title {
+  font-family: var(--font-heading);
+  font-size: var(--text-2xl);
+  font-weight: var(--weight-semibold);
+  margin-bottom: var(--space-6);
+}
+
+.login_page-form {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.login_page-error {
+  font-size: var(--text-sm);
+  color: var(--intent-critical-strong);
+}
