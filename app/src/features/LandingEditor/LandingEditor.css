@@ -4,6 +4,10 @@
   gap: var(--space-6);
 }
 
+.admin_shell-content:has(.landing_editor) {
+  padding-top: 0;
+}
+
 .landing_editor-toolbar {
   position: sticky;
   top: 0;

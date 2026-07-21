@@ -281,7 +281,6 @@ body {
   overflow-y: auto;
   overscroll-behavior: contain;
   padding: var(--space-6);
-  padding-top: 0;
 }
 
 @media (max-width: 48rem) {
