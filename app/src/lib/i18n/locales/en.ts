@@ -19,7 +19,6 @@ export const en: TranslationSchema = {
     error: 'Error',
   },
   home: {
-    title: 'Welcome',
     greeting: 'Hi, {name}',
     body: 'Pick a section in the sidebar to get started.',
   },

@@ -17,7 +17,6 @@ export type TranslationSchema = {
     error: string
   }
   home: {
-    title: string
     greeting: string
     body: string
   }

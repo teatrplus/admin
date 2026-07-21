@@ -13,7 +13,6 @@
 
 <section class="home_page">
   <div class="home_page-copy">
-    <p class="home_page-eyebrow">{localeCtx.t.home.title}</p>
     <h1 class="home_page-title">{greeting}</h1>
     <p class="home_page-body">{localeCtx.t.home.body}</p>
   </div>
