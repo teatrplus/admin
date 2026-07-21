@@ -3,8 +3,7 @@
 /* The Network Asset Layer. ONLY @font-face rules go here.   */
 /* ========================================================= */
 
-@import '@fontsource-variable/jost/wght.css';
-@import '@fontsource-variable/jost/wght-italic.css';
+@import '@fontsource-variable/geologica/wght.css';
 @import '@fontsource/geist/latin-400.css';
 @import '@fontsource/geist/latin-ext-400.css';
 @import '@fontsource/geist/latin-600.css';
