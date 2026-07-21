@@ -60,6 +60,12 @@ export const ru: TranslationSchema = {
     head: 'Заголовок',
     body: 'Текст',
     caption: 'Подпись',
+    contentLocale: 'Язык контента',
+    contentLocales: {
+      ru: 'RU',
+      en: 'EN',
+      uz: 'UZ',
+    },
     file: 'Файл',
     dropHint: 'Перетащите изображения сюда или нажмите, чтобы выбрать',
     replaceImage: 'Заменить изображение',

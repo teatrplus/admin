@@ -20,6 +20,30 @@
   backdrop-filter: blur(var(--blur-base));
 }
 
+.landing_editor-locale_switch {
+  display: inline-flex;
+  gap: var(--space-1);
+  padding: var(--space-1);
+  border: 1px solid var(--border-base);
+  border-radius: var(--radius-md);
+  background: var(--bg-surface);
+}
+
+.landing_editor-locale_btn {
+  min-width: 2.5rem;
+  padding: 0.375rem var(--space-4);
+  border-radius: calc(var(--radius-md) - 2px);
+  font-size: var(--text-xs);
+  font-weight: var(--weight-semibold);
+  letter-spacing: 0.04em;
+  color: var(--ink-muted);
+}
+
+.landing_editor-locale_btn[data-active='true'] {
+  color: var(--ink-main);
+  background: var(--bg-page);
+}
+
 .landing_editor-eyebrow {
   margin-bottom: var(--space-1);
   font-size: var(--text-xs);

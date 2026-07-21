@@ -10,11 +10,15 @@
   import { useLocale } from '@/lib/i18n/context.svelte'
   import { getCurrentUser } from '@/lib/pocketbase/auth'
   import {
+    CONTENT_LOCALES,
+    emptyGalleryRow,
+    emptyHeadBodyRow,
     landingToForm,
     listManagers,
     loadLanding,
     saveLanding,
     serializeLandingForm,
+    type ContentLocale,
     type GalleryRow,
     type HeadBodyRow,
     type LandingFormState,
@@ -33,9 +37,19 @@
   let form = $state<LandingFormState>(emptyForm)
   let baseline = $state(serializeLandingForm(emptyForm))
   let hydratedScope = $state<SiteScope | null>(null)
+  let contentLocale = $state<ContentLocale>('ru')
 
-  const newRow = (): HeadBodyRow => ({ localId: crypto.randomUUID(), head: '', body: '' })
   const isDirty = $derived(serializeLandingForm(form) !== baseline)
+
+  const headKey = $derived(
+    contentLocale === 'ru' ? 'headRu' : contentLocale === 'en' ? 'headEn' : 'headUz',
+  )
+  const bodyKey = $derived(
+    contentLocale === 'ru' ? 'bodyRu' : contentLocale === 'en' ? 'bodyEn' : 'bodyUz',
+  )
+  const captionKey = $derived(
+    contentLocale === 'ru' ? 'captionRu' : contentLocale === 'en' ? 'captionEn' : 'captionUz',
+  )
 
   const applyForm = (next: LandingFormState) => {
     form = next
@@ -133,10 +147,8 @@
   }
 
   const addGalleryFiles = (files: File[]) => {
-    const rows = files.map(
-      (file): GalleryRow => ({
-        localId: crypto.randomUUID(),
-        caption: '',
+    const rows = files.map((file) =>
+      emptyGalleryRow({
         file,
         previewUrl: URL.createObjectURL(file),
       }),
@@ -174,19 +186,39 @@
 <section class="landing_editor">
   <header class="landing_editor-toolbar">
     <div class="l_container">
-      <div class="l_cluster" data-gap="4" data-justify="between">
+      <div class="l_cluster" data-gap="4" data-justify="between" data-align="center">
         <div class="landing_editor-heading">
           <p class="landing_editor-eyebrow">{localeCtx.t.scopes[scope]}</p>
           <h1 class="landing_editor-title">{localeCtx.t.landing.title}</h1>
         </div>
-        <Button
-          type="submit"
-          form="landing-editor-form"
-          isLoading={saveMutation.isPending}
-          disabled={!isDirty || saveMutation.isPending}
-        >
-          {localeCtx.t.common.save}
-        </Button>
+        <div class="l_cluster" data-gap="3" data-align="center">
+          <div
+            class="landing_editor-locale_switch"
+            role="tablist"
+            aria-label={localeCtx.t.landing.contentLocale}
+          >
+            {#each CONTENT_LOCALES as locale}
+              <button
+                type="button"
+                class="landing_editor-locale_btn u_reset_button"
+                role="tab"
+                aria-selected={contentLocale === locale}
+                data-active={contentLocale === locale ? 'true' : undefined}
+                onclick={() => (contentLocale = locale)}
+              >
+                {localeCtx.t.landing.contentLocales[locale]}
+              </button>
+            {/each}
+          </div>
+          <Button
+            type="submit"
+            form="landing-editor-form"
+            isLoading={saveMutation.isPending}
+            disabled={!isDirty || saveMutation.isPending}
+          >
+            {localeCtx.t.common.save}
+          </Button>
+        </div>
       </div>
     </div>
   </header>
@@ -229,12 +261,16 @@
           {#each form.venueItems as row (row.localId)}
             <div class="landing_editor-item">
               <div class="landing_editor-item_fields">
-                <FormField label={localeCtx.t.landing.head} name={`venue-head-${row.localId}`} bind:value={row.head} />
+                <FormField
+                  label={localeCtx.t.landing.head}
+                  name={`venue-head-${row.localId}-${contentLocale}`}
+                  bind:value={row[headKey]}
+                />
                 <FormField
                   label={localeCtx.t.landing.body}
-                  name={`venue-body-${row.localId}`}
+                  name={`venue-body-${row.localId}-${contentLocale}`}
                   multiline
-                  bind:value={row.body}
+                  bind:value={row[bodyKey]}
                 />
               </div>
               <Button
@@ -257,7 +293,7 @@
               size="sm"
               variant="outline"
               color="contrast"
-              onclick={() => (form.venueItems = [...form.venueItems, newRow()])}
+              onclick={() => (form.venueItems = [...form.venueItems, emptyHeadBodyRow()])}
             >
               {localeCtx.t.landing.addRow}
             </Button>
@@ -269,12 +305,16 @@
           {#each form.advantageItems as row (row.localId)}
             <div class="landing_editor-item">
               <div class="landing_editor-item_fields">
-                <FormField label={localeCtx.t.landing.head} name={`adv-head-${row.localId}`} bind:value={row.head} />
+                <FormField
+                  label={localeCtx.t.landing.head}
+                  name={`adv-head-${row.localId}-${contentLocale}`}
+                  bind:value={row[headKey]}
+                />
                 <FormField
                   label={localeCtx.t.landing.body}
-                  name={`adv-body-${row.localId}`}
+                  name={`adv-body-${row.localId}-${contentLocale}`}
                   multiline
-                  bind:value={row.body}
+                  bind:value={row[bodyKey]}
                 />
               </div>
               <Button
@@ -297,7 +337,7 @@
               variant="outline"
               color="contrast"
               size="sm"
-              onclick={() => (form.advantageItems = [...form.advantageItems, newRow()])}
+              onclick={() => (form.advantageItems = [...form.advantageItems, emptyHeadBodyRow()])}
             >
               {localeCtx.t.landing.addRow}
             </Button>
@@ -309,12 +349,16 @@
           {#each form.processItems as row (row.localId)}
             <div class="landing_editor-item">
               <div class="landing_editor-item_fields">
-                <FormField label={localeCtx.t.landing.head} name={`proc-head-${row.localId}`} bind:value={row.head} />
+                <FormField
+                  label={localeCtx.t.landing.head}
+                  name={`proc-head-${row.localId}-${contentLocale}`}
+                  bind:value={row[headKey]}
+                />
                 <FormField
                   label={localeCtx.t.landing.body}
-                  name={`proc-body-${row.localId}`}
+                  name={`proc-body-${row.localId}-${contentLocale}`}
                   multiline
-                  bind:value={row.body}
+                  bind:value={row[bodyKey]}
                 />
               </div>
               <Button
@@ -337,7 +381,7 @@
               variant="outline"
               color="contrast"
               size="sm"
-              onclick={() => (form.processItems = [...form.processItems, newRow()])}
+              onclick={() => (form.processItems = [...form.processItems, emptyHeadBodyRow()])}
             >
               {localeCtx.t.landing.addRow}
             </Button>
@@ -396,8 +440,8 @@
                 </div>
                 <FormField
                   label={localeCtx.t.landing.caption}
-                  name={`gal-cap-${row.localId}`}
-                  bind:value={row.caption}
+                  name={`gal-cap-${row.localId}-${contentLocale}`}
+                  bind:value={row[captionKey]}
                 />
               </article>
             {/each}

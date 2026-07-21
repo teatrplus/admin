@@ -58,6 +58,12 @@ export type TranslationSchema = {
     head: string
     body: string
     caption: string
+    contentLocale: string
+    contentLocales: {
+      ru: string
+      en: string
+      uz: string
+    }
     file: string
     dropHint: string
     replaceImage: string
