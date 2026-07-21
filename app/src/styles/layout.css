@@ -133,7 +133,7 @@
 /* THE CONTAINER (Macro Page Layout) */
 .l_container {
   width: 100%;
-  max-width: 48rem;
+  max-width: 56rem;
   margin-inline: auto;
 
   /* Responsive macro padding: 16px mobile → 32px desktop */
