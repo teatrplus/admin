@@ -1,10 +1,13 @@
 <script lang="ts">
+  import { createMutation, createQuery, useQueryClient } from '@tanstack/svelte-query'
+  import TrashIcon from '~icons/material-symbols/delete-outline'
   import Button from '@/components/Button/Button.svelte'
   import Checkbox from '@/components/Checkbox/Checkbox.svelte'
   import FormField from '@/components/FormField/FormField.svelte'
-  import StatusBanner from '@/components/StatusBanner/StatusBanner.svelte'
-  import type { SiteScope } from '../../lib/cms/scopes'
-  import { useLocale } from '../../lib/i18n/context.svelte'
+  import MediaDropzone from '@/components/MediaDropzone/MediaDropzone.svelte'
+  import Toast from '@/components/Toast/Toast.svelte'
+  import type { SiteScope } from '@/lib/cms/scopes'
+  import { useLocale } from '@/lib/i18n/context.svelte'
   import {
     landingToForm,
     listManagers,
@@ -13,41 +16,65 @@
     type GalleryRow,
     type HeadBodyRow,
     type LandingFormState,
-  } from '../../lib/pocketbase/landing'
-  import type { StaffRecord } from '../../lib/pocketbase/types'
+    type PendingPartnerFile,
+  } from '@/lib/pocketbase/landing'
+  import type { StaffRecord } from '@/lib/pocketbase/types'
   import './LandingEditor.css'
 
   let { scope }: { scope: SiteScope } = $props()
 
   const localeCtx = useLocale()
+  const queryClient = useQueryClient()
+
   let form = $state<LandingFormState>(landingToForm(null))
-  let managers = $state<StaffRecord[]>([])
-  let loading = $state(true)
-  let saving = $state(false)
-  let message = $state('')
-  let error = $state('')
+  let toastOpen = $state(false)
+  let toastTone = $state<'success' | 'error'>('success')
+  let toastMessage = $state('')
+  let hydratedScope = $state<SiteScope | null>(null)
 
   const newRow = (): HeadBodyRow => ({ localId: crypto.randomUUID(), head: '', body: '' })
-  const newGalleryRow = (): GalleryRow => ({ localId: crypto.randomUUID(), caption: '', file: null })
 
-  const load = async () => {
-    loading = true
-    error = ''
-    try {
+  const landingQuery = createQuery(() => ({
+    queryKey: ['landing', scope],
+    queryFn: async () => {
       const [landing, staff] = await Promise.all([loadLanding(scope), listManagers()])
-      form = landingToForm(landing)
-      managers = staff as StaffRecord[]
-    } catch (loadError) {
-      error = loadError instanceof Error ? loadError.message : localeCtx.t.common.error
-    } finally {
-      loading = false
-    }
-  }
+      return { landing, staff: staff as StaffRecord[] }
+    },
+  }))
 
   $effect(() => {
-    scope
-    void load()
+    const currentScope = scope
+    if (!landingQuery.isSuccess || !landingQuery.data) return
+    if (hydratedScope === currentScope) return
+    form = landingToForm(landingQuery.data.landing)
+    hydratedScope = currentScope
   })
+
+  const saveMutation = createMutation(() => ({
+    mutationFn: () => saveLanding(scope, form),
+    onSuccess: (saved) => {
+      form = landingToForm(saved)
+      queryClient.setQueryData(['landing', scope], (current: { landing: unknown; staff: StaffRecord[] } | undefined) =>
+        current ? { ...current, landing: saved } : { landing: saved, staff: [] },
+      )
+      toastTone = 'success'
+      toastMessage = localeCtx.t.common.saved
+      toastOpen = true
+    },
+    onError: (saveError) => {
+      toastTone = 'error'
+      toastMessage = saveError instanceof Error ? saveError.message : localeCtx.t.common.error
+      toastOpen = true
+    },
+  }))
+
+  const managers = $derived(landingQuery.data?.staff ?? [])
+  const managerOptions = $derived(
+    managers.map((manager) => ({
+      value: manager.id,
+      label: manager.name || manager.email,
+    })),
+  )
 
   const removeHeadBodyRow = (
     key: 'venueItems' | 'advantageItems' | 'processItems',
@@ -60,272 +87,368 @@
     form[key] = form[key].filter((item) => item.localId !== row.localId)
   }
 
+  const revokePreview = (url?: string) => {
+    if (url?.startsWith('blob:')) URL.revokeObjectURL(url)
+  }
+
   const removeGalleryRow = (row: GalleryRow) => {
+    revokePreview(row.previewUrl)
     if (row.id) {
       form.removedGalleryIds = [...form.removedGalleryIds, row.id]
     }
     form.galleryItems = form.galleryItems.filter((item) => item.localId !== row.localId)
   }
 
-  const onPartnerFiles = (event: Event) => {
-    const input = event.currentTarget as HTMLInputElement
-    form.partnerFiles = input.files ? [...input.files] : []
+  const setGalleryFile = (row: GalleryRow, file: File) => {
+    revokePreview(row.previewUrl)
+    row.file = file
+    row.previewUrl = URL.createObjectURL(file)
   }
 
-  const submit = async (event: SubmitEvent) => {
+  const addGalleryFiles = (files: File[]) => {
+    const rows = files.map(
+      (file): GalleryRow => ({
+        localId: crypto.randomUUID(),
+        caption: '',
+        file,
+        previewUrl: URL.createObjectURL(file),
+      }),
+    )
+    form.galleryItems = [...form.galleryItems, ...rows]
+  }
+
+  const removeExistingPartner = (name: string) => {
+    form.existingPartners = form.existingPartners.filter((partner) => partner.name !== name)
+  }
+
+  const removePendingPartner = (localId: string) => {
+    const pending = form.partnerFiles.find((item) => item.localId === localId)
+    revokePreview(pending?.previewUrl)
+    form.partnerFiles = form.partnerFiles.filter((item) => item.localId !== localId)
+  }
+
+  const addPartnerFiles = (files: File[]) => {
+    const pending = files.map(
+      (file): PendingPartnerFile => ({
+        localId: crypto.randomUUID(),
+        file,
+        previewUrl: URL.createObjectURL(file),
+      }),
+    )
+    form.partnerFiles = [...form.partnerFiles, ...pending]
+  }
+
+  const submit = (event: SubmitEvent) => {
     event.preventDefault()
-    saving = true
-    message = ''
-    error = ''
-    try {
-      const saved = await saveLanding(scope, form)
-      form = landingToForm(saved)
-      message = localeCtx.t.common.saved
-    } catch (saveError) {
-      error = saveError instanceof Error ? saveError.message : localeCtx.t.common.error
-    } finally {
-      saving = false
-    }
+    saveMutation.mutate()
   }
-
-  const managerOptions = $derived(
-    managers.map((manager) => ({
-      value: manager.id,
-      label: manager.name || manager.email,
-    })),
-  )
 </script>
 
 <section class="landing_editor">
-  <h1 class="landing_editor-title">
-    {localeCtx.t.scopes[scope]} · {localeCtx.t.landing.title}
-  </h1>
-
-  {#if loading}
-    <p>{localeCtx.t.common.loading}</p>
-  {:else}
-    <form class="l_stack" data-gap="6" onsubmit={submit}>
-      {#if message}
-        <StatusBanner tone="success">{message}</StatusBanner>
-      {/if}
-      {#if error}
-        <StatusBanner tone="error">{error}</StatusBanner>
-      {/if}
-
-      <section class="landing_editor-section">
-        <h2 class="landing_editor-section_title">{localeCtx.t.landing.general}</h2>
-        <div class="l_stack" data-gap="4">
-          <FormField
-            label={localeCtx.t.landing.headerPhoneNumber}
-            name="headerPhoneNumber"
-            bind:value={form.headerPhoneNumber}
-          />
-          <FormField
-            label={localeCtx.t.landing.telegramManagerUrl}
-            name="telegramManagerUrl"
-            bind:value={form.telegramManagerUrl}
-          />
-          <FormField
-            label={localeCtx.t.landing.presentationUrl}
-            name="presentationUrl"
-            bind:value={form.presentationUrl}
-          />
+  <header class="landing_editor-toolbar">
+    <div class="l_container">
+      <div class="l_cluster" data-gap="4" data-justify="between">
+        <div class="landing_editor-heading">
+          <p class="landing_editor-eyebrow">{localeCtx.t.scopes[scope]}</p>
+          <h1 class="landing_editor-title">{localeCtx.t.landing.title}</h1>
         </div>
-      </section>
-
-      <section class="landing_editor-section">
-        <h2 class="landing_editor-section_title">{localeCtx.t.landing.venues}</h2>
-        <div class="l_stack" data-gap="4">
-          {#each form.venueItems as row (row.localId)}
-            <div class="landing_editor-row l_stack" data-gap="3">
-              <FormField label={localeCtx.t.landing.head} name={`venue-head-${row.localId}`} bind:value={row.head} />
-              <FormField
-                label={localeCtx.t.landing.body}
-                name={`venue-body-${row.localId}`}
-                multiline
-                bind:value={row.body}
-              />
-              <div class="landing_editor-row_actions">
-                <Button
-                  type="button"
-                  variant="ghost"
-                  color="neutral"
-                  size="sm"
-                  onclick={() => removeHeadBodyRow('venueItems', 'removedVenueIds', row)}
-                >
-                  {localeCtx.t.landing.removeRow}
-                </Button>
-              </div>
-            </div>
-          {/each}
-          <Button type="button" color="neutral" onclick={() => (form.venueItems = [...form.venueItems, newRow()])}>
-            {localeCtx.t.landing.addRow}
-          </Button>
-        </div>
-      </section>
-
-      <section class="landing_editor-section">
-        <h2 class="landing_editor-section_title">{localeCtx.t.landing.advantages}</h2>
-        <div class="l_stack" data-gap="4">
-          {#each form.advantageItems as row (row.localId)}
-            <div class="landing_editor-row l_stack" data-gap="3">
-              <FormField label={localeCtx.t.landing.head} name={`adv-head-${row.localId}`} bind:value={row.head} />
-              <FormField
-                label={localeCtx.t.landing.body}
-                name={`adv-body-${row.localId}`}
-                multiline
-                bind:value={row.body}
-              />
-              <div class="landing_editor-row_actions">
-                <Button
-                  type="button"
-                  variant="ghost"
-                  color="neutral"
-                  size="sm"
-                  onclick={() => removeHeadBodyRow('advantageItems', 'removedAdvantageIds', row)}
-                >
-                  {localeCtx.t.landing.removeRow}
-                </Button>
-              </div>
-            </div>
-          {/each}
-          <Button
-            type="button"
-            color="neutral"
-            onclick={() => (form.advantageItems = [...form.advantageItems, newRow()])}
-          >
-            {localeCtx.t.landing.addRow}
-          </Button>
-        </div>
-      </section>
-
-      <section class="landing_editor-section">
-        <h2 class="landing_editor-section_title">{localeCtx.t.landing.process}</h2>
-        <div class="l_stack" data-gap="4">
-          {#each form.processItems as row (row.localId)}
-            <div class="landing_editor-row l_stack" data-gap="3">
-              <FormField label={localeCtx.t.landing.head} name={`proc-head-${row.localId}`} bind:value={row.head} />
-              <FormField
-                label={localeCtx.t.landing.body}
-                name={`proc-body-${row.localId}`}
-                multiline
-                bind:value={row.body}
-              />
-              <div class="landing_editor-row_actions">
-                <Button
-                  type="button"
-                  variant="ghost"
-                  color="neutral"
-                  size="sm"
-                  onclick={() => removeHeadBodyRow('processItems', 'removedProcessIds', row)}
-                >
-                  {localeCtx.t.landing.removeRow}
-                </Button>
-              </div>
-            </div>
-          {/each}
-          <Button
-            type="button"
-            color="neutral"
-            onclick={() => (form.processItems = [...form.processItems, newRow()])}
-          >
-            {localeCtx.t.landing.addRow}
-          </Button>
-        </div>
-      </section>
-
-      <section class="landing_editor-section">
-        <h2 class="landing_editor-section_title">{localeCtx.t.landing.gallery}</h2>
-        <div class="l_stack" data-gap="4">
-          {#each form.galleryItems as row (row.localId)}
-            <div class="landing_editor-row l_stack" data-gap="3">
-              <FormField label={localeCtx.t.landing.caption} name={`gal-cap-${row.localId}`} bind:value={row.caption} />
-              <FormField label={localeCtx.t.landing.file} name={`gal-file-${row.localId}`} type="file">
-                {#snippet input()}
-                  <input
-                    class="form_field-control"
-                    id={`gal-file-${row.localId}`}
-                    name={`gal-file-${row.localId}`}
-                    type="file"
-                    accept="image/*"
-                    onchange={(event) => {
-                      const file = (event.currentTarget as HTMLInputElement).files?.[0] ?? null
-                      row.file = file
-                    }}
-                  />
-                  {#if row.existingFile}
-                    <p class="form_field-hint">{row.existingFile}</p>
-                  {/if}
-                {/snippet}
-              </FormField>
-              <div class="landing_editor-row_actions">
-                <Button type="button" variant="ghost" color="neutral" size="sm" onclick={() => removeGalleryRow(row)}>
-                  {localeCtx.t.landing.removeRow}
-                </Button>
-              </div>
-            </div>
-          {/each}
-          <Button
-            type="button"
-            color="neutral"
-            onclick={() => (form.galleryItems = [...form.galleryItems, newGalleryRow()])}
-          >
-            {localeCtx.t.landing.addRow}
-          </Button>
-        </div>
-      </section>
-
-      <section class="landing_editor-section">
-        <h2 class="landing_editor-section_title">{localeCtx.t.landing.partners}</h2>
-        <div class="l_stack" data-gap="3">
-          {#if form.existingPartners.length}
-            <div class="landing_editor-partners_list">
-              {#each form.existingPartners as partner}
-                <span>{partner}</span>
-              {/each}
-            </div>
-          {/if}
-          <FormField label={localeCtx.t.landing.file} name="partners" type="file">
-            {#snippet input()}
-              <input
-                class="form_field-control"
-                id="partners"
-                name="partners"
-                type="file"
-                accept="image/*"
-                multiple
-                onchange={onPartnerFiles}
-              />
-            {/snippet}
-          </FormField>
-        </div>
-      </section>
-
-      <section class="landing_editor-section">
-        <h2 class="landing_editor-section_title">{localeCtx.t.landing.contacts}</h2>
-        <fieldset class="landing_editor-checkbox_list">
-          <legend>{localeCtx.t.landing.contactManagers}</legend>
-          {#each managerOptions as option}
-            <Checkbox
-              label={option.label}
-              checked={form.contactManagerIds.includes(option.value)}
-              onCheckedChange={(checked) => {
-                if (checked) {
-                  form.contactManagerIds = [...form.contactManagerIds, option.value]
-                } else {
-                  form.contactManagerIds = form.contactManagerIds.filter((id) => id !== option.value)
-                }
-              }}
-            />
-          {/each}
-        </fieldset>
-      </section>
-
-      <div class="landing_editor-actions">
-        <Button type="submit" isLoading={saving}>
+        <Button type="submit" form="landing-editor-form" isLoading={saveMutation.isPending}>
           {localeCtx.t.common.save}
         </Button>
       </div>
-    </form>
-  {/if}
+    </div>
+  </header>
+  <div class="l_container">
+    {#if landingQuery.isPending}
+      <p class="landing_editor-status">{localeCtx.t.common.loading}</p>
+    {:else if landingQuery.isError}
+      <p class="landing_editor-status" data-tone="error">
+        {landingQuery.error instanceof Error ? landingQuery.error.message : localeCtx.t.common.error}
+      </p>
+    {:else}
+      <form id="landing-editor-form" class="landing_editor-form" onsubmit={submit}>
+        <section class="landing_editor-section">
+          <h2 class="landing_editor-section_title">{localeCtx.t.landing.general}</h2>
+          <div class="landing_editor-grid">
+            <FormField
+              label={localeCtx.t.landing.headerPhoneNumber}
+              name="headerPhoneNumber"
+              bind:value={form.headerPhoneNumber}
+            />
+            <FormField
+              label={localeCtx.t.landing.telegramManagerUrl}
+              name="telegramManagerUrl"
+              bind:value={form.telegramManagerUrl}
+            />
+            <FormField
+              label={localeCtx.t.landing.presentationUrl}
+              name="presentationUrl"
+              bind:value={form.presentationUrl}
+            />
+          </div>
+        </section>
+
+        <section class="landing_editor-section">
+          <h2 class="landing_editor-section_title">{localeCtx.t.landing.venues}</h2>
+          {#each form.venueItems as row (row.localId)}
+            <div class="landing_editor-item">
+              <div class="landing_editor-item_fields">
+                <FormField label={localeCtx.t.landing.head} name={`venue-head-${row.localId}`} bind:value={row.head} />
+                <FormField
+                  label={localeCtx.t.landing.body}
+                  name={`venue-body-${row.localId}`}
+                  multiline
+                  bind:value={row.body}
+                />
+              </div>
+              <Button
+                class="landing_editor-delete_btn"
+                type="button"
+                variant="ghost"
+                color="danger"
+                shape="square"
+                title={localeCtx.t.landing.removeRow}
+                aria-label={localeCtx.t.landing.removeRow}
+                onclick={() => removeHeadBodyRow('venueItems', 'removedVenueIds', row)}
+              >
+                <TrashIcon />
+              </Button>
+            </div>
+          {/each}
+          <div class="landing_editor-add">
+            <Button
+              type="button"
+              size="sm"
+              variant="outline"
+              color="contrast"
+              onclick={() => (form.venueItems = [...form.venueItems, newRow()])}
+            >
+              {localeCtx.t.landing.addRow}
+            </Button>
+          </div>
+        </section>
+
+        <section class="landing_editor-section">
+          <h2 class="landing_editor-section_title">{localeCtx.t.landing.advantages}</h2>
+          {#each form.advantageItems as row (row.localId)}
+            <div class="landing_editor-item">
+              <div class="landing_editor-item_fields">
+                <FormField label={localeCtx.t.landing.head} name={`adv-head-${row.localId}`} bind:value={row.head} />
+                <FormField
+                  label={localeCtx.t.landing.body}
+                  name={`adv-body-${row.localId}`}
+                  multiline
+                  bind:value={row.body}
+                />
+              </div>
+              <Button
+                class="landing_editor-delete_btn"
+                type="button"
+                variant="ghost"
+                color="danger"
+                shape="square"
+                title={localeCtx.t.landing.removeRow}
+                aria-label={localeCtx.t.landing.removeRow}
+                onclick={() => removeHeadBodyRow('advantageItems', 'removedAdvantageIds', row)}
+              >
+                <TrashIcon />
+              </Button>
+            </div>
+          {/each}
+          <div class="landing_editor-add">
+            <Button
+              type="button"
+              variant="outline"
+              color="contrast"
+              size="sm"
+              onclick={() => (form.advantageItems = [...form.advantageItems, newRow()])}
+            >
+              {localeCtx.t.landing.addRow}
+            </Button>
+          </div>
+        </section>
+
+        <section class="landing_editor-section">
+          <h2 class="landing_editor-section_title">{localeCtx.t.landing.process}</h2>
+          {#each form.processItems as row (row.localId)}
+            <div class="landing_editor-item">
+              <div class="landing_editor-item_fields">
+                <FormField label={localeCtx.t.landing.head} name={`proc-head-${row.localId}`} bind:value={row.head} />
+                <FormField
+                  label={localeCtx.t.landing.body}
+                  name={`proc-body-${row.localId}`}
+                  multiline
+                  bind:value={row.body}
+                />
+              </div>
+              <Button
+                class="landing_editor-delete_btn"
+                type="button"
+                variant="ghost"
+                color="danger"
+                shape="square"
+                title={localeCtx.t.landing.removeRow}
+                aria-label={localeCtx.t.landing.removeRow}
+                onclick={() => removeHeadBodyRow('processItems', 'removedProcessIds', row)}
+              >
+                <TrashIcon />
+              </Button>
+            </div>
+          {/each}
+          <div class="landing_editor-add">
+            <Button
+              type="button"
+              variant="outline"
+              color="contrast"
+              size="sm"
+              onclick={() => (form.processItems = [...form.processItems, newRow()])}
+            >
+              {localeCtx.t.landing.addRow}
+            </Button>
+          </div>
+        </section>
+
+        <section class="landing_editor-section">
+          <h2 class="landing_editor-section_title">{localeCtx.t.landing.gallery}</h2>
+          <div class="landing_editor-media_grid">
+            {#each form.galleryItems as row (row.localId)}
+              <article class="landing_editor-media_card">
+                <div class="landing_editor-media_preview">
+                  {#if row.previewUrl}
+                    <img class="landing_editor-media_image" src={row.previewUrl} alt="" />
+                  {:else}
+                    <span class="landing_editor-media_empty">{localeCtx.t.landing.file}</span>
+                  {/if}
+                  <div class="landing_editor-media_actions">
+                    <Button
+                      type="button"
+                      variant="outline"
+                      color="contrast"
+                      size="sm"
+                      onclick={() => {
+                        const input = document.getElementById(`gal-replace-${row.localId}`) as HTMLInputElement | null
+                        input?.click()
+                      }}
+                    >
+                      {localeCtx.t.landing.replaceImage}
+                    </Button>
+                    <Button
+                      class="landing_editor-delete_btn"
+                      type="button"
+                      variant="ghost"
+                      color="danger"
+                      shape="square"
+                      title={localeCtx.t.landing.deleteImage}
+                      aria-label={localeCtx.t.landing.deleteImage}
+                      onclick={() => removeGalleryRow(row)}
+                    >
+                      <TrashIcon />
+                    </Button>
+                  </div>
+                  <input
+                    id={`gal-replace-${row.localId}`}
+                    class="u_sr_only"
+                    type="file"
+                    accept="image/*"
+                    onchange={(event) => {
+                      const file = (event.currentTarget as HTMLInputElement).files?.[0]
+                      if (file) setGalleryFile(row, file)
+                      ;(event.currentTarget as HTMLInputElement).value = ''
+                    }}
+                  />
+                </div>
+                <FormField
+                  label={localeCtx.t.landing.caption}
+                  name={`gal-cap-${row.localId}`}
+                  bind:value={row.caption}
+                />
+              </article>
+            {/each}
+          </div>
+          <MediaDropzone
+            label={localeCtx.t.landing.dropHint}
+            hint={localeCtx.t.landing.gallery}
+            multiple
+            onFiles={addGalleryFiles}
+          />
+        </section>
+
+        <section class="landing_editor-section">
+          <h2 class="landing_editor-section_title">{localeCtx.t.landing.partners}</h2>
+          <div class="landing_editor-media_grid" data-size="sm">
+            {#each form.existingPartners as partner (partner.name)}
+              <article class="landing_editor-media_card" data-size="sm">
+                <div class="landing_editor-media_preview">
+                  <img class="landing_editor-media_image" src={partner.url} alt="" />
+                  <div class="landing_editor-media_actions">
+                    <Button
+                      class="landing_editor-delete_btn"
+                      type="button"
+                      color="danger"
+                      size="sm"
+                      shape="square"
+                      title={localeCtx.t.landing.deleteImage}
+                      aria-label={localeCtx.t.landing.deleteImage}
+                      onclick={() => removeExistingPartner(partner.name)}
+                    >
+                      <TrashIcon />
+                    </Button>
+                  </div>
+                </div>
+              </article>
+            {/each}
+            {#each form.partnerFiles as pending (pending.localId)}
+              <article class="landing_editor-media_card" data-size="sm">
+                <div class="landing_editor-media_preview">
+                  <img class="landing_editor-media_image" src={pending.previewUrl} alt="" />
+                  <div class="landing_editor-media_actions">
+                    <Button
+                      class="landing_editor-delete_btn"
+                      type="button"
+                      size="sm"
+                      color="danger"
+                      shape="square"
+                      title={localeCtx.t.landing.deleteImage}
+                      aria-label={localeCtx.t.landing.deleteImage}
+                      onclick={() => removePendingPartner(pending.localId)}
+                    >
+                      <TrashIcon />
+                    </Button>
+                  </div>
+                </div>
+              </article>
+            {/each}
+          </div>
+          <MediaDropzone
+            label={localeCtx.t.landing.dropHint}
+            hint={localeCtx.t.landing.partners}
+            multiple
+            onFiles={addPartnerFiles}
+          />
+        </section>
+
+        <section class="landing_editor-section">
+          <h2 class="landing_editor-section_title">{localeCtx.t.landing.contacts}</h2>
+          <fieldset class="landing_editor-checkbox_list">
+            <legend class="u_sr_only">{localeCtx.t.landing.contactManagers}</legend>
+            {#each managerOptions as option}
+              <Checkbox
+                label={option.label}
+                checked={form.contactManagerIds.includes(option.value)}
+                onCheckedChange={(checked) => {
+                  if (checked) {
+                    form.contactManagerIds = [...form.contactManagerIds, option.value]
+                  } else {
+                    form.contactManagerIds = form.contactManagerIds.filter((id) => id !== option.value)
+                  }
+                }}
+              />
+            {/each}
+          </fieldset>
+        </section>
+      </form>
+    {/if}
+  </div>
 </section>
+
+<Toast bind:open={toastOpen} tone={toastTone}>{toastMessage}</Toast>

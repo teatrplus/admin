@@ -21,7 +21,7 @@
 }
 
 [data-theme='light'] .form_field-control {
-  background-color: var(--bg-page);
+  background-color: var(--bg-surface);
 }
 
 .form_field-control:focus {

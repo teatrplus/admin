@@ -60,9 +60,12 @@ export const en: TranslationSchema = {
     body: 'Body',
     caption: 'Caption',
     file: 'File',
+    dropHint: 'Drop images here or click to browse',
+    replaceImage: 'Replace image',
     contactManagers: 'Contact managers',
     addRow: 'Add row',
-    removeRow: 'Remove row',
+    removeRow: 'Remove',
+    deleteImage: 'Remove image',
   },
   requests: {
     title: 'Requests',

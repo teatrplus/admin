@@ -81,6 +81,10 @@
   /* ================== */
   /* THE VARIANTS       */
   /* ================== */
+  :where([data-theme='dark']) &:where([data-variant='solid']) {
+    --c-btn-text: var(--ink-main);
+  }
+
   &:where([data-variant='solid']) {
     color: var(--c-btn-text);
     box-shadow: var(--shadow-close);

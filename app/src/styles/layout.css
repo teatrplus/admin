@@ -133,8 +133,7 @@
 /* THE CONTAINER (Macro Page Layout) */
 .l_container {
   width: 100%;
-  /* Default max-width for standard landing pages */
-  max-width: 32rem;
+  max-width: 48rem;
   margin-inline: auto;
 
   /* Responsive macro padding: 16px mobile → 32px desktop */

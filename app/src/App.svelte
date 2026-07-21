@@ -1,6 +1,8 @@
 <script lang="ts">
+  import { QueryClientProvider } from '@tanstack/svelte-query'
   import { pb } from './lib/pocketbase/client'
   import { initLocaleContext } from './lib/i18n/context.svelte'
+  import { queryClient } from './lib/query/client'
   import { navigate, resolveGuardedRoute, type AppRoute } from './lib/router'
   import AdminShell from './features/AdminShell/AdminShell.svelte'
   import ForbiddenPage from './features/ForbiddenPage/ForbiddenPage.svelte'
@@ -45,30 +47,32 @@
   })
 </script>
 
-{#if !authed || route === '/login'}
-  <LoginPage />
-{:else if route === '/'}
-  <AdminShell>
-    <HomePage />
-  </AdminShell>
-{:else if route === '/forbidden'}
-  <AdminShell>
-    <ForbiddenPage />
-  </AdminShell>
-{:else if route === '/staff'}
-  <AdminShell>
-    <StaffManager />
-  </AdminShell>
-{:else if route === '/space/landing'}
-  <AdminShell>
-    <LandingEditor scope="space" />
-  </AdminShell>
-{:else if route === '/space/requests'}
-  <AdminShell>
-    <RequestsBoard scope="space" />
-  </AdminShell>
-{:else}
-  <AdminShell>
-    <ForbiddenPage />
-  </AdminShell>
-{/if}
+<QueryClientProvider client={queryClient}>
+  {#if !authed || route === '/login'}
+    <LoginPage />
+  {:else if route === '/'}
+    <AdminShell>
+      <HomePage />
+    </AdminShell>
+  {:else if route === '/forbidden'}
+    <AdminShell>
+      <ForbiddenPage />
+    </AdminShell>
+  {:else if route === '/staff'}
+    <AdminShell>
+      <StaffManager />
+    </AdminShell>
+  {:else if route === '/space/landing'}
+    <AdminShell>
+      <LandingEditor scope="space" />
+    </AdminShell>
+  {:else if route === '/space/requests'}
+    <AdminShell>
+      <RequestsBoard scope="space" />
+    </AdminShell>
+  {:else}
+    <AdminShell>
+      <ForbiddenPage />
+    </AdminShell>
+  {/if}
+</QueryClientProvider>

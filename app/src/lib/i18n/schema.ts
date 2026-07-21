@@ -58,9 +58,12 @@ export type TranslationSchema = {
     body: string
     caption: string
     file: string
+    dropHint: string
+    replaceImage: string
     contactManagers: string
     addRow: string
     removeRow: string
+    deleteImage: string
   }
   requests: {
     title: string
