@@ -11,6 +11,7 @@ export type TranslationSchema = {
     forbiddenBody: string
     backHome: string
     language: string
+    toggleTheme: string
     saved: string
     error: string
   }

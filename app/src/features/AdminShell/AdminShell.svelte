@@ -2,6 +2,7 @@
   import type { Snippet } from 'svelte'
   import NavIcon from '@/components/NavIcon/NavIcon.svelte'
   import RawSvg from '@/components/RawSvg/RawSvg.svelte'
+  import ThemeToggle from '@/components/ThemeToggle/ThemeToggle.svelte'
   import '@/components/RawSvg/RawSvg.css'
   import { LOCALES, LOCALE_LABELS } from '@/lib/i18n/config'
   import { useLocale } from '@/lib/i18n/context.svelte'
@@ -104,6 +105,7 @@
     <header class="admin_shell-header">
       <div class="admin_shell-user">{user?.name || user?.email}</div>
       <div class="admin_shell-header_actions">
+        <ThemeToggle />
         <label class="u_sr_only" for="locale-select">{localeCtx.t.common.language}</label>
         <div class="admin_shell-header_button">
           <NavIcon name="language" label={localeCtx.t.common.language} size={18} />

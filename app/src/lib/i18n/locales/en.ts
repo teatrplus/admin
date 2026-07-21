@@ -13,6 +13,7 @@ export const en: TranslationSchema = {
     forbiddenBody: 'Your account does not have permission to view this page.',
     backHome: 'Go home',
     language: 'Language',
+    toggleTheme: 'Toggle theme',
     saved: 'Saved',
     error: 'Error',
   },

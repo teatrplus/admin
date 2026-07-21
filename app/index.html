@@ -1,6 +1,25 @@
 <!doctype html>
-<html lang="en" data-theme="light">
+<html lang="en">
   <head>
+    <script>
+      ;(function () {
+        var storageKey = 'theaterplus.admin.theme'
+        var stored
+        try {
+          stored = localStorage.getItem(storageKey)
+        } catch (e) {
+          stored = null
+        }
+        var preference = stored === 'light' || stored === 'dark' || stored === 'auto' ? stored : 'auto'
+        var theme =
+          preference === 'auto'
+            ? window.matchMedia('(prefers-color-scheme: dark)').matches
+              ? 'dark'
+              : 'light'
+            : preference
+        document.documentElement.setAttribute('data-theme', theme)
+      })()
+    </script>
     <meta charset="UTF-8" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" sizes="any" />
     <link rel="icon" type="image/png" sizes="48x48" href="/icon-48.png" />
@@ -13,6 +32,7 @@
     <link rel="manifest" href="/manifest.json" />
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta id="meta-theme-color" name="theme-color" content="#f9f8f5" />
     <title>Theater+ Admin</title>
   </head>
   <body>

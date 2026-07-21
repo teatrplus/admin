@@ -13,6 +13,7 @@ export const ru: TranslationSchema = {
     forbiddenBody: 'У вашей учётной записи нет прав для этой страницы.',
     backHome: 'На главную',
     language: 'Язык',
+    toggleTheme: 'Переключить тему',
     saved: 'Сохранено',
     error: 'Ошибка',
   },
