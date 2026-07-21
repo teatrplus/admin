@@ -2,7 +2,7 @@ import type { TranslationSchema } from '../schema'
 
 export const en: TranslationSchema = {
   common: {
-    appName: 'Theater+ CMS',
+    appName: 'Theater+ Admin',
     save: 'Save',
     cancel: 'Cancel',
     add: 'Add',
@@ -28,7 +28,7 @@ export const en: TranslationSchema = {
     theater: 'Theater',
   },
   auth: {
-    title: 'CMS sign in',
+    title: 'Theater+ Admin',
     email: 'Email',
     password: 'Password',
     submit: 'Sign in',
