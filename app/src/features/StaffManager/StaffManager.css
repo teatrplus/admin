@@ -1,32 +1,129 @@
-.staff_manager-title {
-  font-family: var(--font-heading);
-  font-size: var(--text-3xl);
-  font-weight: var(--weight-semibold);
-  margin-bottom: var(--space-6);
-}
-
-.staff_manager-grid {
-  display: grid;
-  grid-template-columns: minmax(0, 22rem) minmax(0, 1fr);
+.staff_manager {
+  display: flex;
+  flex-direction: column;
   gap: var(--space-6);
 }
 
-.staff_manager-panel {
-  padding: var(--space-5);
-  border: 1px solid var(--border-base);
-  border-radius: var(--radius-lg);
-  background: var(--bg-surface);
+.admin_shell-content:has(.staff_manager) {
+  padding-top: 0;
 }
 
-.staff_manager-panel_title {
-  font-size: var(--text-lg);
+.staff_manager-toolbar {
+  position: sticky;
+  top: 0;
+  z-index: var(--z-pinned);
+  margin-inline: calc(var(--space-6) * -1);
+  margin-block-start: calc(var(--space-6) * -1);
+  padding: var(--space-4) var(--space-6);
+  border-bottom: 1px solid var(--border-base);
+  background: color-mix(in srgb, var(--bg-page), transparent 60%);
+  backdrop-filter: blur(var(--blur-base));
+}
+
+.staff_manager-eyebrow {
+  margin-bottom: var(--space-1);
+  font-size: var(--text-xs);
+  font-weight: var(--weight-medium);
+  color: var(--ink-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.staff_manager-title {
+  margin: 0;
+  font-family: var(--font-heading);
+  font-size: var(--text-2xl);
   font-weight: var(--weight-semibold);
-  margin-bottom: var(--space-4);
+  line-height: var(--leading-tight);
+}
+
+.staff_manager-status {
+  padding-block: var(--space-10);
+  color: var(--ink-muted);
+}
+
+.staff_manager-status[data-tone='error'] {
+  color: var(--intent-critical-strong);
+}
+
+.staff_manager-body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+  padding-block: var(--space-10);
+}
+
+.staff_manager-section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  padding-block: var(--space-2);
+  padding-inline: var(--space-6);
+  border-left: 1px solid var(--border-base);
+}
+
+.staff_manager-section_title {
+  margin: 0;
+  font-size: var(--text-sm);
+  font-weight: var(--weight-semibold);
+  color: var(--ink-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
 }
 
 .staff_manager-form {
   display: grid;
-  gap: var(--space-4);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-3) var(--space-4);
+  align-items: start;
+}
+
+.staff_manager-scope_list {
+  display: grid;
+  gap: var(--space-2);
+  border: 0;
+  padding: 0;
+  margin: 0;
+  grid-column: span 2;
+}
+
+.staff_manager-scope_label {
+  margin: 0;
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  color: var(--ink-main);
+}
+
+.staff_manager-scope_options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3) var(--space-5);
+}
+
+.staff_manager-form_actions {
+  display: flex;
+  align-items: end;
+  justify-content: end;
+  min-height: 100%;
+  padding-block-end: 0.125rem;
+}
+
+@media (max-width: 48rem) {
+  .staff_manager-form {
+    grid-template-columns: 1fr;
+  }
+
+  .staff_manager-scope_list {
+    grid-column: auto;
+  }
+
+  .staff_manager-form_actions {
+    justify-content: start;
+  }
+}
+
+.staff_manager-table_wrap {
+  overflow-x: auto;
 }
 
 .staff_manager-table {
@@ -37,27 +134,23 @@
 
 .staff_manager-table th,
 .staff_manager-table td {
-  padding: var(--space-3);
+  padding: var(--space-3) 0;
   border-bottom: 1px solid var(--border-base);
   text-align: left;
 }
 
-.staff_manager-scope_list {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-3);
-  border: 0;
-  padding: 0;
+.staff_manager-table th {
+  font-size: var(--text-xs);
+  font-weight: var(--weight-semibold);
+  color: var(--ink-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
 }
 
-.staff_manager-scope_list legend {
-  margin-bottom: var(--space-2);
-  font-size: var(--text-sm);
-  font-weight: var(--weight-medium);
+.staff_manager-table td {
+  color: var(--ink-main);
 }
 
-@media (max-width: 56rem) {
-  .staff_manager-grid {
-    grid-template-columns: 1fr;
-  }
+.staff_manager-table tbody tr:last-child td {
+  border-bottom: 0;
 }

@@ -1,18 +1,20 @@
 <script lang="ts">
+  import { createMutation, createQuery, useQueryClient } from '@tanstack/svelte-query'
   import * as v from 'valibot'
   import Button from '@/components/Button/Button.svelte'
   import Checkbox from '@/components/Checkbox/Checkbox.svelte'
   import FormField from '@/components/FormField/FormField.svelte'
   import Select from '@/components/Select/Select.svelte'
-  import StatusBanner from '@/components/StatusBanner/StatusBanner.svelte'
-  import { createFormState } from '../../lib/forms/form-state.svelte'
-  import { useLocale } from '../../lib/i18n/context.svelte'
-  import { normalizeRole } from '../../lib/pocketbase/auth'
-  import { createStaff, listStaff } from '../../lib/pocketbase/staff-api'
-  import type { StaffRecord, StaffRole, StaffScope } from '../../lib/pocketbase/types'
+  import { createFormState } from '@/lib/forms/form-state.svelte'
+  import { useLocale } from '@/lib/i18n/context.svelte'
+  import { normalizeRole } from '@/lib/pocketbase/auth'
+  import { createStaff, listStaff } from '@/lib/pocketbase/staff-api'
+  import type { StaffRole, StaffScope } from '@/lib/pocketbase/types'
+  import { pushToast } from '@/stores/toastStore.svelte'
   import './StaffManager.css'
 
   const localeCtx = useLocale()
+  const queryClient = useQueryClient()
 
   const schema = v.pipe(
     v.object({
@@ -54,12 +56,6 @@
     scopeSpace: true,
   })
 
-  let staff = $state<StaffRecord[]>([])
-  let loading = $state(true)
-  let saving = $state(false)
-  let message = $state('')
-  let error = $state('')
-
   const roleOptions = $derived(
     (['admin', 'moderator', 'manager'] as StaffRole[]).map((role) => ({
       value: role,
@@ -67,56 +63,47 @@
     })),
   )
 
-  const load = async () => {
-    loading = true
-    error = ''
-    try {
-      staff = await listStaff()
-    } catch (loadError) {
-      error = loadError instanceof Error ? loadError.message : localeCtx.t.common.error
-    } finally {
-      loading = false
-    }
-  }
+  const staffQuery = createQuery(() => ({
+    queryKey: ['staff'],
+    queryFn: () => listStaff(),
+  }))
 
-  $effect(() => {
-    void load()
-  })
+  const createStaffMutation = createMutation(() => ({
+    mutationFn: async () => {
+      const scopes: StaffScope[] = []
+      if (form.values.scopeTheater) scopes.push('theater')
+      if (form.values.scopeSpace) scopes.push('space')
 
-  const submit = async (event: SubmitEvent) => {
-    event.preventDefault()
-    message = ''
-    error = ''
+      const formData = new FormData()
+      formData.set('email', form.values.email)
+      formData.set('password', form.values.password)
+      formData.set('passwordConfirm', form.values.passwordConfirm)
+      formData.set('name', form.values.name)
+      formData.set('phoneNumber', form.values.phoneNumber)
+      formData.set('role', form.values.role)
+      for (const scopeValue of scopes) {
+        formData.append('scope', scopeValue)
+      }
 
-    if (!form.validate(schema).success) return
-
-    const scopes: StaffScope[] = []
-    if (form.values.scopeTheater) scopes.push('theater')
-    if (form.values.scopeSpace) scopes.push('space')
-
-    const formData = new FormData()
-    formData.set('email', form.values.email)
-    formData.set('password', form.values.password)
-    formData.set('passwordConfirm', form.values.passwordConfirm)
-    formData.set('name', form.values.name)
-    formData.set('phoneNumber', form.values.phoneNumber)
-    formData.set('role', form.values.role)
-    for (const scopeValue of scopes) {
-      formData.append('scope', scopeValue)
-    }
-
-    saving = true
-    try {
-      await createStaff(formData)
+      return createStaff(formData)
+    },
+    onSuccess: async () => {
       form.reset()
       form.values.scopeSpace = true
-      message = localeCtx.t.staff.created
-      await load()
-    } catch (createError) {
-      error = createError instanceof Error ? createError.message : localeCtx.t.common.error
-    } finally {
-      saving = false
-    }
+      await queryClient.invalidateQueries({ queryKey: ['staff'] })
+      pushToast(localeCtx.t.staff.created, 'success')
+    },
+    onError: (createError) => {
+      pushToast(createError instanceof Error ? createError.message : localeCtx.t.common.error, 'error')
+    },
+  }))
+
+  const staff = $derived(staffQuery.data ?? [])
+
+  const submit = (event: SubmitEvent) => {
+    event.preventDefault()
+    if (!form.validate(schema).success) return
+    createStaffMutation.mutate()
   }
 
   const formatScopes = (scopes: StaffScope[] | undefined) =>
@@ -124,78 +111,95 @@
 </script>
 
 <section class="staff_manager">
-  <h1 class="staff_manager-title">{localeCtx.t.staff.title}</h1>
-
-  {#if loading}
-    <p>{localeCtx.t.common.loading}</p>
-  {:else}
-    <div class="staff_manager-grid">
-      <section class="staff_manager-panel">
-        <h2 class="staff_manager-panel_title">{localeCtx.t.staff.create}</h2>
-        <form class="staff_manager-form" onsubmit={submit}>
-          {#if message}
-            <StatusBanner tone="success">{message}</StatusBanner>
-          {/if}
-          {#if error}
-            <StatusBanner tone="error">{error}</StatusBanner>
-          {/if}
-
-          <FormField label={localeCtx.t.staff.email} name="email" type="email" bind:value={form.values.email} />
-          <FormField
-            label={localeCtx.t.staff.password}
-            name="password"
-            type="password"
-            bind:value={form.values.password}
-          />
-          <FormField
-            label={localeCtx.t.staff.passwordConfirm}
-            name="passwordConfirm"
-            type="password"
-            bind:value={form.values.passwordConfirm}
-            error={form.errors.passwordConfirm}
-          />
-          <FormField label={localeCtx.t.staff.name} name="name" bind:value={form.values.name} />
-          <FormField label={localeCtx.t.staff.phoneNumber} name="phoneNumber" bind:value={form.values.phoneNumber} />
-          <Select label={localeCtx.t.staff.role} name="role" bind:value={form.values.role} options={roleOptions} />
-
-          <fieldset class="staff_manager-scope_list">
-            <legend>{localeCtx.t.staff.scope}</legend>
-            <Checkbox bind:checked={form.values.scopeTheater} label={localeCtx.t.staff.scopes.theater} />
-            <Checkbox bind:checked={form.values.scopeSpace} label={localeCtx.t.staff.scopes.space} />
-          </fieldset>
-          {#if form.errors.scopeSpace}
-            <p class="form_field-error">{form.errors.scopeSpace}</p>
-          {/if}
-
-          <Button type="submit" isLoading={saving}>
-            {localeCtx.t.staff.create}
-          </Button>
-        </form>
-      </section>
-
-      <section class="staff_manager-panel">
-        <h2 class="staff_manager-panel_title">{localeCtx.t.staff.list}</h2>
-        <table class="staff_manager-table">
-          <thead>
-            <tr>
-              <th>{localeCtx.t.staff.name}</th>
-              <th>{localeCtx.t.staff.email}</th>
-              <th>{localeCtx.t.staff.role}</th>
-              <th>{localeCtx.t.staff.scope}</th>
-            </tr>
-          </thead>
-          <tbody>
-            {#each staff as member}
-              <tr>
-                <td>{member.name || '—'}</td>
-                <td>{member.email}</td>
-                <td>{localeCtx.t.staff.roles[normalizeRole(member.role) ?? 'manager']}</td>
-                <td>{formatScopes(member.scope)}</td>
-              </tr>
-            {/each}
-          </tbody>
-        </table>
-      </section>
+  <header class="staff_manager-toolbar">
+    <div class="l_container">
+      <div class="staff_manager-heading">
+        <p class="staff_manager-eyebrow">{localeCtx.t.nav.sections.global}</p>
+        <h1 class="staff_manager-title">{localeCtx.t.staff.title}</h1>
+      </div>
     </div>
-  {/if}
+  </header>
+
+  <div class="l_container">
+    {#if staffQuery.isPending}
+      <p class="staff_manager-status">{localeCtx.t.common.loading}</p>
+    {:else if staffQuery.isError}
+      <p class="staff_manager-status" data-tone="error">
+        {staffQuery.error instanceof Error ? staffQuery.error.message : localeCtx.t.common.error}
+      </p>
+    {:else}
+      <div class="staff_manager-body">
+        <section class="staff_manager-section">
+          <h2 class="staff_manager-section_title">{localeCtx.t.staff.create}</h2>
+          <form class="staff_manager-form" onsubmit={submit}>
+            <FormField label={localeCtx.t.staff.name} name="name" bind:value={form.values.name} />
+            <FormField label={localeCtx.t.staff.email} name="email" type="email" bind:value={form.values.email} />
+            <FormField
+              label={localeCtx.t.staff.phoneNumber}
+              name="phoneNumber"
+              bind:value={form.values.phoneNumber}
+            />
+            <FormField
+              label={localeCtx.t.staff.password}
+              name="password"
+              type="password"
+              bind:value={form.values.password}
+            />
+            <FormField
+              label={localeCtx.t.staff.passwordConfirm}
+              name="passwordConfirm"
+              type="password"
+              bind:value={form.values.passwordConfirm}
+              error={form.errors.passwordConfirm}
+            />
+            <Select label={localeCtx.t.staff.role} name="role" bind:value={form.values.role} options={roleOptions} />
+
+            <fieldset class="staff_manager-scope_list">
+              <legend class="u_sr_only">{localeCtx.t.staff.scope}</legend>
+              <p class="staff_manager-scope_label">{localeCtx.t.staff.scope}</p>
+              <div class="staff_manager-scope_options">
+                <Checkbox bind:checked={form.values.scopeTheater} label={localeCtx.t.staff.scopes.theater} />
+                <Checkbox bind:checked={form.values.scopeSpace} label={localeCtx.t.staff.scopes.space} />
+              </div>
+              {#if form.errors.scopeSpace}
+                <p class="form_field-error">{form.errors.scopeSpace}</p>
+              {/if}
+            </fieldset>
+
+            <div class="staff_manager-form_actions">
+              <Button type="submit" isLoading={createStaffMutation.isPending}>
+                {localeCtx.t.staff.create}
+              </Button>
+            </div>
+          </form>
+        </section>
+
+        <section class="staff_manager-section">
+          <h2 class="staff_manager-section_title">{localeCtx.t.staff.list}</h2>
+          <div class="staff_manager-table_wrap">
+            <table class="staff_manager-table">
+              <thead>
+                <tr>
+                  <th>{localeCtx.t.staff.name}</th>
+                  <th>{localeCtx.t.staff.email}</th>
+                  <th>{localeCtx.t.staff.role}</th>
+                  <th>{localeCtx.t.staff.scope}</th>
+                </tr>
+              </thead>
+              <tbody>
+                {#each staff as member (member.id)}
+                  <tr>
+                    <td>{member.name || '—'}</td>
+                    <td>{member.email}</td>
+                    <td>{localeCtx.t.staff.roles[normalizeRole(member.role) ?? 'manager']}</td>
+                    <td>{formatScopes(member.scope)}</td>
+                  </tr>
+                {/each}
+              </tbody>
+            </table>
+          </div>
+        </section>
+      </div>
+    {/if}
+  </div>
 </section>
