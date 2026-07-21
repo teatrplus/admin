@@ -5,6 +5,7 @@
   import Checkbox from '@/components/Checkbox/Checkbox.svelte'
   import FormField from '@/components/FormField/FormField.svelte'
   import MediaDropzone from '@/components/MediaDropzone/MediaDropzone.svelte'
+  import Select from '@/components/Select/Select.svelte'
   import type { SiteScope } from '@/lib/cms/scopes'
   import { useLocale } from '@/lib/i18n/context.svelte'
   import { getCurrentUser } from '@/lib/pocketbase/auth'
@@ -72,12 +73,19 @@
   }))
 
   const managers = $derived(landingQuery.data?.staff ?? [])
-  const managerOptions = $derived.by(() => {
+  const staffOptions = $derived.by(() => {
     const byId = new Map<string, StaffRecord>()
     for (const manager of managers) byId.set(manager.id, manager)
 
-    const expanded = landingQuery.data?.landing?.expand?.contactManagers ?? []
-    for (const contact of expanded) byId.set(contact.id, contact)
+    const landing = landingQuery.data?.landing
+    const expanded = [
+      ...(landing?.expand?.footerContactManagers ?? []),
+      landing?.expand?.headerPhoneManager,
+      landing?.expand?.telegramManager,
+    ]
+    for (const contact of expanded) {
+      if (contact) byId.set(contact.id, contact)
+    }
 
     const currentUser = getCurrentUser()
     if (currentUser) byId.set(currentUser.id, currentUser)
@@ -89,6 +97,11 @@
       }))
       .sort((a, b) => a.label.localeCompare(b.label))
   })
+
+  const staffSelectOptions = $derived([
+    { value: '', label: localeCtx.t.landing.none },
+    ...staffOptions,
+  ])
 
   const removeHeadBodyRow = (
     key: 'venueItems' | 'advantageItems' | 'processItems',
@@ -189,15 +202,19 @@
         <section class="landing_editor-section">
           <h2 class="landing_editor-section_title">{localeCtx.t.landing.general}</h2>
           <div class="landing_editor-grid">
-            <FormField
-              label={localeCtx.t.landing.headerPhoneNumber}
-              name="headerPhoneNumber"
-              bind:value={form.headerPhoneNumber}
+            <Select
+              label={localeCtx.t.landing.headerPhoneManager}
+              name="headerPhoneManager"
+              bind:value={form.headerPhoneManagerId}
+              options={staffSelectOptions}
+              placeholder={localeCtx.t.landing.none}
             />
-            <FormField
-              label={localeCtx.t.landing.telegramManagerUrl}
-              name="telegramManagerUrl"
-              bind:value={form.telegramManagerUrl}
+            <Select
+              label={localeCtx.t.landing.telegramManager}
+              name="telegramManager"
+              bind:value={form.telegramManagerId}
+              options={staffSelectOptions}
+              placeholder={localeCtx.t.landing.none}
             />
             <FormField
               label={localeCtx.t.landing.presentationUrl}
@@ -451,15 +468,17 @@
           <h2 class="landing_editor-section_title">{localeCtx.t.landing.contacts}</h2>
           <fieldset class="landing_editor-checkbox_list">
             <legend class="u_sr_only">{localeCtx.t.landing.contactManagers}</legend>
-            {#each managerOptions as option}
+            {#each staffOptions as option}
               <Checkbox
                 label={option.label}
-                checked={form.contactManagerIds.includes(option.value)}
+                checked={form.footerContactManagerIds.includes(option.value)}
                 onCheckedChange={(checked) => {
                   if (checked) {
-                    form.contactManagerIds = [...form.contactManagerIds, option.value]
+                    form.footerContactManagerIds = [...form.footerContactManagerIds, option.value]
                   } else {
-                    form.contactManagerIds = form.contactManagerIds.filter((id) => id !== option.value)
+                    form.footerContactManagerIds = form.footerContactManagerIds.filter(
+                      (id) => id !== option.value,
+                    )
                   }
                 }}
               />

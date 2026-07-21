@@ -25,6 +25,7 @@
     passwordConfirm: '',
     name: '',
     phoneNumber: '',
+    telegramUsername: '',
     role: 'manager' as StaffRole,
     scopeTheater: false,
     scopeSpace: true,
@@ -41,6 +42,7 @@
         passwordConfirm: v.string(),
         name: v.optional(v.string()),
         phoneNumber: v.optional(v.string()),
+        telegramUsername: v.optional(v.string()),
         role: v.picklist(['admin', 'moderator', 'manager']),
         scopeTheater: v.boolean(),
         scopeSpace: v.boolean(),
@@ -94,6 +96,7 @@
     formData.set('email', form.values.email)
     formData.set('name', form.values.name)
     formData.set('phoneNumber', form.values.phoneNumber)
+    formData.set('telegramUsername', form.values.telegramUsername)
     formData.set('role', form.values.role)
     for (const scopeValue of scopes) {
       formData.append('scope', scopeValue)
@@ -120,6 +123,7 @@
       passwordConfirm: '',
       name: member.name ?? '',
       phoneNumber: member.phoneNumber ?? '',
+      telegramUsername: member.telegramUsername ?? '',
       role: normalizeRole(member.role) ?? 'manager',
       scopeTheater: (member.scope ?? []).includes('theater'),
       scopeSpace: (member.scope ?? []).includes('space'),
@@ -200,6 +204,11 @@
             <FormField label={localeCtx.t.staff.name} name="name" bind:value={form.values.name} />
             <FormField label={localeCtx.t.staff.email} name="email" type="email" bind:value={form.values.email} />
             <FormField label={localeCtx.t.staff.phoneNumber} name="phoneNumber" bind:value={form.values.phoneNumber} />
+            <FormField
+              label={localeCtx.t.staff.telegramUsername}
+              name="telegramUsername"
+              bind:value={form.values.telegramUsername}
+            />
             <FormField
               label={localeCtx.t.staff.password}
               name="password"

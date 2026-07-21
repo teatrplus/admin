@@ -52,8 +52,8 @@ export type TranslationSchema = {
     gallery: string
     partners: string
     contacts: string
-    headerPhoneNumber: string
-    telegramManagerUrl: string
+    headerPhoneManager: string
+    telegramManager: string
     presentationUrl: string
     head: string
     body: string
@@ -62,6 +62,7 @@ export type TranslationSchema = {
     dropHint: string
     replaceImage: string
     contactManagers: string
+    none: string
     addRow: string
     removeRow: string
     deleteImage: string
@@ -88,6 +89,7 @@ export type TranslationSchema = {
     passwordOptional: string
     name: string
     phoneNumber: string
+    telegramUsername: string
     role: string
     scope: string
     roles: Record<string, string>
