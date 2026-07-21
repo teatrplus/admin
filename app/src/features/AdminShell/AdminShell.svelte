@@ -11,7 +11,7 @@
   import { getCurrentUser, logout } from '@/lib/pocketbase/auth'
   import { navSectionsForUser } from '@/lib/pocketbase/permissions'
   import { getRoute, navigate, type AppRoute } from '@/lib/router'
-  import iconSvg from '../../../public/icon.svg?raw'
+  import iconSvg from './assets/logo.svg?raw'
   import './AdminShell.css'
 
   const SIDEBAR_STORAGE_KEY = 'theaterplus.admin.sidebar'
@@ -57,10 +57,17 @@
 
 <div class="admin_shell" data-sidebar-collapsed={collapsed ? 'true' : 'false'}>
   <aside class="admin_shell-sidebar">
-    <div class="admin_shell-brand">
+    <a
+      class="admin_shell-brand"
+      href="/"
+      onclick={(event) => {
+        event.preventDefault()
+        navigate('/')
+      }}
+    >
       <RawSvg class="admin_shell-brand_mark raw_svg" content={iconSvg} width="36" height="36" aria-hidden="true" />
       <span class="admin_shell-brand_text">{localeCtx.t.common.appName}</span>
-    </div>
+    </a>
 
     <nav class="admin_shell-nav" aria-label="CMS">
       {#each navSections as section}
@@ -120,13 +127,7 @@
             <NavIcon name="language" label={localeCtx.t.common.language} size={20} />
           {/snippet}
         </Select>
-        <Button
-          variant="outline"
-          color="neutral"
-          size="sm"
-          title={localeCtx.t.common.logout}
-          onclick={signOut}
-        >
+        <Button variant="outline" color="neutral" size="sm" title={localeCtx.t.common.logout} onclick={signOut}>
           {#snippet leftIcon()}
             <NavIcon name="logout" label={localeCtx.t.common.logout} size={18} />
           {/snippet}

@@ -2,6 +2,7 @@ import { canAccessRoute, defaultRouteForUser, type AppRoute } from './pocketbase
 
 const normalizePath = (pathname: string): AppRoute | '/unknown' => {
   const path = pathname.replace(/\/+$/, '') || '/'
+  if (path === '/') return '/'
   if (path === '/login') return '/login'
   if (path === '/staff') return '/staff'
   if (path === '/forbidden') return '/forbidden'

@@ -15,6 +15,11 @@ export type TranslationSchema = {
     saved: string
     error: string
   }
+  home: {
+    title: string
+    greeting: string
+    body: string
+  }
   scopes: {
     space: string
     theater: string

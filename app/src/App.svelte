@@ -4,6 +4,7 @@
   import { navigate, resolveGuardedRoute, type AppRoute } from './lib/router'
   import AdminShell from './features/AdminShell/AdminShell.svelte'
   import ForbiddenPage from './features/ForbiddenPage/ForbiddenPage.svelte'
+  import HomePage from './features/HomePage/HomePage.svelte'
   import LandingEditor from './features/LandingEditor/LandingEditor.svelte'
   import LoginPage from './features/LoginPage/LoginPage.svelte'
   import RequestsBoard from './features/RequestsBoard/RequestsBoard.svelte'
@@ -46,6 +47,10 @@
 
 {#if !authed || route === '/login'}
   <LoginPage />
+{:else if route === '/'}
+  <AdminShell>
+    <HomePage />
+  </AdminShell>
 {:else if route === '/forbidden'}
   <AdminShell>
     <ForbiddenPage />

@@ -17,6 +17,11 @@ export const ru: TranslationSchema = {
     saved: 'Сохранено',
     error: 'Ошибка',
   },
+  home: {
+    title: 'Добро пожаловать',
+    greeting: 'Привет, {name}',
+    body: 'Выберите раздел в боковой панели, чтобы начать работу.',
+  },
   scopes: {
     space: 'Пространство',
     theater: 'Театр',

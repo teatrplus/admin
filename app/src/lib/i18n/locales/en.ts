@@ -17,6 +17,11 @@ export const en: TranslationSchema = {
     saved: 'Saved',
     error: 'Error',
   },
+  home: {
+    title: 'Welcome',
+    greeting: 'Hi, {name}',
+    body: 'Pick a section in the sidebar to get started.',
+  },
   scopes: {
     space: 'Space',
     theater: 'Theater',
