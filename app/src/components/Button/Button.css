@@ -166,7 +166,9 @@
     &:hover:where([data-variant='solid']) {
       --c-btn-bg: var(--c-btn-ink-hover);
     }
-    &:hover:where([data-variant='outline']),
+    &:hover:where([data-variant='outline']) {
+      background-color: color-mix(in srgb, var(--bg-surface-hover), transparent 50%);
+    }
     &:hover:where([data-variant='ghost']) {
       background-color: var(--bg-surface-hover);
     }

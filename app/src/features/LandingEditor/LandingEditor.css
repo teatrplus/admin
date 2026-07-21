@@ -66,6 +66,11 @@
   letter-spacing: 0.04em;
 }
 
+.landing_editor-replace_btn {
+  background-color: color-mix(in srgb, var(--bg-surface), transparent 40%);
+  backdrop-filter: blur(var(--blur-dense));
+}
+
 .landing_editor-delete_btn {
   margin-top: 1.75rem;
 }

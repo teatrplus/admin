@@ -314,6 +314,7 @@
                   {/if}
                   <div class="landing_editor-media_actions">
                     <Button
+                      class="landing_editor-replace_btn"
                       type="button"
                       variant="outline"
                       color="contrast"
