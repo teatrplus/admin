@@ -29,21 +29,40 @@ export const resolveTheme = (preference: ThemePreference): Theme => {
   return window.matchMedia(DARK_MODE_QUERY).matches ? 'dark' : 'light'
 }
 
-export const applyTheme = (active: Theme) => {
-  document.documentElement.setAttribute('data-theme', active)
-
+const syncThemeColorMeta = () => {
   const resolved = getComputedStyle(document.documentElement).getPropertyValue('--bg-page').trim()
+  if (!resolved) return
 
-  if (resolved) {
-    let meta = document.getElementById('meta-theme-color') as HTMLMetaElement | null
-    if (!meta) {
-      meta = document.createElement('meta')
-      meta.id = 'meta-theme-color'
-      meta.setAttribute('name', 'theme-color')
-      document.head.appendChild(meta)
-    }
-    meta.setAttribute('content', resolved)
+  let meta = document.getElementById('meta-theme-color') as HTMLMetaElement | null
+  if (!meta) {
+    meta = document.createElement('meta')
+    meta.id = 'meta-theme-color'
+    meta.setAttribute('name', 'theme-color')
+    document.head.appendChild(meta)
   }
+  meta.setAttribute('content', resolved)
+}
+
+/** Apply theme as a discrete mode flip — no color tweening. */
+export const applyTheme = (active: Theme) => {
+  const root = document.documentElement
+  if (root.getAttribute('data-theme') === active) {
+    syncThemeColorMeta()
+    return
+  }
+
+  root.setAttribute('data-theme-switching', '')
+  root.setAttribute('data-theme', active)
+  syncThemeColorMeta()
+
+  // Flush styles while transitions are still suppressed.
+  void root.offsetHeight
+
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      root.removeAttribute('data-theme-switching')
+    })
+  })
 }
 
 export const initTheme = () => {

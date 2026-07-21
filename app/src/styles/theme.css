@@ -306,6 +306,17 @@
 }
 
 /* ========================================================= */
+/* THEME SWITCH: suspend transitions for one paint           */
+/* Theme is a mode flip. Don't tween token-backed paints.    */
+/* ========================================================= */
+:root[data-theme-switching],
+:root[data-theme-switching] *,
+:root[data-theme-switching] *::before,
+:root[data-theme-switching] *::after {
+  transition: none !important;
+}
+
+/* ========================================================= */
 /* ACCESSIBILITY: REDUCED MOTION                             */
 /* ========================================================= */
 @media (prefers-reduced-motion: reduce) {
