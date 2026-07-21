@@ -65,6 +65,7 @@ export type TranslationSchema = {
     addRow: string
     removeRow: string
     deleteImage: string
+    savedToast: string
   }
   requests: {
     title: string

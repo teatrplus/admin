@@ -67,6 +67,7 @@ export const en: TranslationSchema = {
     addRow: 'Add row',
     removeRow: 'Remove',
     deleteImage: 'Remove image',
+    savedToast: 'Saved. Changes will appear on the landing page in 1–2 minutes.',
   },
   requests: {
     title: 'Requests',

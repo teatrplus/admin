@@ -67,6 +67,7 @@ export const ru: TranslationSchema = {
     addRow: 'Добавить',
     removeRow: 'Удалить',
     deleteImage: 'Удалить изображение',
+    savedToast: 'Сохранено. Изменения появятся на лендинге через 1–2 минуты.',
   },
   requests: {
     title: 'Заявки',
