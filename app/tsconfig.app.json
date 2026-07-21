@@ -15,7 +15,9 @@
      */
     "allowJs": true,
     "checkJs": true,
-    "moduleDetection": "force"
+    "paths": {
+      "@/*": ["./src/*"]
+    },
   },
   "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.js", "src/**/*.svelte"]
 }

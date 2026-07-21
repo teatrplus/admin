@@ -26,9 +26,15 @@ export type TranslationSchema = {
     invalid: string
   }
   nav: {
+    sections: {
+      space: string
+      global: string
+    }
     landing: string
     requests: string
     staff: string
+    collapse: string
+    expand: string
   }
   landing: {
     title: string

@@ -1,0 +1,4 @@
+.raw_svg {
+  display: block;
+  flex-shrink: 0;
+}

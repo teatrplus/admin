@@ -28,9 +28,15 @@ export const en: TranslationSchema = {
     invalid: 'Invalid email or password',
   },
   nav: {
+    sections: {
+      space: 'Space',
+      global: 'Global',
+    },
     landing: 'Landing',
     requests: 'Requests',
     staff: 'Staff',
+    collapse: 'Collapse',
+    expand: 'Expand',
   },
   landing: {
     title: 'Landing editor',

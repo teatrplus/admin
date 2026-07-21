@@ -28,9 +28,15 @@ export const ru: TranslationSchema = {
     invalid: 'Неверный email или пароль',
   },
   nav: {
+    sections: {
+      space: 'Space',
+      global: 'Global',
+    },
     landing: 'Лендинг',
     requests: 'Заявки',
     staff: 'Сотрудники',
+    collapse: 'Свернуть',
+    expand: 'Развернуть',
   },
   landing: {
     title: 'Редактор лендинга',
