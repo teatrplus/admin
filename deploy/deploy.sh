@@ -35,7 +35,6 @@ EOF
 fi
 
 echo "==> sync"
-ssh "mkdir -p '$REMOTE_ADMIN_DIR/pb_public' '$REMOTE_ADMIN_DIR/pb_hooks' '$REMOTE_ADMIN_DIR/pb_migrations'"
 rsync "$ROOT/pb_hooks/" "$DEPLOY_USER@$DEPLOY_HOST:$REMOTE_ADMIN_DIR/pb_hooks/"
 rsync "$ROOT/pb_migrations/" "$DEPLOY_USER@$DEPLOY_HOST:$REMOTE_ADMIN_DIR/pb_migrations/"
 rsync --delete "$ROOT/app/dist/" "$DEPLOY_USER@$DEPLOY_HOST:$REMOTE_ADMIN_DIR/pb_public/"
