@@ -1,7 +1,7 @@
 pb_data
 
-pocketbase
-pocketbase.exe
+/pocketbase
+/pocketbase.exe
 
 .env
 deploy/env.deploy

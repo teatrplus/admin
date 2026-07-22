@@ -1,0 +1,7 @@
+import PocketBase, { LocalAuthStore } from 'pocketbase'
+
+const url = import.meta.env.VITE_POCKETBASE_URL ?? 'http://127.0.0.1:8090'
+
+export const pb = new PocketBase(url, new LocalAuthStore('theaterplus.admin.auth'))
+
+pb.autoCancellation(false)
