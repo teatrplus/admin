@@ -2,7 +2,7 @@ import { pb } from './client'
 import type { StaffRecord } from './types'
 
 export const listStaff = async () => {
-  return (await pb.collection('staff').getFullList({ sort: '-created' })) as StaffRecord[]
+  return (await pb.collection('staff').getFullList({ sort: '-updated' })) as StaffRecord[]
 }
 
 export const createStaff = async (formData: FormData) => {
