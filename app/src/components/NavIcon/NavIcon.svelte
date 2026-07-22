@@ -7,6 +7,8 @@
   import AccountIcon from '~icons/material-symbols/person-outline'
   import CollapseIcon from '~icons/material-symbols/left-panel-close-outline'
   import ExpandIcon from '~icons/material-symbols/left-panel-open-outline'
+  import MenuIcon from '~icons/material-symbols/menu'
+  import CloseIcon from '~icons/material-symbols/close'
   import LogoutIcon from '~icons/material-symbols/logout'
   import LanguageIcon from '~icons/material-symbols/language'
   import './NavIcon.css'
@@ -22,7 +24,7 @@
     name,
     size = 20,
   }: {
-    name: NavItemIcon | 'collapse' | 'expand' | 'logout' | 'language'
+    name: NavItemIcon | 'collapse' | 'expand' | 'menu' | 'close' | 'logout' | 'language'
     label?: string
     size?: number
   } = $props()
@@ -32,11 +34,15 @@
       ? CollapseIcon
       : name === 'expand'
         ? ExpandIcon
-        : name === 'logout'
-          ? LogoutIcon
-          : name === 'language'
-            ? LanguageIcon
-            : icons[name],
+        : name === 'menu'
+          ? MenuIcon
+          : name === 'close'
+            ? CloseIcon
+            : name === 'logout'
+              ? LogoutIcon
+              : name === 'language'
+                ? LanguageIcon
+                : icons[name],
   )
 </script>
 

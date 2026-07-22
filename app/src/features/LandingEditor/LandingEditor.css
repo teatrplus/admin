@@ -12,9 +12,9 @@
   position: sticky;
   top: 0;
   z-index: var(--z-pinned);
-  margin-inline: calc(var(--space-6) * -1);
-  margin-block-start: calc(var(--space-6) * -1);
-  padding: var(--space-4) var(--space-6);
+  margin-inline: calc(var(--admin-gutter) * -1);
+  margin-block-start: calc(var(--admin-gutter) * -1);
+  padding: var(--space-4) var(--admin-gutter);
   border-bottom: 1px solid var(--border-base);
   background: color-mix(in srgb, var(--bg-page), transparent 60%);
   backdrop-filter: blur(var(--blur-base));
@@ -82,7 +82,7 @@
   gap: var(--space-4);
   border-left: solid 1px var(--border-base);
   padding-block: var(--space-2);
-  padding-inline: var(--space-6);
+  padding-inline: var(--admin-gutter);
 }
 
 .landing_editor-section_title {
@@ -140,11 +140,17 @@
 
 .landing_editor-item {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-columns: minmax(0, 1fr);
   gap: var(--space-3);
   align-items: start;
   padding-block: var(--space-4);
   border-top: 1px solid var(--border-base);
+}
+
+@media (min-width: 28rem) {
+  .landing_editor-item {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
 }
 
 .landing_editor-item_fields {

@@ -12,9 +12,9 @@
   position: sticky;
   top: 0;
   z-index: var(--z-pinned);
-  margin-inline: calc(var(--space-6) * -1);
-  margin-block-start: calc(var(--space-6) * -1);
-  padding: var(--space-4) var(--space-6);
+  margin-inline: calc(var(--admin-gutter) * -1);
+  margin-block-start: calc(var(--admin-gutter) * -1);
+  padding: var(--space-4) var(--admin-gutter);
   border-bottom: 1px solid var(--border-base);
   background: color-mix(in srgb, var(--bg-page), transparent 60%);
   backdrop-filter: blur(var(--blur-base));
@@ -58,7 +58,7 @@
   flex-direction: column;
   gap: var(--space-4);
   padding-block: var(--space-2);
-  padding-inline: var(--space-6);
+  padding-inline: var(--admin-gutter);
   border-left: 1px solid var(--border-base);
 }
 
@@ -73,7 +73,7 @@
 
 .account_settings-form {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: 1fr;
   gap: var(--space-3) var(--space-4);
   align-items: start;
 }
@@ -85,12 +85,12 @@
   gap: var(--space-3);
   grid-column: 1 / -1;
   margin-bottom: var(--space-6);
+  flex-wrap: wrap;
 }
 
 .account_settings-meta {
   display: grid;
   gap: var(--space-2);
-  grid-column: span 2;
 }
 
 .account_settings-meta_label {
@@ -106,16 +106,16 @@
   color: var(--ink-muted);
 }
 
-@media (max-width: 48rem) {
+@media (min-width: 48rem) {
   .account_settings-form {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
   .account_settings-meta {
-    grid-column: auto;
+    grid-column: span 2;
   }
 
   .account_settings-form_header {
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
   }
 }

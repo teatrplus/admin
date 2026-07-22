@@ -25,11 +25,14 @@
   const currentRoute = $derived(getRoute())
   const localeOptions = $derived(LOCALES.map((locale) => ({ value: locale, label: LOCALE_LABELS[locale] })))
 
+  const isDesktopViewport = () => window.matchMedia('(min-width: 48rem)').matches
+
   const readCollapsed = () => {
     try {
+      if (!isDesktopViewport()) return true
       return localStorage.getItem(SIDEBAR_STORAGE_KEY) === 'collapsed'
     } catch {
-      return false
+      return !isDesktopViewport()
     }
   }
 
@@ -42,13 +45,22 @@
   const toggleSidebar = () => {
     collapsed = !collapsed
     try {
-      localStorage.setItem(SIDEBAR_STORAGE_KEY, collapsed ? 'collapsed' : 'expanded')
+      if (isDesktopViewport()) {
+        localStorage.setItem(SIDEBAR_STORAGE_KEY, collapsed ? 'collapsed' : 'expanded')
+      }
     } catch {
       // ignore
     }
   }
 
-  const go = (route: AppRoute) => navigate(route)
+  const closeSidebarOnMobile = () => {
+    if (!isDesktopViewport()) collapsed = true
+  }
+
+  const go = (route: AppRoute) => {
+    navigate(route)
+    closeSidebarOnMobile()
+  }
 
   const signOut = () => {
     logout()
@@ -57,7 +69,16 @@
 </script>
 
 <div class="admin_shell" data-sidebar-collapsed={collapsed ? 'true' : 'false'}>
-  <aside class="admin_shell-sidebar">
+  <button
+    type="button"
+    class="admin_shell-backdrop"
+    aria-label={localeCtx.t.nav.collapse}
+    aria-hidden={collapsed ? 'true' : undefined}
+    tabindex={collapsed ? -1 : 0}
+    onclick={toggleSidebar}
+  ></button>
+
+  <aside id="admin-shell-sidebar" class="admin_shell-sidebar">
     <a
       class="admin_shell-brand"
       href="/"
@@ -113,7 +134,22 @@
 
   <div class="l_stack admin_shell-main" data-gap="0">
     <header class="admin_shell-header">
-      <div class="admin_shell-user">{user?.name || user?.email}</div>
+      <div class="admin_shell-header_start">
+        <Button
+          variant="unstyled"
+          class="admin_shell-menu_button"
+          aria-controls="admin-shell-sidebar"
+          aria-expanded={!collapsed}
+          title={collapsed ? localeCtx.t.nav.expand : localeCtx.t.nav.collapse}
+          onclick={toggleSidebar}
+        >
+          <NavIcon
+            name={collapsed ? 'menu' : 'close'}
+            label={collapsed ? localeCtx.t.nav.expand : localeCtx.t.nav.collapse}
+          />
+        </Button>
+        <div class="admin_shell-user">{user?.name || user?.email}</div>
+      </div>
       <div class="admin_shell-header_actions">
         <ThemeToggle />
         <Select
