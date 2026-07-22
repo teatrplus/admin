@@ -118,6 +118,10 @@
       formData.set('passwordConfirm', form.values.passwordConfirm)
     }
 
+    if (!editingId) {
+      formData.set('verified', 'true')
+    }
+
     return formData
   }
 
