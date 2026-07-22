@@ -6,7 +6,7 @@
   import { createFormState } from '@/lib/forms/form-state.svelte'
   import { useLocale } from '@/lib/i18n/context.svelte'
   import { getAccount, updateAccount } from '@/lib/pocketbase/account-api'
-  import { normalizeRole } from '@/lib/pocketbase/auth'
+  import { isStaffUser, normalizeRole } from '@/lib/pocketbase/auth'
   import type { StaffScope } from '@/lib/pocketbase/types'
   import { pushToast } from '@/stores/toastStore.svelte'
   import './AccountSettings.css'
@@ -65,9 +65,12 @@
   }))
 
   const account = $derived(accountQuery.data)
+  const isStaffAccount = $derived(account ? isStaffUser(account) : false)
 
   const roleLabel = $derived(
-    account ? localeCtx.t.staff.roles[normalizeRole(account.role) ?? 'manager'] : '',
+    account && isStaffAccount
+      ? localeCtx.t.staff.roles[normalizeRole(account.role) ?? 'manager']
+      : '',
   )
 
   const formatScopes = (scopes: StaffScope[] | undefined) =>
@@ -79,18 +82,21 @@
       email: account.email ?? '',
       password: '',
       passwordConfirm: '',
-      name: account.name ?? '',
-      phoneNumber: account.phoneNumber ?? '',
-      telegramUsername: account.telegramUsername ?? '',
+      name: isStaffUser(account) ? (account.name ?? '') : '',
+      phoneNumber: isStaffUser(account) ? (account.phoneNumber ?? '') : '',
+      telegramUsername: isStaffUser(account) ? (account.telegramUsername ?? '') : '',
     })
   })
 
   const buildFormData = () => {
     const formData = new FormData()
     formData.set('email', form.values.email)
-    formData.set('name', form.values.name)
-    formData.set('phoneNumber', form.values.phoneNumber)
-    formData.set('telegramUsername', form.values.telegramUsername)
+
+    if (isStaffAccount) {
+      formData.set('name', form.values.name)
+      formData.set('phoneNumber', form.values.phoneNumber)
+      formData.set('telegramUsername', form.values.telegramUsername)
+    }
 
     if (form.values.password) {
       formData.set('password', form.values.password)
@@ -107,9 +113,9 @@
         email: updated.email ?? '',
         password: '',
         passwordConfirm: '',
-        name: updated.name ?? '',
-        phoneNumber: updated.phoneNumber ?? '',
-        telegramUsername: updated.telegramUsername ?? '',
+        name: isStaffUser(updated) ? (updated.name ?? '') : '',
+        phoneNumber: isStaffUser(updated) ? (updated.phoneNumber ?? '') : '',
+        telegramUsername: isStaffUser(updated) ? (updated.telegramUsername ?? '') : '',
       })
       await queryClient.invalidateQueries({ queryKey: ['account'] })
       pushToast(localeCtx.t.account.updated, 'success')
@@ -157,7 +163,6 @@
               </Button>
             </div>
 
-            <FormField label={localeCtx.t.staff.name} name="name" bind:value={form.values.name} />
             <FormField
               label={localeCtx.t.staff.email}
               name="email"
@@ -167,16 +172,19 @@
               error={form.errors.email}
               required
             />
-            <FormField
-              label={localeCtx.t.staff.phoneNumber}
-              name="phoneNumber"
-              bind:value={form.values.phoneNumber}
-            />
-            <FormField
-              label={localeCtx.t.staff.telegramUsername}
-              name="telegramUsername"
-              bind:value={form.values.telegramUsername}
-            />
+            {#if isStaffAccount}
+              <FormField label={localeCtx.t.staff.name} name="name" bind:value={form.values.name} />
+              <FormField
+                label={localeCtx.t.staff.phoneNumber}
+                name="phoneNumber"
+                bind:value={form.values.phoneNumber}
+              />
+              <FormField
+                label={localeCtx.t.staff.telegramUsername}
+                name="telegramUsername"
+                bind:value={form.values.telegramUsername}
+              />
+            {/if}
             <FormField
               label={localeCtx.t.staff.password}
               name="password"
@@ -195,14 +203,16 @@
               error={form.errors.passwordConfirm}
             />
 
-            <div class="account_settings-meta">
-              <p class="account_settings-meta_label">{localeCtx.t.staff.role}</p>
-              <p class="account_settings-meta_value">{roleLabel}</p>
-            </div>
-            <div class="account_settings-meta">
-              <p class="account_settings-meta_label">{localeCtx.t.staff.scope}</p>
-              <p class="account_settings-meta_value">{formatScopes(account?.scope)}</p>
-            </div>
+            {#if isStaffAccount}
+              <div class="account_settings-meta">
+                <p class="account_settings-meta_label">{localeCtx.t.staff.role}</p>
+                <p class="account_settings-meta_value">{roleLabel}</p>
+              </div>
+              <div class="account_settings-meta">
+                <p class="account_settings-meta_label">{localeCtx.t.staff.scope}</p>
+                <p class="account_settings-meta_value">{formatScopes(account?.scope)}</p>
+              </div>
+            {/if}
           </form>
         </section>
       </div>

@@ -9,7 +9,7 @@
   import type { SiteScope } from '@/lib/cms/scopes'
   import { useLocale } from '@/lib/i18n/context.svelte'
   import { isImageFile } from '@/lib/media/images'
-  import { getCurrentUser } from '@/lib/pocketbase/auth'
+  import { getCurrentUser, isStaffUser } from '@/lib/pocketbase/auth'
   import {
     CONTENT_LOCALES,
     collectLandingFieldErrors,
@@ -128,7 +128,9 @@
     }
 
     const currentUser = getCurrentUser()
-    if (currentUser) byId.set(currentUser.id, currentUser)
+    if (currentUser && isStaffUser(currentUser)) {
+      byId.set(currentUser.id, currentUser)
+    }
 
     return [...byId.values()]
       .map((manager) => ({

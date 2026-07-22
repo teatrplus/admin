@@ -1,6 +1,6 @@
 import { ACTIVE_SCOPES, type SiteScope } from '../cms/scopes'
 import type { NavSection } from '../nav'
-import { getCurrentUser, normalizeRole } from './auth'
+import { getCurrentUser, isStaffUser, isSuperuser, normalizeRole } from './auth'
 import type { StaffScope } from './types'
 
 export type AppRoute =
@@ -28,15 +28,17 @@ export const userScopes = (scopes: StaffScope[] | undefined): StaffScope[] => sc
 export const hasStaffScope = (userScopesList: StaffScope[], siteScope: SiteScope): boolean =>
   userScopesList.includes(siteScope)
 
-export const isAdmin = () => normalizeRole(getCurrentUser()?.role) === 'admin'
+export const isAdmin = () => isSuperuser() || normalizeRole(getCurrentUser()?.role) === 'admin'
 
-export const isModerator = () => normalizeRole(getCurrentUser()?.role) === 'moderator'
+export const isModerator = () => !isSuperuser() && normalizeRole(getCurrentUser()?.role) === 'moderator'
 
-export const isManager = () => normalizeRole(getCurrentUser()?.role) === 'manager'
+export const isManager = () => !isSuperuser() && normalizeRole(getCurrentUser()?.role) === 'manager'
 
 export const canAccessScope = (siteScope: SiteScope): boolean => {
   const user = getCurrentUser()
   if (!user) return false
+  if (isSuperuser()) return true
+  if (!isStaffUser(user)) return false
   const role = normalizeRole(user.role)
   if (role === 'admin') return true
   return hasStaffScope(userScopes(user.scope), siteScope)
@@ -44,12 +46,14 @@ export const canAccessScope = (siteScope: SiteScope): boolean => {
 
 export const canAccessLanding = (siteScope: SiteScope): boolean => {
   if (!canAccessScope(siteScope)) return false
+  if (isSuperuser()) return true
   const role = normalizeRole(getCurrentUser()?.role)
   return role === 'admin' || role === 'moderator'
 }
 
 export const canAccessRequests = (siteScope: SiteScope): boolean => {
   if (!canAccessScope(siteScope)) return false
+  if (isSuperuser()) return true
   return normalizeRole(getCurrentUser()?.role) !== null
 }
 

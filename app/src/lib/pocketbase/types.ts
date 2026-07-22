@@ -13,6 +13,7 @@ export type RequestStage =
   | 'cancelled'
 
 export type StaffRecord = RecordModel & {
+  collectionName: 'staff'
   email: string
   name?: string
   phoneNumber?: string
@@ -21,6 +22,14 @@ export type StaffRecord = RecordModel & {
   scope?: StaffScope[]
   verified?: boolean
 }
+
+export type SuperuserRecord = RecordModel & {
+  collectionName: '_superusers'
+  email: string
+  verified?: boolean
+}
+
+export type AuthUser = StaffRecord | SuperuserRecord
 
 export type HeadBodyItem = RecordModel & {
   headRu?: string
