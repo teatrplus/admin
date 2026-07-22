@@ -1,5 +1,6 @@
 <script lang="ts">
   import UploadIcon from '~icons/material-symbols/upload-file-outline'
+  import { filterImageFiles } from '@/lib/media/images'
   import './MediaDropzone.css'
 
   let {
@@ -23,7 +24,7 @@
 
   const takeFiles = (list: FileList | null) => {
     if (!list?.length || disabled) return
-    const files = [...list].filter((file) => file.type.startsWith('image/') || accept === '*/*')
+    const files = filterImageFiles(list)
     if (!files.length) return
     onFiles(multiple ? files : files.slice(0, 1))
   }

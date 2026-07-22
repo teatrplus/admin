@@ -73,6 +73,10 @@ export type TranslationSchema = {
       uz: string
     }
     file: string
+    youtubeUrl: string
+    youtubeUrlHint: string
+    youtubeVideo: string
+    addYoutubeRow: string
     dropHint: string
     replaceImage: string
     contactManagers: string
@@ -84,7 +88,9 @@ export type TranslationSchema = {
     validationHeaderPhone: string
     validationMinItems: string
     validationItemLocales: string
-    validationGalleryFile: string
+    validationGalleryMedia: string
+    validationGalleryBoth: string
+    validationYoutubeUrl: string
     validationFailed: string
     noChanges: string
   }

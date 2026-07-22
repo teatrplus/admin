@@ -13,6 +13,7 @@
     required = false,
     multiline = false,
     disabled = false,
+    oninput,
     input,
   }: {
     label: string
@@ -24,6 +25,7 @@
     required?: boolean
     multiline?: boolean
     disabled?: boolean
+    oninput?: (event: Event & { currentTarget: HTMLInputElement }) => void
     input?: Snippet
   } = $props()
 </script>
@@ -54,6 +56,7 @@
       data-invalid={error ? 'true' : 'false'}
       {required}
       {disabled}
+      {oninput}
     />
   {/if}
   {#if error}

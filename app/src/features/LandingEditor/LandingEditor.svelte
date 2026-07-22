@@ -8,6 +8,7 @@
   import Select from '@/components/Select/Select.svelte'
   import type { SiteScope } from '@/lib/cms/scopes'
   import { useLocale } from '@/lib/i18n/context.svelte'
+  import { isImageFile } from '@/lib/media/images'
   import { getCurrentUser } from '@/lib/pocketbase/auth'
   import {
     CONTENT_LOCALES,
@@ -16,12 +17,14 @@
     emptyHeadBodyRow,
     fillBlankLocales,
     firstIncompleteContentLocale,
+    galleryRowHasImage,
     hasLandingFieldErrors,
     landingToForm,
     listManagers,
     loadLanding,
     saveLanding,
     serializeLandingForm,
+    youtubeThumbnailUrl,
     type ContentLocale,
     type GalleryRow,
     type HeadBodyRow,
@@ -59,11 +62,20 @@
 
   const sectionError = (section: 'venues' | 'advantages' | 'process' | 'gallery') => {
     if (!fieldErrors[section]) return undefined
-    return localeCtx.t.landing.validationMinItems.replace('{section}', localeCtx.t.landing[section])
+    const labelKey = section === 'venues' ? 'venue' : section
+    return localeCtx.t.landing.validationMinItems.replace('{section}', localeCtx.t.landing[labelKey])
   }
 
-  const galleryFileError = (row: GalleryRow) =>
-    fieldErrors[`galleryItems.${row.localId}.file`] ? localeCtx.t.landing.validationGalleryFile : undefined
+  const galleryMediaError = (row: GalleryRow) => {
+    const prefix = `galleryItems.${row.localId}`
+    if (fieldErrors[`${prefix}.both`]) return localeCtx.t.landing.validationGalleryBoth
+    if (fieldErrors[`${prefix}.media`]) return localeCtx.t.landing.validationGalleryMedia
+    if (fieldErrors[`${prefix}.youtubeUrl`]) return localeCtx.t.landing.validationYoutubeUrl
+    return undefined
+  }
+
+  const galleryPreviewUrl = (row: GalleryRow) =>
+    row.previewUrl ?? youtubeThumbnailUrl(row.youtubeUrl) ?? undefined
 
   const applyForm = (next: LandingFormState) => {
     form = next
@@ -155,19 +167,36 @@
   }
 
   const setGalleryFile = (row: GalleryRow, file: File) => {
+    if (!isImageFile(file)) return
     revokePreview(row.previewUrl)
+    row.youtubeUrl = ''
     row.file = file
+    row.existingFile = undefined
     row.previewUrl = URL.createObjectURL(file)
   }
 
+  const setGalleryYoutubeUrl = (row: GalleryRow, youtubeUrl: string) => {
+    row.youtubeUrl = youtubeUrl
+    if (!youtubeUrl.trim()) return
+    revokePreview(row.previewUrl)
+    row.file = null
+    row.existingFile = undefined
+    row.previewUrl = undefined
+  }
+
   const addGalleryFiles = (files: File[]) => {
-    const rows = files.map((file) =>
+    const images = files.filter((file) => isImageFile(file))
+    const rows = images.map((file) =>
       emptyGalleryRow({
         file,
         previewUrl: URL.createObjectURL(file),
       }),
     )
     form.galleryItems = [...form.galleryItems, ...rows]
+  }
+
+  const addGalleryYoutubeRow = () => {
+    form.galleryItems = [...form.galleryItems, emptyGalleryRow()]
   }
 
   const removeExistingPartner = (name: string) => {
@@ -486,10 +515,15 @@
           {/if}
           <div class="landing_editor-media_grid">
             {#each form.galleryItems as row (row.localId)}
+              {@const hasImage = galleryRowHasImage(row)}
+              {@const hasYoutube = Boolean(row.youtubeUrl.trim())}
+              {@const previewUrl = galleryPreviewUrl(row)}
               <article class="landing_editor-media_card">
-                <div class="landing_editor-media_preview" data-invalid={galleryFileError(row) ? 'true' : undefined}>
-                  {#if row.previewUrl}
-                    <img class="landing_editor-media_image" src={row.previewUrl} alt="" />
+                <div class="landing_editor-media_preview" data-invalid={galleryMediaError(row) ? 'true' : undefined}>
+                  {#if previewUrl}
+                    <img class="landing_editor-media_image" src={previewUrl} alt="" />
+                  {:else if hasYoutube}
+                    <span class="landing_editor-media_empty">{localeCtx.t.landing.youtubeVideo}</span>
                   {:else}
                     <span class="landing_editor-media_empty">{localeCtx.t.landing.file}</span>
                   {/if}
@@ -500,6 +534,7 @@
                       variant="outline"
                       color="contrast"
                       size="sm"
+                      disabled={hasYoutube}
                       onclick={() => {
                         const input = document.getElementById(`gal-replace-${row.localId}`) as HTMLInputElement | null
                         input?.click()
@@ -526,6 +561,7 @@
                     class="u_sr_only"
                     type="file"
                     accept="image/*"
+                    disabled={hasYoutube}
                     onchange={(event) => {
                       const file = (event.currentTarget as HTMLInputElement).files?.[0]
                       if (file) setGalleryFile(row, file)
@@ -533,9 +569,19 @@
                     }}
                   />
                 </div>
-                {#if galleryFileError(row)}
-                  <p class="landing_editor-section_error">{galleryFileError(row)}</p>
+                {#if galleryMediaError(row)}
+                  <p class="landing_editor-section_error">{galleryMediaError(row)}</p>
                 {/if}
+                <FormField
+                  label={localeCtx.t.landing.youtubeUrl}
+                  name={`gal-youtube-${row.localId}`}
+                  type="url"
+                  bind:value={row.youtubeUrl}
+                  hint={localeCtx.t.landing.youtubeUrlHint}
+                  error={fieldErrors[`galleryItems.${row.localId}.youtubeUrl`] ? localeCtx.t.landing.validationYoutubeUrl : undefined}
+                  disabled={hasImage}
+                  oninput={(event) => setGalleryYoutubeUrl(row, event.currentTarget.value)}
+                />
                 <LocalizedField
                   locale={contentLocale}
                   label={localeCtx.t.landing.caption}
@@ -547,12 +593,17 @@
               </article>
             {/each}
           </div>
-          <MediaDropzone
-            label={localeCtx.t.landing.dropHint}
-            hint={localeCtx.t.landing.gallery}
-            multiple
-            onFiles={addGalleryFiles}
-          />
+          <div class="landing_editor-gallery_actions">
+            <MediaDropzone
+              label={localeCtx.t.landing.dropHint}
+              hint={localeCtx.t.landing.gallery}
+              multiple
+              onFiles={addGalleryFiles}
+            />
+            <Button type="button" variant="outline" color="neutral" onclick={addGalleryYoutubeRow}>
+              {localeCtx.t.landing.addYoutubeRow}
+            </Button>
+          </div>
         </section>
 
         <section class="landing_editor-section">

@@ -121,6 +121,17 @@
   display: flex;
 }
 
+.landing_editor-gallery_actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: start;
+  gap: var(--space-3);
+}
+
+.landing_editor-gallery_actions :global(.media_dropzone) {
+  flex: 1 1 14rem;
+}
+
 .landing_editor-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
