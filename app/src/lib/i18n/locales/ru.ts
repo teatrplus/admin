@@ -37,8 +37,8 @@ export const ru: TranslationSchema = {
   },
   nav: {
     sections: {
-      space: 'Space',
-      global: 'Global',
+      space: 'Пространство',
+      global: 'Общее',
     },
     landing: 'Лендинг',
     requests: 'Заявки',
