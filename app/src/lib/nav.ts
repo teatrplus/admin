@@ -1,10 +1,10 @@
 import type { AppRoute } from './router'
 
-export type NavItemIcon = 'landing' | 'requests' | 'staff'
+export type NavItemIcon = 'landing' | 'requests' | 'staff' | 'account'
 
 export type NavItem = {
   route: AppRoute
-  labelKey: 'landing' | 'requests' | 'staff'
+  labelKey: 'landing' | 'requests' | 'staff' | 'account'
   icon: NavItemIcon
 }
 

@@ -5,6 +5,7 @@ const normalizePath = (pathname: string): AppRoute | '/unknown' => {
   if (path === '/') return '/'
   if (path === '/login') return '/login'
   if (path === '/staff') return '/staff'
+  if (path === '/account') return '/account'
   if (path === '/forbidden') return '/forbidden'
   if (path === '/space/landing') return '/space/landing'
   if (path === '/space/requests') return '/space/requests'

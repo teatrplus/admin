@@ -4,6 +4,7 @@
   import LandingIcon from '~icons/material-symbols/web-outline'
   import RequestsIcon from '~icons/material-symbols/view-kanban-outline'
   import StaffIcon from '~icons/material-symbols/group-outline'
+  import AccountIcon from '~icons/material-symbols/person-outline'
   import CollapseIcon from '~icons/material-symbols/left-panel-close-outline'
   import ExpandIcon from '~icons/material-symbols/left-panel-open-outline'
   import LogoutIcon from '~icons/material-symbols/logout'
@@ -14,6 +15,7 @@
     landing: LandingIcon,
     requests: RequestsIcon,
     staff: StaffIcon,
+    account: AccountIcon,
   }
 
   let {

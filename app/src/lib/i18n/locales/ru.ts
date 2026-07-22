@@ -41,6 +41,7 @@ export const ru: TranslationSchema = {
     landing: 'Лендинг',
     requests: 'Заявки',
     staff: 'Сотрудники',
+    account: 'Настройки аккаунта',
     collapse: 'Свернуть',
     expand: 'Развернуть',
   },
@@ -113,6 +114,12 @@ export const ru: TranslationSchema = {
       cancelled: 'Отменено',
     },
   },
+  account: {
+    title: 'Мой Профиль',
+    profile: 'Профиль',
+    updated: 'Аккаунт обновлён',
+    validationFailed: 'Исправьте выделенные поля перед сохранением.',
+  },
   staff: {
     title: 'Сотрудники',
     create: 'Создать пользователя',
@@ -126,7 +133,7 @@ export const ru: TranslationSchema = {
     phoneNumber: 'Телефон',
     telegramUsername: 'Telegram',
     role: 'Роль',
-    scope: 'Область',
+    scope: 'Проект',
     roles: {
       admin: 'Администратор',
       moderator: 'Модератор',

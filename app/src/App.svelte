@@ -10,6 +10,7 @@
   import LandingEditor from './features/LandingEditor/LandingEditor.svelte'
   import LoginPage from './features/LoginPage/LoginPage.svelte'
   import RequestsBoard from './features/RequestsBoard/RequestsBoard.svelte'
+  import AccountSettings from './features/AccountSettings/AccountSettings.svelte'
   import StaffManager from './features/StaffManager/StaffManager.svelte'
   import ToastList from './components/ToastList/ToastList.svelte'
 
@@ -62,6 +63,10 @@
   {:else if route === '/staff'}
     <AdminShell>
       <StaffManager />
+    </AdminShell>
+  {:else if route === '/account'}
+    <AdminShell>
+      <AccountSettings />
     </AdminShell>
   {:else if route === '/space/landing'}
     <AdminShell>

@@ -34,7 +34,7 @@
 
   let collapsed = $state(readCollapsed())
 
-  const itemLabel = (labelKey: 'landing' | 'requests' | 'staff') => localeCtx.t.nav[labelKey]
+  const itemLabel = (labelKey: 'landing' | 'requests' | 'staff' | 'account') => localeCtx.t.nav[labelKey]
 
   const sectionLabel = (labelKey: 'space' | 'global') => localeCtx.t.nav.sections[labelKey]
 

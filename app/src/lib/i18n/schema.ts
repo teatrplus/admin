@@ -39,8 +39,15 @@ export type TranslationSchema = {
     landing: string
     requests: string
     staff: string
+    account: string
     collapse: string
     expand: string
+  }
+  account: {
+    title: string
+    profile: string
+    updated: string
+    validationFailed: string
   }
   landing: {
     title: string

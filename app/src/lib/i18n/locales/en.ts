@@ -41,6 +41,7 @@ export const en: TranslationSchema = {
     landing: 'Landing',
     requests: 'Requests',
     staff: 'Staff',
+    account: 'Account settings',
     collapse: 'Collapse',
     expand: 'Expand',
   },
@@ -112,6 +113,12 @@ export const en: TranslationSchema = {
       completed: 'Completed',
       cancelled: 'Cancelled',
     },
+  },
+  account: {
+    title: 'My Profile',
+    profile: 'Profile',
+    updated: 'Account updated',
+    validationFailed: 'Fix the highlighted fields before saving.',
   },
   staff: {
     title: 'Staff',
