@@ -13,6 +13,7 @@
     required = false,
     multiline = false,
     disabled = false,
+    autocomplete,
     oninput,
     input,
   }: {
@@ -25,6 +26,7 @@
     required?: boolean
     multiline?: boolean
     disabled?: boolean
+    autocomplete?: string
     oninput?: (event: Event & { currentTarget: HTMLInputElement }) => void
     input?: Snippet
   } = $props()
@@ -45,6 +47,7 @@
       data-invalid={error ? 'true' : 'false'}
       {required}
       {disabled}
+      autocomplete={autocomplete ?? undefined}
     ></textarea>
   {:else}
     <input
@@ -56,6 +59,7 @@
       data-invalid={error ? 'true' : 'false'}
       {required}
       {disabled}
+      autocomplete={autocomplete ?? undefined}
       {oninput}
     />
   {/if}

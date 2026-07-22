@@ -149,7 +149,7 @@
     {:else}
       <div class="account_settings-body">
         <section class="account_settings-section">
-          <form class="account_settings-form" onsubmit={submit}>
+          <form class="account_settings-form" autocomplete="off" onsubmit={submit}>
             <div class="account_settings-form_header">
               <h2 class="account_settings-section_title">{localeCtx.t.account.profile}</h2>
               <Button type="submit" isLoading={saveMutation.isPending}>
@@ -162,6 +162,7 @@
               label={localeCtx.t.staff.email}
               name="email"
               type="email"
+              autocomplete="off"
               bind:value={form.values.email}
               error={form.errors.email}
               required
@@ -180,6 +181,7 @@
               label={localeCtx.t.staff.password}
               name="password"
               type="password"
+              autocomplete="new-password"
               bind:value={form.values.password}
               error={form.errors.password}
               hint={localeCtx.t.staff.passwordOptional}
@@ -188,6 +190,7 @@
               label={localeCtx.t.staff.passwordConfirm}
               name="passwordConfirm"
               type="password"
+              autocomplete="new-password"
               bind:value={form.values.passwordConfirm}
               error={form.errors.passwordConfirm}
             />

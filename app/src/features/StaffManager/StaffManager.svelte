@@ -211,7 +211,7 @@
     {:else}
       <div class="staff_manager-body">
         <section class="staff_manager-section">
-          <form class="staff_manager-form" onsubmit={submit}>
+          <form class="staff_manager-form" autocomplete="off" onsubmit={submit}>
             <div class="staff_manager-form_header">
               <h2 class="staff_manager-section_title">
                 {isEditing ? localeCtx.t.staff.edit : localeCtx.t.staff.create}
@@ -233,6 +233,7 @@
               label={localeCtx.t.staff.email}
               name="email"
               type="email"
+              autocomplete="off"
               bind:value={form.values.email}
               error={form.errors.email}
               required
@@ -247,6 +248,7 @@
               label={localeCtx.t.staff.password}
               name="password"
               type="password"
+              autocomplete="new-password"
               bind:value={form.values.password}
               error={form.errors.password}
               hint={isEditing ? localeCtx.t.staff.passwordOptional : undefined}
@@ -256,6 +258,7 @@
               label={localeCtx.t.staff.passwordConfirm}
               name="passwordConfirm"
               type="password"
+              autocomplete="new-password"
               bind:value={form.values.passwordConfirm}
               error={form.errors.passwordConfirm}
               required={!isEditing}
