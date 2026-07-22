@@ -29,7 +29,6 @@ if [[ "${DEPLOY_BACKUP_PB_DATA:-1}" == "1" ]]; then
 set -euo pipefail
 [[ -d "$REMOTE_ADMIN_DIR/pb_data" ]] || exit 0
 stamp=\$(date -u +%Y%m%dT%H%M%SZ)
-mkdir -p "$REMOTE_BACKUP_DIR"
 tar -czf "$REMOTE_BACKUP_DIR/pb_data-\${stamp}.tar.gz" -C "$REMOTE_ADMIN_DIR" pb_data
 find "$REMOTE_BACKUP_DIR" -name 'pb_data-*.tar.gz' -mtime +14 -delete
 EOF
