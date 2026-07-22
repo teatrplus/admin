@@ -23,3 +23,10 @@ export const formatDateOnly = (value: string | null | undefined, locale: Locale)
     year: 'numeric',
   }).format(date)
 }
+
+/** Value for `<input type="date">` — PocketBase stores a datetime string. */
+export const toDateInputValue = (value: string | null | undefined) => {
+  if (!value) return ''
+  const ymd = value.slice(0, 10)
+  return /^\d{4}-\d{2}-\d{2}$/.test(ymd) ? ymd : ''
+}

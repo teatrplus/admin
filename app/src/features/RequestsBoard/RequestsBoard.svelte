@@ -8,7 +8,7 @@
   import ExpandIcon from '~icons/material-symbols/expand-more'
   import MoreVertIcon from '~icons/material-symbols/more-vert'
   import type { SiteScope } from '@/lib/cms/scopes'
-  import { formatDateOnly } from '@/lib/format'
+  import { toDateInputValue } from '@/lib/format'
   import { useLocale } from '@/lib/i18n/context.svelte'
   import { listManagers } from '@/lib/pocketbase/landing'
   import { normalizeStage, REQUEST_STAGES } from '@/lib/pocketbase/permissions'
@@ -18,25 +18,31 @@
     loadRequests,
     patchRequestInList,
     removeRequestFromList,
-    requestsQueryKey,
+    requestsBoardQueryKey,
+    requestsScopeQueryFilter,
+    updateRequestDate,
     updateRequestManager,
     updateRequestPlacement,
   } from '@/lib/pocketbase/requests'
   import type { RequestStage, SpaceRequestRecord, StaffRecord } from '@/lib/pocketbase/types'
   import { pushToast } from '@/stores/toastStore.svelte'
   import Avatar from './Avatar.svelte'
+  import RequestsTable from './RequestsTable.svelte'
   import './RequestsBoard.css'
 
   type BoardCard = SpaceRequestRecord & { id: string }
+  type BoardView = 'board' | 'table'
 
   const flipDurationMs = 180
+  const ARCHIVE_STAGES: readonly RequestStage[] = ['rejected', 'completed', 'cancelled']
 
   let { scope }: { scope: SiteScope } = $props()
 
   const localeCtx = useLocale()
   const queryClient = useQueryClient()
-  const queryKey = $derived(requestsQueryKey(scope))
+  const queryKey = $derived(requestsBoardQueryKey(scope))
 
+  let view = $state<BoardView>('board')
   /** Local board state for DnD; kept in sync from query when idle. */
   let columns = $state<Record<RequestStage, BoardCard[]>>(emptyColumns())
   let dragging = $state(false)
@@ -83,6 +89,7 @@
   const requestsQuery = createQuery(() => ({
     queryKey: queryKey,
     queryFn: () => loadRequests(scope),
+    enabled: view === 'board',
   }))
 
   const managersQuery = createQuery(() => ({
@@ -92,7 +99,7 @@
 
   // Query cache is source of truth. Resync board when not mid-drag.
   $effect(() => {
-    if (dragging) return
+    if (view !== 'board' || dragging) return
     if (!requestsQuery.isSuccess || !requestsQuery.data) return
     columns = toColumns(requestsQuery.data)
   })
@@ -116,6 +123,10 @@
 
   const setCache = (list: SpaceRequestRecord[]) => {
     queryClient.setQueryData<SpaceRequestRecord[]>(queryKey, list)
+  }
+
+  const invalidateScope = async () => {
+    await queryClient.invalidateQueries(requestsScopeQueryFilter(scope))
   }
 
   const placementMutation = createMutation(() => ({
@@ -145,7 +156,7 @@
       setCache(patchRequestInList(queryClient.getQueryData(queryKey), updated))
     },
     onSettled: async () => {
-      await queryClient.invalidateQueries({ queryKey })
+      await invalidateScope()
     },
   }))
 
@@ -179,7 +190,33 @@
       setCache(patchRequestInList(queryClient.getQueryData(queryKey), updated))
     },
     onSettled: async () => {
-      await queryClient.invalidateQueries({ queryKey })
+      await invalidateScope()
+    },
+  }))
+
+  const dateMutation = createMutation(() => ({
+    mutationFn: ({ id, dateRequested }: { id: string; dateRequested: string }) =>
+      updateRequestDate(scope, id, dateRequested),
+    onMutate: async ({ id, dateRequested }) => {
+      await queryClient.cancelQueries({ queryKey })
+      const previous = queryClient.getQueryData<SpaceRequestRecord[]>(queryKey)
+      setCache(
+        (previous ?? []).map((record) =>
+          record.id === id ? { ...record, dateRequested } : record,
+        ),
+      )
+      return { previous }
+    },
+    onError: (error, _vars, context) => {
+      if (context?.previous) setCache(context.previous)
+      pushToast(error instanceof Error ? error.message : localeCtx.t.common.error, 'error')
+    },
+    onSuccess: (updated) => {
+      setCache(patchRequestInList(queryClient.getQueryData(queryKey), updated))
+      pushToast(localeCtx.t.requests.dateUpdated, 'success')
+    },
+    onSettled: async () => {
+      await invalidateScope()
     },
   }))
 
@@ -199,7 +236,7 @@
       pushToast(localeCtx.t.requests.archived, 'success')
     },
     onSettled: async () => {
-      await queryClient.invalidateQueries({ queryKey })
+      await invalidateScope()
     },
   }))
 
@@ -244,13 +281,17 @@
     })
   }
 
-  const ARCHIVE_STAGES: readonly RequestStage[] = ['rejected', 'completed', 'cancelled']
-
   const canArchive = (stage: RequestStage) => ARCHIVE_STAGES.includes(stage)
 
   const assignManager = (card: BoardCard, managerId: string) => {
     if ((card.manager || '') === managerId) return
     managerMutation.mutate({ id: card.id, managerId })
+  }
+
+  const assignDate = (card: BoardCard, dateRequested: string) => {
+    const current = toDateInputValue(card.dateRequested)
+    if (!dateRequested || dateRequested === current) return
+    dateMutation.mutate({ id: card.id, dateRequested })
   }
 
   const archiveCard = (card: BoardCard, stage: RequestStage) => {
@@ -271,15 +312,44 @@
 <section class="requests_board">
   <header class="requests_board-toolbar">
     <div class="l_container">
-      <div class="requests_board-heading">
-        <p class="requests_board-eyebrow">{localeCtx.t.scopes[scope]}</p>
-        <h1 class="requests_board-title">{localeCtx.t.requests.title}</h1>
+      <div class="requests_board-toolbar_row">
+        <div class="requests_board-heading">
+          <p class="requests_board-eyebrow">{localeCtx.t.scopes[scope]}</p>
+          <h1 class="requests_board-title">{localeCtx.t.requests.title}</h1>
+        </div>
+
+        <div class="requests_board-view_switch" role="group" aria-label={localeCtx.t.requests.title}>
+          <button
+            type="button"
+            class="requests_board-view_btn"
+            data-active={view === 'board' ? 'true' : undefined}
+            aria-pressed={view === 'board'}
+            onclick={() => {
+              view = 'board'
+            }}
+          >
+            {localeCtx.t.requests.viewBoard}
+          </button>
+          <button
+            type="button"
+            class="requests_board-view_btn"
+            data-active={view === 'table' ? 'true' : undefined}
+            aria-pressed={view === 'table'}
+            onclick={() => {
+              view = 'table'
+            }}
+          >
+            {localeCtx.t.requests.viewTable}
+          </button>
+        </div>
       </div>
     </div>
   </header>
 
   <div class="l_container" data-size="fluid">
-    {#if requestsQuery.isPending}
+    {#if view === 'table'}
+      <RequestsTable {scope} />
+    {:else if requestsQuery.isPending}
       <p class="requests_board-status">{localeCtx.t.common.loading}</p>
     {:else if requestsQuery.isError}
       <p class="requests_board-status" data-tone="error">
@@ -358,7 +428,23 @@
                     </div>
                     <div>
                       <dt>{localeCtx.t.requests.dateRequested}</dt>
-                      <dd>{formatDateOnly(card.dateRequested, localeCtx.locale)}</dd>
+                      <dd>
+                        <!-- svelte-ignore a11y_no_static_element_interactions a11y_no_noninteractive_element_interactions -->
+                        <div
+                          class="requests_board-date_wrap"
+                          onpointerdown={stopCardDrag}
+                          onmousedown={stopCardDrag}
+                          ontouchstart={stopCardDrag}
+                        >
+                          <input
+                            class="requests_board-date"
+                            type="date"
+                            value={toDateInputValue(card.dateRequested)}
+                            aria-label={localeCtx.t.requests.dateRequested}
+                            onchange={(event) => assignDate(card, event.currentTarget.value)}
+                          />
+                        </div>
+                      </dd>
                     </div>
                   </dl>
 

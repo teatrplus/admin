@@ -37,11 +37,7 @@
   const schema = $derived(
     v.pipe(
       v.object({
-        email: v.pipe(
-          v.string(),
-          v.nonEmpty(localeCtx.t.validation.required),
-          v.email(localeCtx.t.validation.email),
-        ),
+        email: v.pipe(v.string(), v.nonEmpty(localeCtx.t.validation.required), v.email(localeCtx.t.validation.email)),
         password: v.string(),
         passwordConfirm: v.string(),
         name: v.optional(v.string()),
