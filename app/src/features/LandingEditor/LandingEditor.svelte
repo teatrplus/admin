@@ -74,8 +74,7 @@
     return undefined
   }
 
-  const galleryPreviewUrl = (row: GalleryRow) =>
-    row.previewUrl ?? youtubeThumbnailUrl(row.youtubeUrl) ?? undefined
+  const galleryPreviewUrl = (row: GalleryRow) => row.previewUrl ?? youtubeThumbnailUrl(row.youtubeUrl) ?? undefined
 
   const applyForm = (next: LandingFormState) => {
     form = next
@@ -528,20 +527,21 @@
                     <span class="landing_editor-media_empty">{localeCtx.t.landing.file}</span>
                   {/if}
                   <div class="landing_editor-media_actions">
-                    <Button
-                      class="landing_editor-replace_btn"
-                      type="button"
-                      variant="outline"
-                      color="contrast"
-                      size="sm"
-                      disabled={hasYoutube}
-                      onclick={() => {
-                        const input = document.getElementById(`gal-replace-${row.localId}`) as HTMLInputElement | null
-                        input?.click()
-                      }}
-                    >
-                      {localeCtx.t.landing.replaceImage}
-                    </Button>
+                    {#if !hasYoutube}
+                      <Button
+                        class="landing_editor-replace_btn"
+                        type="button"
+                        variant="outline"
+                        color="contrast"
+                        size="sm"
+                        onclick={() => {
+                          const input = document.getElementById(`gal-replace-${row.localId}`) as HTMLInputElement | null
+                          input?.click()
+                        }}
+                      >
+                        {localeCtx.t.landing.replaceImage}
+                      </Button>
+                    {/if}
                     <Button
                       class="landing_editor-delete_btn"
                       type="button"
@@ -578,7 +578,9 @@
                   type="url"
                   bind:value={row.youtubeUrl}
                   hint={localeCtx.t.landing.youtubeUrlHint}
-                  error={fieldErrors[`galleryItems.${row.localId}.youtubeUrl`] ? localeCtx.t.landing.validationYoutubeUrl : undefined}
+                  error={fieldErrors[`galleryItems.${row.localId}.youtubeUrl`]
+                    ? localeCtx.t.landing.validationYoutubeUrl
+                    : undefined}
                   disabled={hasImage}
                   oninput={(event) => setGalleryYoutubeUrl(row, event.currentTarget.value)}
                 />
