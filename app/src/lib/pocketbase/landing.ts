@@ -433,10 +433,10 @@ export const saveLanding = async (scope: SiteScope, form: LandingFormState) => {
   const processCollection = scopedCollection.processItem(scope)
   const galleryCollection = scopedCollection.galleryItem(scope)
 
-  for (const id of form.removedVenueIds) await pb.collection(venueCollection).delete(id)
-  for (const id of form.removedAdvantageIds) await pb.collection(advantageCollection).delete(id)
-  for (const id of form.removedProcessIds) await pb.collection(processCollection).delete(id)
-  for (const id of form.removedGalleryIds) await pb.collection(galleryCollection).delete(id)
+  await Promise.all(form.removedVenueIds.map((id) => pb.collection(venueCollection).delete(id)))
+  await Promise.all(form.removedAdvantageIds.map((id) => pb.collection(advantageCollection).delete(id)))
+  await Promise.all(form.removedProcessIds.map((id) => pb.collection(processCollection).delete(id)))
+  await Promise.all(form.removedGalleryIds.map((id) => pb.collection(galleryCollection).delete(id)))
 
   const venueIds = await Promise.all(form.venueItems.map((row) => upsertHeadBody(venueCollection, row)))
   const advantageIds = await Promise.all(

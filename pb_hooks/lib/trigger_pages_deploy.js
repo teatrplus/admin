@@ -7,6 +7,8 @@
  * one pending build. A build already in progress is not cancelled (Pages API).
  */
 
+const CF_API_TIMEOUT = 10
+
 const readEnv = (key) => {
   const value = $os.getenv(key)
   if (!value || value.trim() === '') return ''
@@ -31,7 +33,7 @@ const cloudflareApiRequest = (config, method, path) => {
       Authorization: `Bearer ${config.token}`,
       'Content-Type': 'application/json',
     },
-    timeout: 30,
+    timeout: CF_API_TIMEOUT,
   })
 
   const body = response.json
@@ -105,7 +107,7 @@ const triggerPagesDeploy = (collectionName) => {
     const response = $http.send({
       method: 'POST',
       url,
-      timeout: 30,
+      timeout: CF_API_TIMEOUT,
     })
 
     if (response.statusCode < 200 || response.statusCode >= 300) {
