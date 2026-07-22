@@ -211,10 +211,23 @@
     {:else}
       <div class="staff_manager-body">
         <section class="staff_manager-section">
-          <h2 class="staff_manager-section_title">
-            {isEditing ? localeCtx.t.staff.edit : localeCtx.t.staff.create}
-          </h2>
           <form class="staff_manager-form" onsubmit={submit}>
+            <div class="staff_manager-form_header">
+              <h2 class="staff_manager-section_title">
+                {isEditing ? localeCtx.t.staff.edit : localeCtx.t.staff.create}
+              </h2>
+              <div class="staff_manager-form_actions">
+                {#if isEditing}
+                  <Button type="button" variant="ghost" color="neutral" onclick={resetToCreate}>
+                    {localeCtx.t.common.cancel}
+                  </Button>
+                {/if}
+                <Button type="submit" isLoading={saveMutation.isPending}>
+                  {isEditing ? localeCtx.t.common.save : localeCtx.t.staff.create}
+                </Button>
+              </div>
+            </div>
+
             <FormField label={localeCtx.t.staff.name} name="name" bind:value={form.values.name} />
             <FormField
               label={localeCtx.t.staff.email}
@@ -269,21 +282,10 @@
                 <p class="form_field-error">{form.errors.scopeSpace}</p>
               {/if}
             </fieldset>
-
-            <div class="staff_manager-form_actions">
-              {#if isEditing}
-                <Button type="button" variant="ghost" color="neutral" onclick={resetToCreate}>
-                  {localeCtx.t.common.cancel}
-                </Button>
-              {/if}
-              <Button type="submit" isLoading={saveMutation.isPending}>
-                {isEditing ? localeCtx.t.common.save : localeCtx.t.staff.create}
-              </Button>
-            </div>
           </form>
         </section>
 
-        <section class="staff_manager-section">
+        <section class="staff_manager-section" data-section="table">
           <h2 class="staff_manager-section_title">{localeCtx.t.staff.list}</h2>
           <div class="staff_manager-table_wrap">
             <table class="staff_manager-table">
