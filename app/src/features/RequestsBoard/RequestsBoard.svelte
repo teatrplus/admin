@@ -2,18 +2,22 @@
   import { createMutation, createQuery, useQueryClient } from '@tanstack/svelte-query'
   import { flip } from 'svelte/animate'
   import { dndzone, type DndEvent } from 'svelte-dnd-action'
-  import { Select as SelectPrimitive } from 'bits-ui'
+  import { DropdownMenu, Select as SelectPrimitive } from 'bits-ui'
+  import ArchiveIcon from '~icons/material-symbols/archive-outline'
   import CheckIcon from '~icons/material-symbols/check'
   import ExpandIcon from '~icons/material-symbols/expand-more'
+  import MoreVertIcon from '~icons/material-symbols/more-vert'
   import type { SiteScope } from '@/lib/cms/scopes'
   import { formatDateOnly } from '@/lib/format'
   import { useLocale } from '@/lib/i18n/context.svelte'
   import { listManagers } from '@/lib/pocketbase/landing'
   import { normalizeStage, REQUEST_STAGES } from '@/lib/pocketbase/permissions'
   import {
+    archiveRequest,
     indexForColumnPosition,
     loadRequests,
     patchRequestInList,
+    removeRequestFromList,
     requestsQueryKey,
     updateRequestManager,
     updateRequestPlacement,
@@ -54,6 +58,7 @@
   const toColumns = (records: SpaceRequestRecord[]) => {
     const next = emptyColumns()
     for (const record of records) {
+      if (record.isArchived) continue
       const stage = normalizeStage(record.stage) as RequestStage
       const bucket = REQUEST_STAGES.includes(stage) ? stage : 'inquiry'
       next[bucket] = [...next[bucket], { ...record, id: record.id }]
@@ -178,6 +183,26 @@
     },
   }))
 
+  const archiveMutation = createMutation(() => ({
+    mutationFn: (id: string) => archiveRequest(scope, id),
+    onMutate: async (id) => {
+      await queryClient.cancelQueries({ queryKey })
+      const previous = queryClient.getQueryData<SpaceRequestRecord[]>(queryKey)
+      setCache(removeRequestFromList(previous, id))
+      return { previous }
+    },
+    onError: (error, _id, context) => {
+      if (context?.previous) setCache(context.previous)
+      pushToast(error instanceof Error ? error.message : localeCtx.t.common.error, 'error')
+    },
+    onSuccess: () => {
+      pushToast(localeCtx.t.requests.archived, 'success')
+    },
+    onSettled: async () => {
+      await queryClient.invalidateQueries({ queryKey })
+    },
+  }))
+
   const handleConsider = (stage: RequestStage) => (event: CustomEvent<DndEvent<BoardCard>>) => {
     dragging = true
     columns = { ...columns, [stage]: event.detail.items }
@@ -219,9 +244,21 @@
     })
   }
 
+  const ARCHIVE_STAGES: readonly RequestStage[] = ['rejected', 'completed', 'cancelled']
+
+  const canArchive = (stage: RequestStage) => ARCHIVE_STAGES.includes(stage)
+
   const assignManager = (card: BoardCard, managerId: string) => {
     if ((card.manager || '') === managerId) return
     managerMutation.mutate({ id: card.id, managerId })
+  }
+
+  const archiveCard = (card: BoardCard, stage: RequestStage) => {
+    if (!canArchive(stage)) {
+      pushToast(localeCtx.t.requests.archiveBlocked, 'warning')
+      return
+    }
+    archiveMutation.mutate(card.id)
   }
 
   const stageLabel = (stage: RequestStage) => localeCtx.t.requests.stages[stage] ?? stage
@@ -272,7 +309,48 @@
             >
               {#each columns[stage] as card (card.id)}
                 <article class="requests_board-card" animate:flip={{ duration: flipDurationMs }}>
-                  <p class="requests_board-card_name">{card.clientName || '—'}</p>
+                  <div class="requests_board-card_header">
+                    <p class="requests_board-card_name">{card.clientName || '—'}</p>
+                    <!-- svelte-ignore a11y_no_static_element_interactions a11y_no_noninteractive_element_interactions -->
+                    <div
+                      class="requests_board-card_menu"
+                      onpointerdown={stopCardDrag}
+                      onmousedown={stopCardDrag}
+                      ontouchstart={stopCardDrag}
+                    >
+                      <DropdownMenu.Root>
+                        <DropdownMenu.Trigger
+                          class="requests_board-menu_trigger"
+                          aria-label={localeCtx.t.requests.actions}
+                        >
+                          <MoreVertIcon width="18" height="18" />
+                        </DropdownMenu.Trigger>
+                        <DropdownMenu.Portal>
+                          <DropdownMenu.Content
+                            class="requests_board-menu_content"
+                            sideOffset={6}
+                            align="end"
+                          >
+                            <DropdownMenu.Item
+                              class="requests_board-menu_item"
+                              textValue={localeCtx.t.requests.archive}
+                              data-disabled={!canArchive(stage) ? 'true' : undefined}
+                              aria-disabled={!canArchive(stage) ? 'true' : undefined}
+                              onSelect={() => archiveCard(card, stage)}
+                            >
+                              <span class="requests_board-menu_item_icon" aria-hidden="true">
+                                <ArchiveIcon width="16" height="16" />
+                              </span>
+                              <span class="requests_board-menu_item_label">
+                                {localeCtx.t.requests.archive}
+                              </span>
+                            </DropdownMenu.Item>
+                          </DropdownMenu.Content>
+                        </DropdownMenu.Portal>
+                      </DropdownMenu.Root>
+                    </div>
+                  </div>
+
                   <dl class="requests_board-card_meta">
                     <div>
                       <dt>{localeCtx.t.requests.clientPhone}</dt>

@@ -89,6 +89,10 @@ export const en: TranslationSchema = {
     manager: 'Manager',
     stage: 'Stage',
     unassigned: 'Unassigned',
+    archive: 'Archive',
+    archived: 'Request archived',
+    actions: 'Actions',
+    archiveBlocked: 'Only rejected, completed, or cancelled tickets can be archived.',
     stages: {
       inquiry: 'Inquiry',
       confirmed: 'Confirmed',

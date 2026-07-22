@@ -119,11 +119,98 @@
   opacity: var(--opacity-muted);
 }
 
+.requests_board-card_header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-2);
+  margin-bottom: var(--space-3);
+}
+
 .requests_board-card_name {
-  margin: 0 0 var(--space-3);
+  margin: 0;
+  flex: 1 1 auto;
+  min-width: 0;
   font-size: var(--text-sm);
   font-weight: var(--weight-semibold);
   color: var(--ink-main);
+}
+
+.requests_board-card_menu {
+  flex-shrink: 0;
+}
+
+.requests_board-menu_trigger {
+  display: inline-grid;
+  place-items: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  padding: 0;
+  border: none;
+  border-radius: var(--radius-md);
+  background: transparent;
+  color: var(--ink-muted);
+  cursor: pointer;
+}
+
+.requests_board-menu_trigger:hover,
+.requests_board-menu_trigger[data-state='open'] {
+  background: var(--bg-surface-hover);
+  color: var(--ink-main);
+}
+
+.requests_board-menu_trigger:focus-visible {
+  outline: 2px solid var(--border-focus);
+  outline-offset: 1px;
+}
+
+.requests_board-menu_content {
+  z-index: var(--z-dropdown);
+  min-width: 10rem;
+  overflow: hidden;
+  padding: var(--space-1);
+  border: 1px solid var(--border-base);
+  border-radius: var(--radius-md);
+  background: var(--bg-surface);
+  box-shadow: var(--shadow-base);
+}
+
+.requests_board-menu_item {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: var(--space-2);
+  width: 100%;
+  padding: var(--space-2);
+  border-radius: calc(var(--radius-md) - 2px);
+  color: var(--ink-main);
+  font-size: var(--text-sm);
+  text-align: start;
+  cursor: pointer;
+  outline: none;
+  user-select: none;
+}
+
+.requests_board-menu_item[data-highlighted] {
+  background: var(--bg-surface-hover);
+}
+
+.requests_board-menu_item[data-disabled='true'] {
+  color: var(--ink-faint);
+  cursor: not-allowed;
+}
+
+.requests_board-menu_item[data-disabled='true'][data-highlighted] {
+  background: var(--bg-surface-hover);
+}
+
+.requests_board-menu_item_icon {
+  display: inline-flex;
+  flex-shrink: 0;
+}
+
+.requests_board-menu_item_label {
+  flex: 0 1 auto;
 }
 
 .requests_board-card_meta {

@@ -87,6 +87,10 @@ export type TranslationSchema = {
     manager: string
     stage: string
     unassigned: string
+    archive: string
+    archived: string
+    actions: string
+    archiveBlocked: string
     stages: Record<string, string>
   }
   staff: {

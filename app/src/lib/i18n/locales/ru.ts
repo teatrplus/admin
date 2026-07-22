@@ -89,6 +89,10 @@ export const ru: TranslationSchema = {
     manager: 'Менеджер',
     stage: 'Статус',
     unassigned: 'Не назначен',
+    archive: 'В архив',
+    archived: 'Заявка архивирована',
+    actions: 'Действия',
+    archiveBlocked: 'Архивировать можно только отклонённые, завершённые или отменённые заявки.',
     stages: {
       inquiry: 'Запрос',
       confirmed: 'Подтверждено',
