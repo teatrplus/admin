@@ -1,12 +1,16 @@
 <script lang="ts">
   import * as v from 'valibot'
+  import BrandTitle from '@/components/BrandTitle/BrandTitle.svelte'
   import Button from '@/components/Button/Button.svelte'
   import FormField from '@/components/FormField/FormField.svelte'
+  import RawSvg from '@/components/RawSvg/RawSvg.svelte'
+  import '@/components/RawSvg/RawSvg.css'
   import { createFormState } from '../../lib/forms/form-state.svelte'
   import { useLocale } from '../../lib/i18n/context.svelte'
   import { login } from '../../lib/pocketbase/auth'
   import { defaultRouteForUser } from '../../lib/pocketbase/permissions'
   import { navigate } from '../../lib/router'
+  import iconSvg from './assets/logo.svg?raw'
   import './LoginPage.css'
 
   const localeCtx = useLocale()
@@ -38,7 +42,8 @@
 
 <div class="login_page">
   <div class="login_page-card">
-    <h1 class="login_page-title">{localeCtx.t.auth.title}</h1>
+    <RawSvg class="login_page-logo raw_svg" content={iconSvg} width="48" height="48" aria-hidden="true" />
+    <h1 class="login_page-title"><BrandTitle /></h1>
     <form class="login_page-form" onsubmit={submit}>
       <FormField
         label={localeCtx.t.auth.email}

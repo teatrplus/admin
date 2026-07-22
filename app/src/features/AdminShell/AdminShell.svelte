@@ -1,5 +1,6 @@
 <script lang="ts">
   import type { Snippet } from 'svelte'
+  import BrandTitle from '@/components/BrandTitle/BrandTitle.svelte'
   import Button from '@/components/Button/Button.svelte'
   import NavIcon from '@/components/NavIcon/NavIcon.svelte'
   import RawSvg from '@/components/RawSvg/RawSvg.svelte'
@@ -66,7 +67,7 @@
       }}
     >
       <RawSvg class="admin_shell-brand_mark raw_svg" content={iconSvg} width="36" height="36" aria-hidden="true" />
-      <span class="admin_shell-brand_text">{localeCtx.t.common.appName}</span>
+      <span class="admin_shell-brand_text"><BrandTitle /></span>
     </a>
 
     <nav class="admin_shell-nav" aria-label="CMS">

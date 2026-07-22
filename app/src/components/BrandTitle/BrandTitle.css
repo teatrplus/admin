@@ -1,0 +1,4 @@
+.brand_title-lead::after {
+  content: '+';
+  color: var(--action-primary);
+}

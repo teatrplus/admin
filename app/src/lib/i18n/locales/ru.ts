@@ -2,7 +2,10 @@ import type { TranslationSchema } from '../schema'
 
 export const ru: TranslationSchema = {
   common: {
-    appName: 'Театр+ Админ',
+    brand: {
+      beforePlus: 'Театр',
+      afterPlus: ' Админ',
+    },
     save: 'Сохранить',
     cancel: 'Отмена',
     add: 'Добавить',
@@ -27,7 +30,6 @@ export const ru: TranslationSchema = {
     theater: 'Театр',
   },
   auth: {
-    title: 'Театр+ Админ',
     email: 'Email',
     password: 'Пароль',
     submit: 'Войти',
@@ -48,7 +50,7 @@ export const ru: TranslationSchema = {
   landing: {
     title: 'Редактор лендинга',
     general: 'Основное',
-    venues: 'Площадки',
+    venue: 'Площадкa',
     advantages: 'Преимущества',
     process: 'Процесс',
     gallery: 'Галерея',

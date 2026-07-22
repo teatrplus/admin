@@ -1,6 +1,9 @@
 export type TranslationSchema = {
   common: {
-    appName: string
+    brand: {
+      beforePlus: string
+      afterPlus: string
+    }
     save: string
     cancel: string
     add: string
@@ -25,7 +28,6 @@ export type TranslationSchema = {
     theater: string
   }
   auth: {
-    title: string
     email: string
     password: string
     submit: string
@@ -52,7 +54,7 @@ export type TranslationSchema = {
   landing: {
     title: string
     general: string
-    venues: string
+    venue: string
     advantages: string
     process: string
     gallery: string

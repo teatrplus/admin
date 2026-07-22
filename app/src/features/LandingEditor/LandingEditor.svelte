@@ -63,9 +63,7 @@
   }
 
   const galleryFileError = (row: GalleryRow) =>
-    fieldErrors[`galleryItems.${row.localId}.file`]
-      ? localeCtx.t.landing.validationGalleryFile
-      : undefined
+    fieldErrors[`galleryItems.${row.localId}.file`] ? localeCtx.t.landing.validationGalleryFile : undefined
 
   const applyForm = (next: LandingFormState) => {
     form = next
@@ -129,10 +127,7 @@
       .sort((a, b) => a.label.localeCompare(b.label))
   })
 
-  const staffSelectOptions = $derived([
-    { value: '', label: localeCtx.t.landing.none },
-    ...staffOptions,
-  ])
+  const staffSelectOptions = $derived([{ value: '', label: localeCtx.t.landing.none }, ...staffOptions])
 
   const removeHeadBodyRow = (
     key: 'venueItems' | 'advantageItems' | 'processItems',
@@ -235,11 +230,7 @@
           <h1 class="landing_editor-title">{localeCtx.t.landing.title}</h1>
         </div>
         <div class="l_cluster" data-gap="3" data-align="center">
-          <div
-            class="landing_editor-locale_switch"
-            role="tablist"
-            aria-label={localeCtx.t.landing.contentLocale}
-          >
+          <div class="landing_editor-locale_switch" role="tablist" aria-label={localeCtx.t.landing.contentLocale}>
             {#each CONTENT_LOCALES as locale}
               <button
                 type="button"
@@ -303,7 +294,7 @@
         </section>
 
         <section class="landing_editor-section">
-          <h2 class="landing_editor-section_title">{localeCtx.t.landing.venues}</h2>
+          <h2 class="landing_editor-section_title">{localeCtx.t.landing.venue}</h2>
           {#if sectionError('venues')}
             <p class="landing_editor-section_error">{sectionError('venues')}</p>
           {/if}
@@ -496,10 +487,7 @@
           <div class="landing_editor-media_grid">
             {#each form.galleryItems as row (row.localId)}
               <article class="landing_editor-media_card">
-                <div
-                  class="landing_editor-media_preview"
-                  data-invalid={galleryFileError(row) ? 'true' : undefined}
-                >
+                <div class="landing_editor-media_preview" data-invalid={galleryFileError(row) ? 'true' : undefined}>
                   {#if row.previewUrl}
                     <img class="landing_editor-media_image" src={row.previewUrl} alt="" />
                   {:else}
@@ -637,9 +625,7 @@
                   if (checked) {
                     form.footerContactManagerIds = [...form.footerContactManagerIds, option.value]
                   } else {
-                    form.footerContactManagerIds = form.footerContactManagerIds.filter(
-                      (id) => id !== option.value,
-                    )
+                    form.footerContactManagerIds = form.footerContactManagerIds.filter((id) => id !== option.value)
                   }
                 }}
               />

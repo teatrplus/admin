@@ -14,16 +14,29 @@
   box-shadow: var(--shadow-base);
 }
 
+.login_page-logo {
+  display: block;
+  width: 3rem;
+  height: 3rem;
+  margin-inline: auto;
+  margin-bottom: var(--space-4);
+}
+
 .login_page-title {
+  margin: 0 0 var(--space-6);
   font-family: var(--font-heading);
   font-size: var(--text-2xl);
   font-weight: var(--weight-semibold);
-  margin-bottom: var(--space-6);
+  text-align: center;
 }
 
 .login_page-form {
   display: grid;
   gap: var(--space-4);
+}
+
+.login_page-form .form_field-required {
+  display: none;
 }
 
 .login_page-error {
