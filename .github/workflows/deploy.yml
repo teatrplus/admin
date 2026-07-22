@@ -1,0 +1,45 @@
+name: Deploy
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-production
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: production
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+          cache-dependency-path: app/pnpm-lock.yaml
+
+      - uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.DEPLOY_SSH_KEY }}
+
+      - name: Trust VPS host key
+        run: ssh-keyscan -H "${{ vars.DEPLOY_HOST }}" >> ~/.ssh/known_hosts
+
+      - name: Deploy
+        env:
+          DEPLOY_HOST: ${{ vars.DEPLOY_HOST }}
+          REMOTE_ADMIN_DIR: ${{ vars.REMOTE_ADMIN_DIR || '/opt/teatrplus/admin' }}
+          VITE_POCKETBASE_URL: ${{ vars.VITE_POCKETBASE_URL || 'https://admin.theaterplus.uz' }}
+          DEPLOY_BACKUP_PB_DATA: ${{ vars.DEPLOY_BACKUP_PB_DATA || '1' }}
+        run: |
+          chmod +x deploy/deploy.sh
+          ./deploy/deploy.sh

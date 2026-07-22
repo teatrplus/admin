@@ -4,3 +4,4 @@ pocketbase
 pocketbase.exe
 
 .env
+deploy/env.deploy
