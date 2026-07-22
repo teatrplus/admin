@@ -10,7 +10,7 @@ ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 : "${DEPLOY_USER:?}"
 : "${VITE_POCKETBASE_URL:?}"
 
-REMOTE_BACKUP_DIR="${REMOTE_BACKUP_DIR:-/var/backups/teatrplus}"
+REMOTE_BACKUP_DIR="${REMOTE_BACKUP_DIR:-/var/backups/theaterplus}"
 PB="$REMOTE_ADMIN_DIR/pocketbase"
 
 ssh() { command ssh -o BatchMode=yes "$DEPLOY_USER@$DEPLOY_HOST" "$@"; }
