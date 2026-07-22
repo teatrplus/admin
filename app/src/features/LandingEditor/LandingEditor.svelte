@@ -543,10 +543,6 @@
                   bind:ru={row.captionRu}
                   bind:en={row.captionEn}
                   bind:uz={row.captionUz}
-                  errorRu={fieldError(`galleryItems.${row.localId}.captionRu`)}
-                  errorEn={fieldError(`galleryItems.${row.localId}.captionEn`)}
-                  errorUz={fieldError(`galleryItems.${row.localId}.captionUz`)}
-                  required
                 />
               </article>
             {/each}
