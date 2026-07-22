@@ -34,6 +34,22 @@ const triggerPagesDeploy = (collectionName) => {
   }
 }
 
+const onCmsRecordChange = (collectionName, event) => {
+  const error = triggerPagesDeploy(collectionName)
+  if (!error) return
+
+  $app.logger().error(
+    'cloudflare pages deploy hook failed',
+    'collection',
+    collectionName,
+    'recordId',
+    event?.record?.id ?? '',
+    'detail',
+    error,
+  )
+}
+
 module.exports = {
+  onCmsRecordChange,
   triggerPagesDeploy,
 }

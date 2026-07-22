@@ -210,7 +210,7 @@
   gap: var(--space-1);
 }
 
-.landing_editor-media_actions .button {
+.landing_editor-media_actions .landing_editor-replace_btn {
   background: color-mix(in srgb, var(--bg-surface) 88%, transparent);
   backdrop-filter: blur(var(--blur-soft));
 }
