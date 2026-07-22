@@ -11,7 +11,6 @@ ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 : "${VITE_POCKETBASE_URL:?}"
 
 REMOTE_BACKUP_DIR="${REMOTE_BACKUP_DIR:-/var/backups/theaterplus}"
-PB="$REMOTE_ADMIN_DIR/pocketbase"
 
 ssh() { command ssh -o BatchMode=yes "$DEPLOY_USER@$DEPLOY_HOST" "$@"; }
 rsync() { command rsync -avz -e ssh "$@"; }
@@ -40,6 +39,6 @@ rsync "$ROOT/pb_migrations/" "$DEPLOY_USER@$DEPLOY_HOST:$REMOTE_ADMIN_DIR/pb_mig
 rsync --delete "$ROOT/app/dist/" "$DEPLOY_USER@$DEPLOY_HOST:$REMOTE_ADMIN_DIR/pb_public/"
 
 echo "==> restart"
-ssh "touch '$PB'"
+ssh "sudo systemctl restart pocketbase.service"
 
 echo "==> done"
