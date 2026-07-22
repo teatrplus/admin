@@ -186,6 +186,16 @@
   &:where([data-loading='true']) {
     cursor: wait;
   }
+
+  & .g_spinner {
+    border-color: color-mix(in srgb, var(--ink-inverse) 25%, transparent);
+    border-top-color: var(--ink-inverse);
+  }
+}
+
+:where([data-theme='dark']) .button .g_spinner {
+  border-color: color-mix(in srgb, var(--ink-main) 25%, transparent);
+  border-top-color: var(--ink-main);
 }
 
 .button-label {
