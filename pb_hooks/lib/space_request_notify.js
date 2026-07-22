@@ -28,15 +28,10 @@ const escapeHtml = (value) =>
     .replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;')
 
-const escapeTelegramHtml = (value) =>
-  String(value ?? '')
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-
 const readEnv = (key, fallback) => {
   const value = $os.getenv(key)
-  return value && value.trim() !== '' ? value.trim() : fallback
+  if (!value || value.trim() === '') return fallback
+  return value.trim().replace(/^["']|["']$/g, '')
 }
 
 const MONTHS_RU = [
@@ -199,21 +194,21 @@ const buildEmailText = (snapshot, adminUrl) => {
   return lines.join('\n')
 }
 
-const buildTelegramHtml = (snapshot, adminUrl) => {
+const buildTelegramText = (snapshot, adminUrl) => {
   const lines = [
-    `<b>${escapeTelegramHtml(BRAND.name)} · Space</b>`,
-    `<b>Новая заявка на аренду</b>`,
+    `${BRAND.name} · Space`,
+    'Новая заявка на аренду',
     '',
-    `<b>Имя:</b> ${escapeTelegramHtml(snapshot.clientName)}`,
-    `<b>Телефон:</b> <code>${escapeTelegramHtml(snapshot.clientPhoneNumber)}</code>`,
-    `<b>Дата:</b> ${escapeTelegramHtml(snapshot.formattedDate)}`,
-    `<b>Статус:</b> ${escapeTelegramHtml(snapshot.stageLabel)}`,
-    `<b>Получено:</b> ${escapeTelegramHtml(snapshot.formattedCreated)}`,
-    `<b>ID:</b> <code>${escapeTelegramHtml(snapshot.id)}</code>`,
+    `Имя: ${snapshot.clientName}`,
+    `Телефон: ${snapshot.clientPhoneNumber}`,
+    `Дата: ${snapshot.formattedDate}`,
+    `Статус: ${snapshot.stageLabel}`,
+    `Получено: ${snapshot.formattedCreated}`,
+    `ID: ${snapshot.id}`,
   ]
 
   if (adminUrl) {
-    lines.push('', `<a href="${escapeTelegramHtml(adminUrl)}">Открыть в админке</a>`)
+    lines.push('', adminUrl)
   }
 
   return lines.join('\n')
@@ -251,12 +246,12 @@ const sendTelegram = (snapshot) => {
   const chatId = readEnv('TELEGRAM_CHANNEL_ID', '')
 
   if (!token || !chatId) {
-    throw new Error('TELEGRAM_BOT_TOKEN and TELEGRAM_CHANNEL_ID must be set.')
+    throw new Error('TELEGRAM_BOT_TOKEN and TELEGRAM_CHANNEL_ID must be set in the PocketBase process environment.')
   }
 
   const adminBase = readEnv('ADMIN_APP_URL', '')
   const adminUrl = adminBase ? `${adminBase.replace(/\/$/, '')}/space/requests` : ''
-  const text = buildTelegramHtml(snapshot, adminUrl)
+  const text = buildTelegramText(snapshot, adminUrl)
 
   const response = $http.send({
     method: 'POST',
@@ -265,22 +260,16 @@ const sendTelegram = (snapshot) => {
     body: JSON.stringify({
       chat_id: chatId,
       text,
-      parse_mode: 'HTML',
       disable_web_page_preview: true,
     }),
     timeout: 15,
   })
 
-  if (response.statusCode < 200 || response.statusCode >= 300) {
-    const detail =
-      typeof response.json === 'object' && response.json
-        ? JSON.stringify(response.json)
-        : String(response.raw || '')
-    throw new Error(`Telegram API responded with ${response.statusCode}: ${detail}`)
-  }
+  const api = response.json
 
-  if (response.json && response.json.ok === false) {
-    throw new Error(`Telegram API error: ${JSON.stringify(response.json)}`)
+  if (response.statusCode < 200 || response.statusCode >= 300 || (api && api.ok === false)) {
+    const detail = api ? JSON.stringify(api) : String(response.raw || '')
+    throw new Error(`Telegram API error (${response.statusCode}): ${detail}`)
   }
 }
 
