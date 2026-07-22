@@ -55,7 +55,7 @@
   opacity: 0.1;
 }
 
-.home_page-deco :global(svg) {
+.home_page-deco svg {
   display: block;
   width: 100%;
   height: auto;

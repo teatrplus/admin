@@ -7,12 +7,14 @@
   import AdminShell from './features/AdminShell/AdminShell.svelte'
   import ForbiddenPage from './features/ForbiddenPage/ForbiddenPage.svelte'
   import HomePage from './features/HomePage/HomePage.svelte'
-  import LandingEditor from './features/LandingEditor/LandingEditor.svelte'
   import LoginPage from './features/LoginPage/LoginPage.svelte'
-  import RequestsBoard from './features/RequestsBoard/RequestsBoard.svelte'
   import AccountSettings from './features/AccountSettings/AccountSettings.svelte'
-  import StaffManager from './features/StaffManager/StaffManager.svelte'
   import ToastList from './components/ToastList/ToastList.svelte'
+  import './App.css'
+
+  const loadStaffManager = () => import('./features/StaffManager/StaffManager.svelte')
+  const loadLandingEditor = () => import('./features/LandingEditor/LandingEditor.svelte')
+  const loadRequestsBoard = () => import('./features/RequestsBoard/RequestsBoard.svelte')
 
   initLocaleContext()
 
@@ -62,7 +64,11 @@
     </AdminShell>
   {:else if route === '/staff'}
     <AdminShell>
-      <StaffManager />
+      {#await loadStaffManager() then { default: StaffManager }}
+        <StaffManager />
+      {:catch}
+        <p class="app_route_status" role="alert">Failed to load staff manager.</p>
+      {/await}
     </AdminShell>
   {:else if route === '/account'}
     <AdminShell>
@@ -70,11 +76,19 @@
     </AdminShell>
   {:else if route === '/space/landing'}
     <AdminShell>
-      <LandingEditor scope="space" />
+      {#await loadLandingEditor() then { default: LandingEditor }}
+        <LandingEditor scope="space" />
+      {:catch}
+        <p class="app_route_status" role="alert">Failed to load landing editor.</p>
+      {/await}
     </AdminShell>
   {:else if route === '/space/requests'}
     <AdminShell>
-      <RequestsBoard scope="space" />
+      {#await loadRequestsBoard() then { default: RequestsBoard }}
+        <RequestsBoard scope="space" />
+      {:catch}
+        <p class="app_route_status" role="alert">Failed to load requests board.</p>
+      {/await}
     </AdminShell>
   {:else}
     <AdminShell>

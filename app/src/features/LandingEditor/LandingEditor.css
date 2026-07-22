@@ -128,7 +128,7 @@
   gap: var(--space-3);
 }
 
-.landing_editor-gallery_actions :global(.media_dropzone) {
+.landing_editor-gallery_actions .media_dropzone {
   flex: 1 1 14rem;
 }
 
@@ -204,7 +204,7 @@
   gap: var(--space-1);
 }
 
-.landing_editor-media_actions :global(.button) {
+.landing_editor-media_actions .button {
   background: color-mix(in srgb, var(--bg-surface) 88%, transparent);
   backdrop-filter: blur(var(--blur-soft));
 }

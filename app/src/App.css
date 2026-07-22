@@ -1,0 +1,13 @@
+@import './styles/fonts.css';
+@import './styles/theme.css';
+@import './styles/reset.css';
+@import './styles/layout.css';
+@import './styles/utils.css';
+@import './styles/generics.css';
+
+.app_route_status {
+  margin: 0;
+  padding: var(--space-6);
+  color: var(--ink-muted);
+  font-size: var(--text-sm);
+}
