@@ -43,7 +43,7 @@
         name: v.optional(v.string()),
         phoneNumber: v.optional(v.string()),
         telegramUsername: v.optional(v.string()),
-        role: v.picklist(['admin', 'moderator', 'manager']),
+        role: v.picklist(['admin', 'moderator', 'manager', 'viewer']),
         scopeTheater: v.boolean(),
         scopeSpace: v.boolean(),
       }),
@@ -85,7 +85,7 @@
   const form = createFormState({ ...emptyValues })
 
   const roleOptions = $derived(
-    (['admin', 'moderator', 'manager'] as StaffRole[]).map((role) => ({
+    (['admin', 'moderator', 'manager', 'viewer'] as StaffRole[]).map((role) => ({
       value: role,
       label: localeCtx.t.staff.roles[role],
     })),

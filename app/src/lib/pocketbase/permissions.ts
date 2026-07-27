@@ -34,6 +34,8 @@ export const isModerator = () => !isSuperuser() && normalizeRole(getCurrentUser(
 
 export const isManager = () => !isSuperuser() && normalizeRole(getCurrentUser()?.role) === 'manager'
 
+export const isViewer = () => !isSuperuser() && normalizeRole(getCurrentUser()?.role) === 'viewer'
+
 export const canAccessScope = (siteScope: SiteScope): boolean => {
   const user = getCurrentUser()
   if (!user) return false
@@ -55,6 +57,13 @@ export const canAccessRequests = (siteScope: SiteScope): boolean => {
   if (!canAccessScope(siteScope)) return false
   if (isSuperuser()) return true
   return normalizeRole(getCurrentUser()?.role) !== null
+}
+
+/** Viewers can open the board but must not mutate requests. */
+export const canEditRequests = (): boolean => {
+  if (isSuperuser()) return true
+  const role = normalizeRole(getCurrentUser()?.role)
+  return role === 'admin' || role === 'moderator' || role === 'manager'
 }
 
 export const canAccessStaff = (): boolean => isAdmin()

@@ -1,6 +1,6 @@
 import type { RecordModel } from 'pocketbase'
 
-export type StaffRole = 'admin' | 'moderator' | 'manager'
+export type StaffRole = 'admin' | 'moderator' | 'manager' | 'viewer'
 
 export type StaffScope = 'theater' | 'space'
 

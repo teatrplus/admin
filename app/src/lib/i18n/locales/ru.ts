@@ -146,6 +146,7 @@ export const ru: TranslationSchema = {
       admin: 'Администратор',
       moderator: 'Модератор',
       manager: 'Менеджер',
+      viewer: 'Наблюдатель',
     },
     scopes: {
       theater: 'Театр',

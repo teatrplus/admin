@@ -11,7 +11,7 @@
   import { toDateInputValue } from '@/lib/format'
   import { useLocale } from '@/lib/i18n/context.svelte'
   import { listManagers } from '@/lib/pocketbase/landing'
-  import { normalizeStage, REQUEST_STAGES } from '@/lib/pocketbase/permissions'
+  import { canEditRequests, normalizeStage, REQUEST_STAGES } from '@/lib/pocketbase/permissions'
   import {
     archiveRequest,
     indexForColumnPosition,
@@ -41,6 +41,7 @@
   const localeCtx = useLocale()
   const queryClient = useQueryClient()
   const queryKey = $derived(requestsBoardQueryKey(scope))
+  const canEdit = $derived(canEditRequests())
 
   let view = $state<BoardView>('board')
   /** Local board state for DnD; kept in sync from query when idle. */
@@ -95,6 +96,7 @@
   const managersQuery = createQuery(() => ({
     queryKey: ['managers'],
     queryFn: () => listManagers() as Promise<StaffRecord[]>,
+    enabled: canEdit,
   }))
 
   // Query cache is source of truth. Resync board when not mid-drag.
@@ -369,10 +371,13 @@
                 items: columns[stage],
                 type: 'space-requests',
                 flipDurationMs,
-                dropTargetStyle: {
-                  outline: '1px dashed var(--border-focus)',
-                  outlineOffset: '-2px',
-                },
+                dragDisabled: !canEdit,
+                dropTargetStyle: canEdit
+                  ? {
+                      outline: '1px dashed var(--border-focus)',
+                      outlineOffset: '-2px',
+                    }
+                  : {},
               }}
               onconsider={handleConsider(stage)}
               onfinalize={handleFinalize(stage)}
@@ -381,44 +386,46 @@
                 <article class="requests_board-card" animate:flip={{ duration: flipDurationMs }}>
                   <div class="requests_board-card_header">
                     <p class="requests_board-card_name">{card.clientName || '—'}</p>
-                    <!-- svelte-ignore a11y_no_static_element_interactions a11y_no_noninteractive_element_interactions -->
-                    <div
-                      class="requests_board-card_menu"
-                      onpointerdown={stopCardDrag}
-                      onmousedown={stopCardDrag}
-                      ontouchstart={stopCardDrag}
-                    >
-                      <DropdownMenu.Root>
-                        <DropdownMenu.Trigger
-                          class="requests_board-menu_trigger"
-                          aria-label={localeCtx.t.requests.actions}
-                        >
-                          <MoreVertIcon width="18" height="18" />
-                        </DropdownMenu.Trigger>
-                        <DropdownMenu.Portal>
-                          <DropdownMenu.Content
-                            class="requests_board-menu_content"
-                            sideOffset={6}
-                            align="end"
+                    {#if canEdit}
+                      <!-- svelte-ignore a11y_no_static_element_interactions a11y_no_noninteractive_element_interactions -->
+                      <div
+                        class="requests_board-card_menu"
+                        onpointerdown={stopCardDrag}
+                        onmousedown={stopCardDrag}
+                        ontouchstart={stopCardDrag}
+                      >
+                        <DropdownMenu.Root>
+                          <DropdownMenu.Trigger
+                            class="requests_board-menu_trigger"
+                            aria-label={localeCtx.t.requests.actions}
                           >
-                            <DropdownMenu.Item
-                              class="requests_board-menu_item"
-                              textValue={localeCtx.t.requests.archive}
-                              data-disabled={!canArchive(stage) ? 'true' : undefined}
-                              aria-disabled={!canArchive(stage) ? 'true' : undefined}
-                              onSelect={() => archiveCard(card, stage)}
+                            <MoreVertIcon width="18" height="18" />
+                          </DropdownMenu.Trigger>
+                          <DropdownMenu.Portal>
+                            <DropdownMenu.Content
+                              class="requests_board-menu_content"
+                              sideOffset={6}
+                              align="end"
                             >
-                              <span class="requests_board-menu_item_icon" aria-hidden="true">
-                                <ArchiveIcon width="16" height="16" />
-                              </span>
-                              <span class="requests_board-menu_item_label">
-                                {localeCtx.t.requests.archive}
-                              </span>
-                            </DropdownMenu.Item>
-                          </DropdownMenu.Content>
-                        </DropdownMenu.Portal>
-                      </DropdownMenu.Root>
-                    </div>
+                              <DropdownMenu.Item
+                                class="requests_board-menu_item"
+                                textValue={localeCtx.t.requests.archive}
+                                data-disabled={!canArchive(stage) ? 'true' : undefined}
+                                aria-disabled={!canArchive(stage) ? 'true' : undefined}
+                                onSelect={() => archiveCard(card, stage)}
+                              >
+                                <span class="requests_board-menu_item_icon" aria-hidden="true">
+                                  <ArchiveIcon width="16" height="16" />
+                                </span>
+                                <span class="requests_board-menu_item_label">
+                                  {localeCtx.t.requests.archive}
+                                </span>
+                              </DropdownMenu.Item>
+                            </DropdownMenu.Content>
+                          </DropdownMenu.Portal>
+                        </DropdownMenu.Root>
+                      </div>
+                    {/if}
                   </div>
 
                   <dl class="requests_board-card_meta">
@@ -429,21 +436,25 @@
                     <div>
                       <dt>{localeCtx.t.requests.dateRequested}</dt>
                       <dd>
-                        <!-- svelte-ignore a11y_no_static_element_interactions a11y_no_noninteractive_element_interactions -->
-                        <div
-                          class="requests_board-date_wrap"
-                          onpointerdown={stopCardDrag}
-                          onmousedown={stopCardDrag}
-                          ontouchstart={stopCardDrag}
-                        >
-                          <input
-                            class="requests_board-date"
-                            type="date"
-                            value={toDateInputValue(card.dateRequested)}
-                            aria-label={localeCtx.t.requests.dateRequested}
-                            onchange={(event) => assignDate(card, event.currentTarget.value)}
-                          />
-                        </div>
+                        {#if canEdit}
+                          <!-- svelte-ignore a11y_no_static_element_interactions a11y_no_noninteractive_element_interactions -->
+                          <div
+                            class="requests_board-date_wrap"
+                            onpointerdown={stopCardDrag}
+                            onmousedown={stopCardDrag}
+                            ontouchstart={stopCardDrag}
+                          >
+                            <input
+                              class="requests_board-date"
+                              type="date"
+                              value={toDateInputValue(card.dateRequested)}
+                              aria-label={localeCtx.t.requests.dateRequested}
+                              onchange={(event) => assignDate(card, event.currentTarget.value)}
+                            />
+                          </div>
+                        {:else}
+                          {toDateInputValue(card.dateRequested) || '—'}
+                        {/if}
                       </dd>
                     </div>
                   </dl>
@@ -451,32 +462,104 @@
                   <!-- svelte-ignore a11y_no_static_element_interactions a11y_no_noninteractive_element_interactions -->
                   <div
                     class="requests_board-manager"
-                    onpointerdown={stopCardDrag}
-                    onmousedown={stopCardDrag}
-                    ontouchstart={stopCardDrag}
+                    onpointerdown={canEdit ? stopCardDrag : undefined}
+                    onmousedown={canEdit ? stopCardDrag : undefined}
+                    ontouchstart={canEdit ? stopCardDrag : undefined}
                   >
                     <span class="requests_board-manager_label">{localeCtx.t.requests.manager}</span>
-                    <SelectPrimitive.Root
-                      type="single"
-                      value={String(card.manager || '')}
-                      items={[
-                        { value: '', label: localeCtx.t.requests.unassigned },
-                        ...managers.map((manager) => ({
-                          value: manager.id,
-                          label: managerLabel(manager),
-                        })),
-                      ]}
-                      onValueChange={(next) => {
-                        assignManager(card, String(next ?? ''))
-                      }}
-                    >
-                      <SelectPrimitive.Trigger
-                        class="requests_board-manager_trigger"
-                        aria-label={localeCtx.t.requests.manager}
+                    {#if canEdit}
+                      <SelectPrimitive.Root
+                        type="single"
+                        value={String(card.manager || '')}
+                        items={[
+                          { value: '', label: localeCtx.t.requests.unassigned },
+                          ...managers.map((manager) => ({
+                            value: manager.id,
+                            label: managerLabel(manager),
+                          })),
+                        ]}
+                        onValueChange={(next) => {
+                          assignManager(card, String(next ?? ''))
+                        }}
                       >
-                        {@const assigned =
-                          card.expand?.manager ||
-                          (card.manager ? findManager(String(card.manager)) : null)}
+                        <SelectPrimitive.Trigger
+                          class="requests_board-manager_trigger"
+                          aria-label={localeCtx.t.requests.manager}
+                        >
+                          {@const assigned =
+                            card.expand?.manager ||
+                            (card.manager ? findManager(String(card.manager)) : null)}
+                          {#if assigned}
+                            <Avatar name={assigned.name} email={assigned.email} id={assigned.id} size="sm" />
+                            <span class="requests_board-manager_value">{managerLabel(assigned)}</span>
+                          {:else}
+                            <span class="requests_board-manager_empty" aria-hidden="true">?</span>
+                            <span class="requests_board-manager_value" data-placeholder="true">
+                              {localeCtx.t.requests.unassigned}
+                            </span>
+                          {/if}
+                          <span class="requests_board-manager_chevron" aria-hidden="true">
+                            <ExpandIcon width="16" height="16" />
+                          </span>
+                        </SelectPrimitive.Trigger>
+
+                        <SelectPrimitive.Portal>
+                          <SelectPrimitive.Content
+                            class="requests_board-manager_content"
+                            sideOffset={6}
+                            align="start"
+                          >
+                            <SelectPrimitive.Viewport class="requests_board-manager_viewport">
+                              <SelectPrimitive.Item
+                                class="requests_board-manager_item"
+                                value=""
+                                label={localeCtx.t.requests.unassigned}
+                              >
+                                {#snippet children({ selected })}
+                                  <span class="requests_board-manager_empty" aria-hidden="true">?</span>
+                                  <span class="requests_board-manager_item_label">
+                                    {localeCtx.t.requests.unassigned}
+                                  </span>
+                                  {#if selected}
+                                    <span class="requests_board-manager_check" aria-hidden="true">
+                                      <CheckIcon width="16" height="16" />
+                                    </span>
+                                  {/if}
+                                {/snippet}
+                              </SelectPrimitive.Item>
+                              {#each managers as manager (manager.id)}
+                                <SelectPrimitive.Item
+                                  class="requests_board-manager_item"
+                                  value={manager.id}
+                                  label={managerLabel(manager)}
+                                >
+                                  {#snippet children({ selected })}
+                                    <Avatar
+                                      name={manager.name}
+                                      email={manager.email}
+                                      id={manager.id}
+                                      size="sm"
+                                    />
+                                    <span class="requests_board-manager_item_label">
+                                      {managerLabel(manager)}
+                                    </span>
+                                    {#if selected}
+                                      <span class="requests_board-manager_check" aria-hidden="true">
+                                        <CheckIcon width="16" height="16" />
+                                      </span>
+                                    {/if}
+                                  {/snippet}
+                                </SelectPrimitive.Item>
+                              {/each}
+                            </SelectPrimitive.Viewport>
+                          </SelectPrimitive.Content>
+                        </SelectPrimitive.Portal>
+                      </SelectPrimitive.Root>
+                    {:else}
+                      {@const assigned =
+                        card.expand?.manager ||
+                        (card.manager ? findManager(String(card.manager)) : null)}
+                      <div class="requests_board-manager_trigger" data-readonly="true">
                         {#if assigned}
                           <Avatar name={assigned.name} email={assigned.email} id={assigned.id} size="sm" />
                           <span class="requests_board-manager_value">{managerLabel(assigned)}</span>
@@ -486,63 +569,8 @@
                             {localeCtx.t.requests.unassigned}
                           </span>
                         {/if}
-                        <span class="requests_board-manager_chevron" aria-hidden="true">
-                          <ExpandIcon width="16" height="16" />
-                        </span>
-                      </SelectPrimitive.Trigger>
-
-                      <SelectPrimitive.Portal>
-                        <SelectPrimitive.Content
-                          class="requests_board-manager_content"
-                          sideOffset={6}
-                          align="start"
-                        >
-                          <SelectPrimitive.Viewport class="requests_board-manager_viewport">
-                            <SelectPrimitive.Item
-                              class="requests_board-manager_item"
-                              value=""
-                              label={localeCtx.t.requests.unassigned}
-                            >
-                              {#snippet children({ selected })}
-                                <span class="requests_board-manager_empty" aria-hidden="true">?</span>
-                                <span class="requests_board-manager_item_label">
-                                  {localeCtx.t.requests.unassigned}
-                                </span>
-                                {#if selected}
-                                  <span class="requests_board-manager_check" aria-hidden="true">
-                                    <CheckIcon width="16" height="16" />
-                                  </span>
-                                {/if}
-                              {/snippet}
-                            </SelectPrimitive.Item>
-                            {#each managers as manager (manager.id)}
-                              <SelectPrimitive.Item
-                                class="requests_board-manager_item"
-                                value={manager.id}
-                                label={managerLabel(manager)}
-                              >
-                                {#snippet children({ selected })}
-                                  <Avatar
-                                    name={manager.name}
-                                    email={manager.email}
-                                    id={manager.id}
-                                    size="sm"
-                                  />
-                                  <span class="requests_board-manager_item_label">
-                                    {managerLabel(manager)}
-                                  </span>
-                                  {#if selected}
-                                    <span class="requests_board-manager_check" aria-hidden="true">
-                                      <CheckIcon width="16" height="16" />
-                                    </span>
-                                  {/if}
-                                {/snippet}
-                              </SelectPrimitive.Item>
-                            {/each}
-                          </SelectPrimitive.Viewport>
-                        </SelectPrimitive.Content>
-                      </SelectPrimitive.Portal>
-                    </SelectPrimitive.Root>
+                      </div>
+                    {/if}
                   </div>
                 </article>
               {/each}

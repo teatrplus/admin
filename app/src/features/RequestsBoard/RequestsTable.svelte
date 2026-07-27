@@ -9,7 +9,7 @@
   import { toDateInputValue } from '@/lib/format'
   import { useLocale } from '@/lib/i18n/context.svelte'
   import { listManagers } from '@/lib/pocketbase/landing'
-  import { normalizeStage, REQUEST_STAGES } from '@/lib/pocketbase/permissions'
+  import { canEditRequests, normalizeStage, REQUEST_STAGES } from '@/lib/pocketbase/permissions'
   import {
     archiveRequest,
     loadRequestsPage,
@@ -30,6 +30,7 @@
 
   const localeCtx = useLocale()
   const queryClient = useQueryClient()
+  const canEdit = $derived(canEditRequests())
 
   let activePage = $state(1)
   let archivedPage = $state(1)
@@ -60,6 +61,7 @@
   const managersQuery = createQuery(() => ({
     queryKey: ['managers'],
     queryFn: () => listManagers() as Promise<StaffRecord[]>,
+    enabled: canEdit,
   }))
 
   const managers = $derived.by(() => {
@@ -279,41 +281,48 @@
 
 {#snippet rowControls(row: SpaceRequestRecord, mode: 'archive' | 'unarchive')}
   {@const stage = normalizeStage(row.stage) as RequestStage}
+  {@const assigned = row.expand?.manager || (row.manager ? findManager(String(row.manager)) : null)}
   <td>{row.clientName || '—'}</td>
   <td>{row.clientPhoneNumber || '—'}</td>
-  <td>
-    <input
-      class="requests_table-date"
-      type="date"
-      value={toDateInputValue(row.dateRequested)}
-      aria-label={localeCtx.t.requests.dateRequested}
-      onchange={(event) => onDateChange(row, event.currentTarget.value)}
-    />
-  </td>
-  <td>
-    <Select
-      class="requests_table-field"
-      size="sm"
-      aria-label={localeCtx.t.requests.manager}
-      value={String(row.manager || '')}
-      placeholder={localeCtx.t.requests.unassigned}
-      options={managerOptions}
-      onValueChange={(next) => onManagerChange(row, next)}
-    />
-  </td>
-  <td>
-    <Select
-      class="requests_table-field"
-      size="sm"
-      aria-label={localeCtx.t.requests.stage}
-      value={REQUEST_STAGES.includes(stage) ? stage : 'inquiry'}
-      options={stageOptions}
-      onValueChange={(next) => onStageChange(row, next)}
-    />
-  </td>
-  <td class="requests_table-actions_cell">
-    {@render rowMenu(row, mode)}
-  </td>
+  {#if canEdit}
+    <td>
+      <input
+        class="requests_table-date"
+        type="date"
+        value={toDateInputValue(row.dateRequested)}
+        aria-label={localeCtx.t.requests.dateRequested}
+        onchange={(event) => onDateChange(row, event.currentTarget.value)}
+      />
+    </td>
+    <td>
+      <Select
+        class="requests_table-field"
+        size="sm"
+        aria-label={localeCtx.t.requests.manager}
+        value={String(row.manager || '')}
+        placeholder={localeCtx.t.requests.unassigned}
+        options={managerOptions}
+        onValueChange={(next) => onManagerChange(row, next)}
+      />
+    </td>
+    <td>
+      <Select
+        class="requests_table-field"
+        size="sm"
+        aria-label={localeCtx.t.requests.stage}
+        value={REQUEST_STAGES.includes(stage) ? stage : 'inquiry'}
+        options={stageOptions}
+        onValueChange={(next) => onStageChange(row, next)}
+      />
+    </td>
+    <td class="requests_table-actions_cell">
+      {@render rowMenu(row, mode)}
+    </td>
+  {:else}
+    <td>{toDateInputValue(row.dateRequested) || '—'}</td>
+    <td>{managerLabel(assigned)}</td>
+    <td>{localeCtx.t.requests.stages[stage] ?? stage}</td>
+  {/if}
 {/snippet}
 
 <div class="requests_table">
@@ -336,9 +345,11 @@
               <th>{localeCtx.t.requests.dateRequested}</th>
               <th>{localeCtx.t.requests.manager}</th>
               <th>{localeCtx.t.requests.stage}</th>
-              <th>
-                <span class="u_sr_only">{localeCtx.t.requests.actions}</span>
-              </th>
+              {#if canEdit}
+                <th>
+                  <span class="u_sr_only">{localeCtx.t.requests.actions}</span>
+                </th>
+              {/if}
             </tr>
           </thead>
           <tbody>
@@ -386,9 +397,11 @@
               <th>{localeCtx.t.requests.dateRequested}</th>
               <th>{localeCtx.t.requests.manager}</th>
               <th>{localeCtx.t.requests.stage}</th>
-              <th>
-                <span class="u_sr_only">{localeCtx.t.requests.actions}</span>
-              </th>
+              {#if canEdit}
+                <th>
+                  <span class="u_sr_only">{localeCtx.t.requests.actions}</span>
+                </th>
+              {/if}
             </tr>
           </thead>
           <tbody>

@@ -6,7 +6,7 @@ const SUPERUSERS_COLLECTION = '_superusers'
 
 export const normalizeRole = (role: string | undefined | null): StaffRole | null => {
   const value = role?.trim()
-  if (value === 'admin' || value === 'moderator' || value === 'manager') {
+  if (value === 'admin' || value === 'moderator' || value === 'manager' || value === 'viewer') {
     return value
   }
   return null

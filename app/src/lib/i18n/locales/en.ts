@@ -146,6 +146,7 @@ export const en: TranslationSchema = {
       admin: 'Admin',
       moderator: 'Moderator',
       manager: 'Manager',
+      viewer: 'Viewer',
     },
     scopes: {
       theater: 'Theater',
