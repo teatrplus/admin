@@ -1,5 +1,7 @@
 <script lang="ts">
   import { createMutation, createQuery, useQueryClient } from '@tanstack/svelte-query'
+  import { flip } from 'svelte/animate'
+  import { dndzone, type DndEvent } from 'svelte-dnd-action'
   import TrashIcon from '~icons/material-symbols/delete-outline'
   import Button from '@/components/Button/Button.svelte'
   import Checkbox from '@/components/Checkbox/Checkbox.svelte'
@@ -41,6 +43,7 @@
 
   const localeCtx = useLocale()
   const queryClient = useQueryClient()
+  const flipDurationMs = 180
 
   const emptyForm = landingToForm(null)
   let form = $state<LandingFormState>(emptyForm)
@@ -67,7 +70,7 @@
   }
 
   const galleryMediaError = (row: GalleryRow) => {
-    const prefix = `galleryItems.${row.localId}`
+    const prefix = `galleryItems.${row.id}`
     if (fieldErrors[`${prefix}.both`]) return localeCtx.t.landing.validationGalleryBoth
     if (fieldErrors[`${prefix}.media`]) return localeCtx.t.landing.validationGalleryMedia
     if (fieldErrors[`${prefix}.youtubeUrl`]) return localeCtx.t.landing.validationYoutubeUrl
@@ -75,6 +78,18 @@
   }
 
   const galleryPreviewUrl = (row: GalleryRow) => row.previewUrl ?? youtubeThumbnailUrl(row.youtubeUrl) ?? undefined
+
+  const stopGalleryDrag = (event: Event) => {
+    event.stopPropagation()
+  }
+
+  const handleGalleryConsider = (event: CustomEvent<DndEvent<GalleryRow>>) => {
+    form.galleryItems = event.detail.items
+  }
+
+  const handleGalleryFinalize = (event: CustomEvent<DndEvent<GalleryRow>>) => {
+    form.galleryItems = event.detail.items
+  }
 
   const applyForm = (next: LandingFormState) => {
     form = next
@@ -161,10 +176,10 @@
   const removeGalleryRow = (row: GalleryRow) => {
     if (form.galleryItems.length <= 1) return
     revokePreview(row.previewUrl)
-    if (row.id) {
-      form.removedGalleryIds = [...form.removedGalleryIds, row.id]
+    if (row.recordId) {
+      form.removedGalleryIds = [...form.removedGalleryIds, row.recordId]
     }
-    form.galleryItems = form.galleryItems.filter((item) => item.localId !== row.localId)
+    form.galleryItems = form.galleryItems.filter((item) => item.id !== row.id)
   }
 
   const setGalleryFile = (row: GalleryRow, file: File) => {
@@ -514,12 +529,26 @@
           {#if sectionError('gallery')}
             <p class="landing_editor-section_error">{sectionError('gallery')}</p>
           {/if}
-          <div class="landing_editor-media_grid">
-            {#each form.galleryItems as row (row.localId)}
+          <div
+            class="landing_editor-media_grid"
+            use:dndzone={{
+              items: form.galleryItems,
+              type: 'landing-gallery',
+              flipDurationMs,
+              dropFromOthersDisabled: true,
+              dropTargetStyle: {
+                outline: '1px dashed var(--border-focus)',
+                outlineOffset: '2px',
+              },
+            }}
+            onconsider={handleGalleryConsider}
+            onfinalize={handleGalleryFinalize}
+          >
+            {#each form.galleryItems as row (row.id)}
               {@const hasImage = galleryRowHasImage(row)}
               {@const hasYoutube = Boolean(row.youtubeUrl.trim())}
               {@const previewUrl = galleryPreviewUrl(row)}
-              <article class="landing_editor-media_card">
+              <article class="landing_editor-media_card" animate:flip={{ duration: flipDurationMs }}>
                 <div class="landing_editor-media_preview" data-invalid={galleryMediaError(row) ? 'true' : undefined}>
                   {#if previewUrl}
                     <img class="landing_editor-media_image" src={previewUrl} alt="" />
@@ -528,7 +557,13 @@
                   {:else}
                     <span class="landing_editor-media_empty">{localeCtx.t.landing.file}</span>
                   {/if}
-                  <div class="landing_editor-media_actions">
+                  <!-- svelte-ignore a11y_no_static_element_interactions a11y_no_noninteractive_element_interactions -->
+                  <div
+                    class="landing_editor-media_actions"
+                    onpointerdown={stopGalleryDrag}
+                    onmousedown={stopGalleryDrag}
+                    ontouchstart={stopGalleryDrag}
+                  >
                     {#if !hasYoutube}
                       <Button
                         class="landing_editor-replace_btn"
@@ -537,7 +572,7 @@
                         color="contrast"
                         size="sm"
                         onclick={() => {
-                          const input = document.getElementById(`gal-replace-${row.localId}`) as HTMLInputElement | null
+                          const input = document.getElementById(`gal-replace-${row.id}`) as HTMLInputElement | null
                           input?.click()
                         }}
                       >
@@ -559,7 +594,7 @@
                     </Button>
                   </div>
                   <input
-                    id={`gal-replace-${row.localId}`}
+                    id={`gal-replace-${row.id}`}
                     class="u_sr_only"
                     type="file"
                     accept="image/*"
@@ -574,26 +609,34 @@
                 {#if galleryMediaError(row)}
                   <p class="landing_editor-section_error">{galleryMediaError(row)}</p>
                 {/if}
-                <FormField
-                  label={localeCtx.t.landing.youtubeUrl}
-                  name={`gal-youtube-${row.localId}`}
-                  type="url"
-                  bind:value={row.youtubeUrl}
-                  hint={localeCtx.t.landing.youtubeUrlHint}
-                  error={fieldErrors[`galleryItems.${row.localId}.youtubeUrl`]
-                    ? localeCtx.t.landing.validationYoutubeUrl
-                    : undefined}
-                  disabled={hasImage}
-                  oninput={(event) => setGalleryYoutubeUrl(row, event.currentTarget.value)}
-                />
-                <LocalizedField
-                  locale={contentLocale}
-                  label={localeCtx.t.landing.caption}
-                  nameBase={`gal-cap-${row.localId}`}
-                  bind:ru={row.captionRu}
-                  bind:en={row.captionEn}
-                  bind:uz={row.captionUz}
-                />
+                <!-- svelte-ignore a11y_no_static_element_interactions a11y_no_noninteractive_element_interactions -->
+                <div
+                  class="landing_editor-media_fields"
+                  onpointerdown={stopGalleryDrag}
+                  onmousedown={stopGalleryDrag}
+                  ontouchstart={stopGalleryDrag}
+                >
+                  <FormField
+                    label={localeCtx.t.landing.youtubeUrl}
+                    name={`gal-youtube-${row.id}`}
+                    type="url"
+                    bind:value={row.youtubeUrl}
+                    hint={localeCtx.t.landing.youtubeUrlHint}
+                    error={fieldErrors[`galleryItems.${row.id}.youtubeUrl`]
+                      ? localeCtx.t.landing.validationYoutubeUrl
+                      : undefined}
+                    disabled={hasImage}
+                    oninput={(event) => setGalleryYoutubeUrl(row, event.currentTarget.value)}
+                  />
+                  <LocalizedField
+                    locale={contentLocale}
+                    label={localeCtx.t.landing.caption}
+                    nameBase={`gal-cap-${row.id}`}
+                    bind:ru={row.captionRu}
+                    bind:en={row.captionEn}
+                    bind:uz={row.captionUz}
+                  />
+                </div>
               </article>
             {/each}
           </div>

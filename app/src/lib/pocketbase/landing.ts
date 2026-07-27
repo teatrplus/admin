@@ -37,8 +37,10 @@ export type HeadBodyRow = {
 }
 
 export type GalleryRow = {
-  localId: string
-  id?: string
+  /** Client-side id for list keys / svelte-dnd-action. */
+  id: string
+  /** PocketBase record id when the row is already persisted. */
+  recordId?: string
   captionRu: string
   captionEn: string
   captionUz: string
@@ -89,15 +91,19 @@ export const emptyHeadBodyRow = (): HeadBodyRow => ({
   bodyUz: '',
 })
 
-export const emptyGalleryRow = (partial?: Partial<GalleryRow>): GalleryRow => ({
-  localId: newLocalId(),
-  captionRu: '',
-  captionEn: '',
-  captionUz: '',
-  youtubeUrl: '',
-  file: null,
-  ...partial,
-})
+export const emptyGalleryRow = (partial?: Partial<GalleryRow>): GalleryRow => {
+  const id = partial?.id ?? newLocalId()
+  const { id: _ignored, ...rest } = partial ?? {}
+  return {
+    captionRu: '',
+    captionEn: '',
+    captionUz: '',
+    youtubeUrl: '',
+    file: null,
+    ...rest,
+    id,
+  }
+}
 
 export const galleryRowHasImage = (row: GalleryRow) => Boolean(row.file || row.existingFile)
 
@@ -181,7 +187,7 @@ export const landingToForm = (record: SpaceLandingRecord | null): LandingFormSta
     processItems: withMinHeadBody(record.expand?.processItems),
     galleryItems: (record.expand?.galleryItems ?? []).map((item) =>
       emptyGalleryRow({
-        id: item.id,
+        recordId: item.id,
         captionRu: item.captionRu ?? '',
         captionEn: item.captionEn ?? '',
         captionUz: item.captionUz ?? '',
@@ -279,10 +285,10 @@ export const collectLandingFieldErrors = (form: LandingFormState): LandingFieldE
       const hasImage = galleryRowHasImage(row)
       const hasYoutube = !isBlank(row.youtubeUrl)
 
-      if (!hasImage && !hasYoutube) errors[`galleryItems.${row.localId}.media`] = true
-      if (hasImage && hasYoutube) errors[`galleryItems.${row.localId}.both`] = true
+      if (!hasImage && !hasYoutube) errors[`galleryItems.${row.id}.media`] = true
+      if (hasImage && hasYoutube) errors[`galleryItems.${row.id}.both`] = true
       if (hasYoutube && !isValidYoutubeUrl(row.youtubeUrl)) {
-        errors[`galleryItems.${row.localId}.youtubeUrl`] = true
+        errors[`galleryItems.${row.id}.youtubeUrl`] = true
       }
     }
   }
@@ -327,8 +333,8 @@ export const serializeLandingForm = (form: LandingFormState) =>
     advantageItems: form.advantageItems.map(headBodySnapshot),
     processItems: form.processItems.map(headBodySnapshot),
     galleryItems: form.galleryItems.map(
-      ({ id, captionRu, captionEn, captionUz, youtubeUrl, existingFile, file }) => ({
-        id: id ?? null,
+      ({ recordId, captionRu, captionEn, captionUz, youtubeUrl, existingFile, file }) => ({
+        id: recordId ?? null,
         captionRu,
         captionEn,
         captionUz,
@@ -387,9 +393,9 @@ const upsertGallery = async (collection: string, row: GalleryRow): Promise<strin
     setGalleryCaptions(formData, row)
     formData.set('youtubeUrl', '')
     formData.set('file', row.file)
-    if (row.id) {
-      await pb.collection(collection).update(row.id, formData)
-      return row.id
+    if (row.recordId) {
+      await pb.collection(collection).update(row.recordId, formData)
+      return row.recordId
     }
     const created = (await pb.collection(collection).create(formData)) as GalleryItem
     return created.id
@@ -400,9 +406,9 @@ const upsertGallery = async (collection: string, row: GalleryRow): Promise<strin
     setGalleryCaptions(formData, row)
     formData.set('youtubeUrl', youtubeUrl)
     formData.set('file', '')
-    if (row.id) {
-      await pb.collection(collection).update(row.id, formData)
-      return row.id
+    if (row.recordId) {
+      await pb.collection(collection).update(row.recordId, formData)
+      return row.recordId
     }
     const created = (await pb.collection(collection).create(formData)) as GalleryItem
     return created.id
@@ -415,9 +421,9 @@ const upsertGallery = async (collection: string, row: GalleryRow): Promise<strin
       captionUz: row.captionUz,
       youtubeUrl: '',
     }
-    if (row.id) {
-      await pb.collection(collection).update(row.id, payload)
-      return row.id
+    if (row.recordId) {
+      await pb.collection(collection).update(row.recordId, payload)
+      return row.recordId
     }
     const created = (await pb.collection(collection).create(payload)) as GalleryItem
     return created.id

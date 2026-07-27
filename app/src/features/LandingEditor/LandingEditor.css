@@ -162,6 +162,7 @@
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(12rem, 1fr));
   gap: var(--space-4);
+  border-radius: var(--radius-md);
 }
 
 .landing_editor-media_grid[data-size='sm'] {
@@ -169,6 +170,19 @@
 }
 
 .landing_editor-media_card {
+  display: grid;
+  gap: var(--space-3);
+}
+
+.landing_editor-media_grid:not([data-size]) .landing_editor-media_card {
+  cursor: grab;
+}
+
+.landing_editor-media_grid:not([data-size]) .landing_editor-media_card:active {
+  cursor: grabbing;
+}
+
+.landing_editor-media_fields {
   display: grid;
   gap: var(--space-3);
 }
