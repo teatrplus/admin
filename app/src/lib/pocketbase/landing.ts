@@ -464,8 +464,13 @@ export const saveLanding = async (scope: SiteScope, form: LandingFormState) => {
   } else {
     for (const id of form.footerContactManagerIds) landingForm.append('footerContactManagers', id)
   }
-  for (const partner of form.existingPartners) landingForm.append('partners', partner.name)
-  for (const pending of form.partnerFiles) landingForm.append('partners', pending.file)
+  // PocketBase leaves multi-file fields unchanged when omitted — clear explicitly.
+  if (form.existingPartners.length === 0 && form.partnerFiles.length === 0) {
+    landingForm.set('partners', '')
+  } else {
+    for (const partner of form.existingPartners) landingForm.append('partners', partner.name)
+    for (const pending of form.partnerFiles) landingForm.append('partners', pending.file)
+  }
 
   if (form.landingId) {
     await pb.collection(landingCollection).update(form.landingId, landingForm)
