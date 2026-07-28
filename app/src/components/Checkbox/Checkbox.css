@@ -41,6 +41,7 @@
 .checkbox-control[data-disabled] {
   opacity: var(--opacity-disabled);
   cursor: not-allowed;
+  pointer-events: auto;
 }
 
 .checkbox-label {

@@ -484,9 +484,12 @@ export const saveLanding = async (scope: SiteScope, form: LandingFormState) => {
   return fresh
 }
 
+/** Staff who can be assigned as request managers or landing contacts (excludes viewers). */
+export const ASSIGNABLE_STAFF_ROLES = ['admin', 'moderator', 'manager'] as const
+
 export const listManagers = async () => {
   const records = await pb.collection('staff').getFullList({
-    filter: "role = 'manager'",
+    filter: "role = 'admin' || role = 'moderator' || role = 'manager'",
     sort: 'name',
   })
   return records

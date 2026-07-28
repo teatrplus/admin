@@ -8,11 +8,13 @@
   import FormField from '@/components/FormField/FormField.svelte'
   import MediaDropzone from '@/components/MediaDropzone/MediaDropzone.svelte'
   import Select from '@/components/Select/Select.svelte'
+  import type { SelectOption } from '@/components/Select/Select.svelte'
   import type { SiteScope } from '@/lib/cms/scopes'
   import { useLocale } from '@/lib/i18n/context.svelte'
   import { isImageFile } from '@/lib/media/images'
-  import { getCurrentUser, isStaffUser } from '@/lib/pocketbase/auth'
+  import { getCurrentUser, isStaffUser, normalizeRole } from '@/lib/pocketbase/auth'
   import {
+    ASSIGNABLE_STAFF_ROLES,
     CONTENT_LOCALES,
     collectLandingFieldErrors,
     emptyGalleryRow,
@@ -128,9 +130,20 @@
   }))
 
   const managers = $derived(landingQuery.data?.staff ?? [])
-  const staffOptions = $derived.by(() => {
+
+  const isAssignableStaff = (staff: StaffRecord) => {
+    const role = normalizeRole(staff.role)
+    return role !== null && (ASSIGNABLE_STAFF_ROLES as readonly string[]).includes(role)
+  }
+
+  const hasPhoneNumber = (staff: StaffRecord) => Boolean(staff.phoneNumber?.trim())
+  const hasTelegramUsername = (staff: StaffRecord) => Boolean(staff.telegramUsername?.trim())
+
+  const assignableStaff = $derived.by(() => {
     const byId = new Map<string, StaffRecord>()
-    for (const manager of managers) byId.set(manager.id, manager)
+    for (const manager of managers) {
+      if (isAssignableStaff(manager)) byId.set(manager.id, manager)
+    }
 
     const landing = landingQuery.data?.landing
     const expanded = [
@@ -139,23 +152,51 @@
       landing?.expand?.telegramManager,
     ]
     for (const contact of expanded) {
-      if (contact) byId.set(contact.id, contact)
+      if (contact && isAssignableStaff(contact)) byId.set(contact.id, contact)
     }
 
     const currentUser = getCurrentUser()
-    if (currentUser && isStaffUser(currentUser)) {
+    if (currentUser && isStaffUser(currentUser) && isAssignableStaff(currentUser)) {
       byId.set(currentUser.id, currentUser)
     }
 
-    return [...byId.values()]
-      .map((manager) => ({
-        value: manager.id,
-        label: manager.name || manager.email,
-      }))
-      .sort((a, b) => a.label.localeCompare(b.label))
+    return [...byId.values()].sort((a, b) =>
+      (a.name || a.email).localeCompare(b.name || b.email),
+    )
   })
 
-  const staffSelectOptions = $derived([{ value: '', label: localeCtx.t.landing.none }, ...staffOptions])
+  const phoneStaffOptions = $derived.by((): SelectOption[] =>
+    assignableStaff.map((staff) => ({
+      value: staff.id,
+      label: staff.name || staff.email,
+      disabled: !hasPhoneNumber(staff),
+    })),
+  )
+
+  const telegramStaffOptions = $derived.by((): SelectOption[] => [
+    { value: '', label: localeCtx.t.landing.none },
+    ...assignableStaff.map((staff) => ({
+      value: staff.id,
+      label: staff.name || staff.email,
+      disabled: !hasTelegramUsername(staff),
+    })),
+  ])
+
+  const footerContactOptions = $derived.by(() =>
+    assignableStaff.map((staff) => ({
+      value: staff.id,
+      label: staff.name || staff.email,
+      disabled: !hasPhoneNumber(staff),
+    })),
+  )
+
+  const warnMissingPhone = () => {
+    pushToast(localeCtx.t.landing.missingPhoneToast, 'warning')
+  }
+
+  const warnMissingTelegram = () => {
+    pushToast(localeCtx.t.landing.missingTelegramToast, 'warning')
+  }
 
   const removeHeadBodyRow = (
     key: 'venueItems' | 'advantageItems' | 'processItems',
@@ -318,17 +359,19 @@
               label={localeCtx.t.landing.headerPhoneManager}
               name="headerPhoneManager"
               bind:value={form.headerPhoneManagerId}
-              options={staffOptions}
+              options={phoneStaffOptions}
               placeholder={localeCtx.t.landing.none}
               error={fieldErrors.headerPhoneManager ? localeCtx.t.landing.validationHeaderPhone : undefined}
               required
+              onDisabledOptionClick={warnMissingPhone}
             />
             <Select
               label={localeCtx.t.landing.telegramManager}
               name="telegramManager"
               bind:value={form.telegramManagerId}
-              options={staffSelectOptions}
+              options={telegramStaffOptions}
               placeholder={localeCtx.t.landing.none}
+              onDisabledOptionClick={warnMissingTelegram}
             />
             <FormField
               label={localeCtx.t.landing.presentationUrl}
@@ -711,15 +754,19 @@
           <h2 class="landing_editor-section_title">{localeCtx.t.landing.contacts}</h2>
           <fieldset class="landing_editor-checkbox_list">
             <legend class="u_sr_only">{localeCtx.t.landing.contactManagers}</legend>
-            {#each staffOptions as option}
+            {#each footerContactOptions as option}
               <Checkbox
                 label={option.label}
+                disabled={option.disabled}
                 checked={form.footerContactManagerIds.includes(option.value)}
+                onDisabledClick={warnMissingPhone}
                 onCheckedChange={(checked) => {
                   if (checked) {
                     form.footerContactManagerIds = [...form.footerContactManagerIds, option.value]
                   } else {
-                    form.footerContactManagerIds = form.footerContactManagerIds.filter((id) => id !== option.value)
+                    form.footerContactManagerIds = form.footerContactManagerIds.filter(
+                      (id) => id !== option.value,
+                    )
                   }
                 }}
               />

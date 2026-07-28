@@ -141,6 +141,7 @@
 .select-item[data-disabled] {
   opacity: var(--opacity-disabled);
   cursor: not-allowed;
+  pointer-events: auto;
 }
 
 .select-item_label {

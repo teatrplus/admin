@@ -93,6 +93,8 @@ export type TranslationSchema = {
     validationYoutubeUrl: string
     validationFailed: string
     noChanges: string
+    missingPhoneToast: string
+    missingTelegramToast: string
   }
   requests: {
     title: string

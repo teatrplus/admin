@@ -89,6 +89,8 @@ export const ru: TranslationSchema = {
     validationYoutubeUrl: 'Введите корректную ссылку YouTube.',
     validationFailed: 'Исправьте выделенные поля перед сохранением.',
     noChanges: 'Нет изменений для сохранения.',
+    missingPhoneToast: 'У этой учётной записи не указан номер телефона.',
+    missingTelegramToast: 'У этой учётной записи не указан Telegram.',
   },
   requests: {
     title: 'Заявки',

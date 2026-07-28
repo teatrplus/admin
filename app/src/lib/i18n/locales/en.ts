@@ -89,6 +89,8 @@ export const en: TranslationSchema = {
     validationYoutubeUrl: 'Enter a valid YouTube link.',
     validationFailed: 'Fix the highlighted fields before saving.',
     noChanges: 'No changes to save.',
+    missingPhoneToast: 'Phone number is not provided for this user account.',
+    missingTelegramToast: 'Telegram username is not provided for this user account.',
   },
   requests: {
     title: 'Requests',

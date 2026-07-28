@@ -15,6 +15,7 @@
     id = useId(),
     class: className = '',
     onCheckedChange,
+    onDisabledClick,
   }: {
     label: string
     name?: string
@@ -26,10 +27,21 @@
     id?: string
     class?: string
     onCheckedChange?: (checked: boolean) => void
+    onDisabledClick?: () => void
   } = $props()
+
+  const handlePointerDown = (event: PointerEvent) => {
+    if (!disabled) return
+    event.preventDefault()
+    onDisabledClick?.()
+  }
 </script>
 
-<div class={['checkbox', className].filter(Boolean).join(' ')}>
+<!-- svelte-ignore a11y_no_static_element_interactions -->
+<div
+  class={['checkbox', className].filter(Boolean).join(' ')}
+  onpointerdown={handlePointerDown}
+>
   <CheckboxPrimitive.Root
     {id}
     class="checkbox-control u_pressable"

@@ -25,6 +25,7 @@
     class: className = '',
     'aria-label': ariaLabel,
     onValueChange,
+    onDisabledOptionClick,
     leadingIcon,
   }: {
     label?: string
@@ -40,10 +41,18 @@
     class?: string
     'aria-label'?: string
     onValueChange?: (value: string) => void
+    onDisabledOptionClick?: (option: SelectOption) => void
     leadingIcon?: Snippet
   } = $props()
 
   const items = $derived(options.map(({ value, label, disabled }) => ({ value, label, disabled })))
+
+  const handleOptionPointerDown = (event: PointerEvent, option: SelectOption) => {
+    if (!option.disabled) return
+    event.preventDefault()
+    event.stopPropagation()
+    onDisabledOptionClick?.(option)
+  }
 </script>
 
 <div class={['select', className].filter(Boolean).join(' ')} data-size={size}>
@@ -88,6 +97,7 @@
               value={option.value}
               label={option.label}
               disabled={option.disabled}
+              onpointerdown={(event) => handleOptionPointerDown(event, option)}
             >
               {#snippet children({ selected })}
                 <span class="select-item_label">{option.label}</span>
