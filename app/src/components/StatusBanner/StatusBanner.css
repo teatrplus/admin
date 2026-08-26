@@ -12,6 +12,12 @@
   color: var(--intent-success-strong);
 }
 
+.status_banner[data-tone='warning'] {
+  border-color: var(--intent-warning-base);
+  background: var(--intent-warning-subtle);
+  color: var(--intent-warning-strong);
+}
+
 .status_banner[data-tone='error'] {
   border-color: var(--intent-critical-base);
   background: var(--intent-critical-subtle);

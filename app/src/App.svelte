@@ -15,6 +15,7 @@
   const loadStaffManager = () => import('./features/StaffManager/StaffManager.svelte')
   const loadLandingEditor = () => import('./features/LandingEditor/LandingEditor.svelte')
   const loadRequestsBoard = () => import('./features/RequestsBoard/RequestsBoard.svelte')
+  const loadTheaterSocialPanel = () => import('./features/TheaterSocialPanel/TheaterSocialPanel.svelte')
 
   initLocaleContext()
 
@@ -88,6 +89,14 @@
         <RequestsBoard scope="space" />
       {:catch}
         <p class="app_route_status" role="alert">Failed to load requests board.</p>
+      {/await}
+    </AdminShell>
+  {:else if route === '/theater/social'}
+    <AdminShell>
+      {#await loadTheaterSocialPanel() then { default: TheaterSocialPanel }}
+        <TheaterSocialPanel />
+      {:catch}
+        <p class="app_route_status" role="alert">Failed to load social panel.</p>
       {/await}
     </AdminShell>
   {:else}

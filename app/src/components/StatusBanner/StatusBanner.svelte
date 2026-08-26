@@ -6,7 +6,7 @@
     tone = 'neutral',
     children,
   }: {
-    tone?: 'neutral' | 'success' | 'error'
+    tone?: 'neutral' | 'success' | 'error' | 'warning'
     children: Snippet
   } = $props()
 </script>

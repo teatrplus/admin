@@ -11,6 +11,7 @@ export type AppRoute =
   | '/forbidden'
   | `/${SiteScope}/landing`
   | `/${SiteScope}/requests`
+  | '/theater/social'
 
 export const REQUEST_STAGES = [
   'inquiry',
@@ -70,12 +71,20 @@ export const canAccessStaff = (): boolean => isAdmin()
 
 export const canAccessAccount = (): boolean => Boolean(getCurrentUser())
 
+/** Matches POST /api/instagram/refresh: superuser, staff admin, staff moderator. */
+export const canAccessSocial = (): boolean => {
+  if (isSuperuser()) return true
+  const role = normalizeRole(getCurrentUser()?.role)
+  return role === 'admin' || role === 'moderator'
+}
+
 export const canAccessRoute = (route: AppRoute): boolean => {
   if (route === '/login') return true
   if (!getCurrentUser()) return false
   if (route === '/' || route === '/forbidden') return true
   if (route === '/staff') return canAccessStaff()
   if (route === '/account') return canAccessAccount()
+  if (route === '/theater/social') return canAccessSocial()
 
   const match = route.match(/^\/(space|theater)\/(landing|requests)$/)
   if (!match) return false
@@ -99,6 +108,8 @@ export const defaultRouteForUser = (): AppRoute => {
     if (canAccessRequests(scope)) return `/${scope}/requests`
   }
 
+  if (canAccessSocial()) return '/theater/social'
+
   return '/forbidden'
 }
 
@@ -118,6 +129,14 @@ export const navSectionsForUser = (): NavSection[] => {
 
   if (spaceItems.length) {
     sections.push({ id: 'space', labelKey: 'space', items: spaceItems })
+  }
+
+  if (canAccessSocial()) {
+    sections.push({
+      id: 'theater',
+      labelKey: 'theater',
+      items: [{ route: '/theater/social', labelKey: 'social', icon: 'social' }],
+    })
   }
 
   const globalItems: NavSection['items'] = []

@@ -28,11 +28,7 @@ const escapeHtml = (value) =>
     .replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;')
 
-const readEnv = (key, fallback) => {
-  const value = $os.getenv(key)
-  if (!value || value.trim() === '') return fallback
-  return value.trim().replace(/^["']|["']$/g, '')
-}
+const { readEnv } = require(`${__hooks}/lib/env.js`)
 
 const MONTHS_RU = [
   'января',

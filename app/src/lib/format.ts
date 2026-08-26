@@ -24,6 +24,23 @@ export const formatDateOnly = (value: string | null | undefined, locale: Locale)
   }).format(date)
 }
 
+export const formatDateTime = (value: string | null | undefined, locale: Locale) => {
+  if (!value) return '—'
+
+  const normalized = value.includes('T') ? value : value.replace(' ', 'T')
+  const date = new Date(normalized)
+
+  if (Number.isNaN(date.getTime())) return value
+
+  return new Intl.DateTimeFormat(localeTag(locale), {
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+  }).format(date)
+}
+
 /** Value for `<input type="date">` — PocketBase stores a datetime string. */
 export const toDateInputValue = (value: string | null | undefined) => {
   if (!value) return ''

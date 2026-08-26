@@ -9,11 +9,7 @@
 
 const CF_API_TIMEOUT = 10
 
-const readEnv = (key) => {
-  const value = $os.getenv(key)
-  if (!value || value.trim() === '') return ''
-  return value.trim().replace(/^["']|["']$/g, '')
-}
+const { readEnv } = require(`${__hooks}/lib/env.js`)
 
 const cloudflareApiConfig = () => {
   const accountId = readEnv('CLOUDFLARE_ACCOUNT_ID')

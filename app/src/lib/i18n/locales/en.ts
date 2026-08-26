@@ -38,12 +38,14 @@ export const en: TranslationSchema = {
   nav: {
     sections: {
       space: 'Space',
+      theater: 'Theater',
       global: 'Global',
     },
     landing: 'Landing',
     requests: 'Requests',
     staff: 'Staff',
     account: 'Account settings',
+    social: 'Social',
     collapse: 'Collapse',
     expand: 'Expand',
   },
@@ -161,6 +163,17 @@ export const en: TranslationSchema = {
     editUser: 'Edit user',
     deleteUser: 'Delete user',
     validationFailed: 'Fix the highlighted fields before saving.',
+  },
+  theater_social_panel: {
+    title: 'Social',
+    body: 'Starts a Bright Data job for the 9 latest Instagram posts. That can take several minutes — this page updates when it finishes.',
+    refresh: 'Refresh Instagram posts',
+    started: 'Refresh started. You can leave this page; it will keep running on the server.',
+    running: 'Waiting for Bright Data… started {time}',
+    success: 'Updated {count} Instagram posts.',
+    successAt: 'Last refresh: {time} ({count} posts)',
+    failed: 'Refresh failed: {error}',
+    inProgress: 'A refresh is already running.',
   },
   validation: {
     required: 'Required field',

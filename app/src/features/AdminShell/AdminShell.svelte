@@ -11,6 +11,7 @@
   import { useLocale } from '@/lib/i18n/context.svelte'
   import { getCurrentUser, logout } from '@/lib/pocketbase/auth'
   import { navSectionsForUser } from '@/lib/pocketbase/permissions'
+  import type { NavItem, NavSection } from '@/lib/nav'
   import { getRoute, navigate, type AppRoute } from '@/lib/router'
   import iconSvg from './assets/logo.svg?raw'
   import './AdminShell.css'
@@ -38,9 +39,9 @@
 
   let collapsed = $state(readCollapsed())
 
-  const itemLabel = (labelKey: 'landing' | 'requests' | 'staff' | 'account') => localeCtx.t.nav[labelKey]
+  const itemLabel = (labelKey: NavItem['labelKey']) => localeCtx.t.nav[labelKey]
 
-  const sectionLabel = (labelKey: 'space' | 'global') => localeCtx.t.nav.sections[labelKey]
+  const sectionLabel = (labelKey: NavSection['labelKey']) => localeCtx.t.nav.sections[labelKey]
 
   const toggleSidebar = () => {
     collapsed = !collapsed

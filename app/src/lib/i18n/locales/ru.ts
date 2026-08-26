@@ -38,12 +38,14 @@ export const ru: TranslationSchema = {
   nav: {
     sections: {
       space: 'Пространство',
+      theater: 'Театр',
       global: 'Общее',
     },
     landing: 'Лендинг',
     requests: 'Заявки',
     staff: 'Сотрудники',
     account: 'Настройки аккаунта',
+    social: 'Соцсети',
     collapse: 'Свернуть',
     expand: 'Развернуть',
   },
@@ -161,6 +163,17 @@ export const ru: TranslationSchema = {
     editUser: 'Редактировать',
     deleteUser: 'Удалить',
     validationFailed: 'Исправьте выделенные поля перед сохранением.',
+  },
+  theater_social_panel: {
+    title: 'Соцсети',
+    body: 'Запускает задачу Bright Data для 9 последних постов Instagram. Это может занять несколько минут — страница обновится, когда задача завершится.',
+    refresh: 'Обновить посты Instagram',
+    started: 'Обновление запущено. Можно уйти со страницы — задача продолжит работать на сервере.',
+    running: 'Ожидание Bright Data… запущено {time}',
+    success: 'Обновлено постов Instagram: {count}.',
+    successAt: 'Последнее обновление: {time} ({count} постов)',
+    failed: 'Не удалось обновить: {error}',
+    inProgress: 'Обновление уже выполняется.',
   },
   validation: {
     required: 'Обязательное поле',

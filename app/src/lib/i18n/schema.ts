@@ -36,12 +36,14 @@ export type TranslationSchema = {
   nav: {
     sections: {
       space: string
+      theater: string
       global: string
     }
     landing: string
     requests: string
     staff: string
     account: string
+    social: string
     collapse: string
     expand: string
   }
@@ -144,6 +146,17 @@ export type TranslationSchema = {
     editUser: string
     deleteUser: string
     validationFailed: string
+  }
+  theater_social_panel: {
+    title: string
+    body: string
+    refresh: string
+    started: string
+    running: string
+    success: string
+    successAt: string
+    failed: string
+    inProgress: string
   }
   validation: {
     required: string
