@@ -1,0 +1,222 @@
+/// <reference path="../pb_data/types.d.ts" />
+migrate((app) => {
+  const collection = new Collection({
+    "createRule": null,
+    "deleteRule": null,
+    "fields": [
+      {
+        "autogeneratePattern": "[a-z0-9]{15}",
+        "help": "",
+        "hidden": false,
+        "id": "text3208210256",
+        "max": 15,
+        "min": 15,
+        "name": "id",
+        "pattern": "^[a-z0-9]+$",
+        "presentable": false,
+        "primaryKey": true,
+        "required": true,
+        "system": true,
+        "type": "text"
+      },
+      {
+        "cascadeDelete": false,
+        "collectionId": "pbc_3555510918",
+        "help": "",
+        "hidden": false,
+        "id": "relation1586093754",
+        "maxSelect": 0,
+        "minSelect": 0,
+        "name": "play",
+        "presentable": false,
+        "required": false,
+        "system": false,
+        "type": "relation"
+      },
+      {
+        "cascadeDelete": false,
+        "collectionId": "pbc_1837951489",
+        "help": "",
+        "hidden": false,
+        "id": "relation1114567570",
+        "maxSelect": 10,
+        "minSelect": 0,
+        "name": "staff",
+        "presentable": false,
+        "required": false,
+        "system": false,
+        "type": "relation"
+      },
+      {
+        "autogeneratePattern": "",
+        "help": "",
+        "hidden": false,
+        "id": "text1031224004",
+        "max": 0,
+        "min": 0,
+        "name": "name_en",
+        "pattern": "",
+        "presentable": false,
+        "primaryKey": false,
+        "required": false,
+        "system": false,
+        "type": "text"
+      },
+      {
+        "autogeneratePattern": "",
+        "help": "",
+        "hidden": false,
+        "id": "text2995877822",
+        "max": 0,
+        "min": 0,
+        "name": "name_ru",
+        "pattern": "",
+        "presentable": false,
+        "primaryKey": false,
+        "required": false,
+        "system": false,
+        "type": "text"
+      },
+      {
+        "autogeneratePattern": "",
+        "help": "",
+        "hidden": false,
+        "id": "text1836055784",
+        "max": 0,
+        "min": 0,
+        "name": "name_uz",
+        "pattern": "",
+        "presentable": false,
+        "primaryKey": false,
+        "required": false,
+        "system": false,
+        "type": "text"
+      },
+      {
+        "autogeneratePattern": "",
+        "help": "",
+        "hidden": false,
+        "id": "text1107243129",
+        "max": 0,
+        "min": 0,
+        "name": "description_en",
+        "pattern": "",
+        "presentable": false,
+        "primaryKey": false,
+        "required": false,
+        "system": false,
+        "type": "text"
+      },
+      {
+        "autogeneratePattern": "",
+        "help": "",
+        "hidden": false,
+        "id": "text3457776899",
+        "max": 0,
+        "min": 0,
+        "name": "description_ru",
+        "pattern": "",
+        "presentable": false,
+        "primaryKey": false,
+        "required": false,
+        "system": false,
+        "type": "text"
+      },
+      {
+        "autogeneratePattern": "",
+        "help": "",
+        "hidden": false,
+        "id": "text300414549",
+        "max": 0,
+        "min": 0,
+        "name": "description_uz",
+        "pattern": "",
+        "presentable": false,
+        "primaryKey": false,
+        "required": false,
+        "system": false,
+        "type": "text"
+      },
+      {
+        "help": "",
+        "hidden": false,
+        "id": "select2363381545",
+        "maxSelect": 0,
+        "name": "type",
+        "presentable": false,
+        "required": false,
+        "system": false,
+        "type": "select",
+        "values": [
+          "actor",
+          "production",
+          "administration"
+        ]
+      },
+      {
+        "help": "",
+        "hidden": false,
+        "id": "file347571224",
+        "maxSelect": 0,
+        "maxSize": 0,
+        "mimeTypes": null,
+        "name": "photo",
+        "presentable": false,
+        "protected": false,
+        "required": false,
+        "system": false,
+        "thumbs": null,
+        "type": "file"
+      },
+      {
+        "help": "",
+        "hidden": false,
+        "id": "file1194031162",
+        "maxSelect": 10,
+        "maxSize": 0,
+        "mimeTypes": null,
+        "name": "gallery",
+        "presentable": false,
+        "protected": false,
+        "required": false,
+        "system": false,
+        "thumbs": null,
+        "type": "file"
+      },
+      {
+        "hidden": false,
+        "id": "autodate2990389176",
+        "name": "created",
+        "onCreate": true,
+        "onUpdate": false,
+        "presentable": false,
+        "system": false,
+        "type": "autodate"
+      },
+      {
+        "hidden": false,
+        "id": "autodate3332085495",
+        "name": "updated",
+        "onCreate": true,
+        "onUpdate": true,
+        "presentable": false,
+        "system": false,
+        "type": "autodate"
+      }
+    ],
+    "id": "pbc_3658260054",
+    "indexes": [],
+    "listRule": null,
+    "name": "t_role",
+    "system": false,
+    "type": "base",
+    "updateRule": null,
+    "viewRule": null
+  });
+
+  return app.save(collection);
+}, (app) => {
+  const collection = app.findCollectionByNameOrId("pbc_3658260054");
+
+  return app.delete(collection);
+})
