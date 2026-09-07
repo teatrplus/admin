@@ -33,9 +33,9 @@ export const loadRequests = async (scope: SiteScope) => {
   const collection = scopedCollection.request(scope)
   return (await pb.collection(collection).getFullList({
     // Kanban is the active board only — archived tickets stay out of the list.
-    filter: 'isArchived != true',
-    // Higher columnIndex = top of column; created as stable tiebreaker.
-    sort: '-columnIndex,created',
+    filter: 'is_archived != true',
+    // Higher column_index = top of column; created as stable tiebreaker.
+    sort: '-column_index,created',
     expand: requestExpand,
   })) as SpaceRequestRecord[]
 }
@@ -46,8 +46,8 @@ export const loadRequestsPage = async (
 ): Promise<RequestsPageResult> => {
   const collection = scopedCollection.request(scope)
   const result = await pb.collection(collection).getList(options.page, options.perPage, {
-    filter: options.archived ? 'isArchived = true' : 'isArchived != true',
-    sort: options.archived ? '-updated' : '-columnIndex,created',
+    filter: options.archived ? 'is_archived = true' : 'is_archived != true',
+    sort: options.archived ? '-updated' : '-column_index,created',
     expand: requestExpand,
   })
 
@@ -63,14 +63,14 @@ export const loadRequestsPage = async (
 export const updateRequestPlacement = async (
   scope: SiteScope,
   id: string,
-  patch: { stage: RequestStage; columnIndex: number },
+  patch: { stage: RequestStage; column_index: number },
 ) => {
   const collection = scopedCollection.request(scope)
   return (await pb.collection(collection).update(
     id,
     {
       stage: normalizeStage(patch.stage),
-      columnIndex: patch.columnIndex,
+      column_index: patch.column_index,
     },
     { expand: requestExpand },
   )) as SpaceRequestRecord
@@ -96,11 +96,11 @@ export const updateRequestManager = async (scope: SiteScope, id: string, manager
   )) as SpaceRequestRecord
 }
 
-export const updateRequestDate = async (scope: SiteScope, id: string, dateRequested: string) => {
+export const updateRequestDate = async (scope: SiteScope, id: string, date_requested: string) => {
   const collection = scopedCollection.request(scope)
   return (await pb.collection(collection).update(
     id,
-    { dateRequested },
+    { date_requested },
     { expand: requestExpand },
   )) as SpaceRequestRecord
 }
@@ -109,7 +109,7 @@ export const archiveRequest = async (scope: SiteScope, id: string) => {
   const collection = scopedCollection.request(scope)
   return (await pb.collection(collection).update(
     id,
-    { isArchived: true },
+    { is_archived: true },
     { expand: requestExpand },
   )) as SpaceRequestRecord
 }
@@ -118,7 +118,7 @@ export const unarchiveRequest = async (scope: SiteScope, id: string) => {
   const collection = scopedCollection.request(scope)
   return (await pb.collection(collection).update(
     id,
-    { isArchived: false },
+    { is_archived: false },
     { expand: requestExpand },
   )) as SpaceRequestRecord
 }

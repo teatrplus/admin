@@ -13,11 +13,11 @@ export type RequestStage =
   | 'cancelled'
 
 export type StaffRecord = RecordModel & {
-  collectionName: 'staff'
+  collectionName: '_user_staff'
   email: string
   name?: string
-  phoneNumber?: string
-  telegramUsername?: string
+  phone_number?: string
+  telegram_username?: string
   role?: StaffRole | string
   scope?: StaffScope[]
   verified?: boolean
@@ -32,52 +32,52 @@ export type SuperuserRecord = RecordModel & {
 export type AuthUser = StaffRecord | SuperuserRecord
 
 export type HeadBodyItem = RecordModel & {
-  headRu?: string
-  headEn?: string
-  headUz?: string
-  bodyRu?: string
-  bodyEn?: string
-  bodyUz?: string
+  head_ru?: string
+  head_en?: string
+  head_uz?: string
+  body_ru?: string
+  body_en?: string
+  body_uz?: string
 }
 
 export type GalleryItem = RecordModel & {
-  captionRu?: string
-  captionEn?: string
-  captionUz?: string
+  caption_ru?: string
+  caption_en?: string
+  caption_uz?: string
   file?: string
-  youtubeUrl?: string
+  youtube_url?: string
 }
 
 export type SpaceLandingRecord = RecordModel & {
-  headerPhoneManager?: string
-  telegramManager?: string
-  presentationUrl?: string
-  venueItems?: string[]
-  advantageItems?: string[]
-  galleryItems?: string[]
-  processItems?: string[]
-  footerContactManagers?: string[]
+  header_phone_manager?: string
+  telegram_manager?: string
+  presentation_url?: string
+  venue_items?: string[]
+  advantage_items?: string[]
+  gallery_items?: string[]
+  process_items?: string[]
+  footer_contact_managers?: string[]
   partners?: string[]
   expand?: {
-    venueItems?: HeadBodyItem[]
-    advantageItems?: HeadBodyItem[]
-    galleryItems?: GalleryItem[]
-    processItems?: HeadBodyItem[]
-    headerPhoneManager?: StaffRecord
-    telegramManager?: StaffRecord
-    footerContactManagers?: StaffRecord[]
+    venue_items?: HeadBodyItem[]
+    advantage_items?: HeadBodyItem[]
+    gallery_items?: GalleryItem[]
+    process_items?: HeadBodyItem[]
+    header_phone_manager?: StaffRecord
+    telegram_manager?: StaffRecord
+    footer_contact_managers?: StaffRecord[]
   }
 }
 
 export type SpaceRequestRecord = RecordModel & {
-  clientName?: string
-  clientPhoneNumber?: string
-  dateRequested?: string
+  client_name?: string
+  client_phone_number?: string
+  date_requested?: string
   manager?: string
   stage?: RequestStage | string
   /** Higher values render at the top of a stage column. */
-  columnIndex?: number
-  isArchived?: boolean
+  column_index?: number
+  is_archived?: boolean
   expand?: {
     manager?: StaffRecord
   }

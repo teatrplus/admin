@@ -60,12 +60,12 @@
   }
 
   const sortByColumnIndex = (cards: BoardCard[]) =>
-    [...cards].sort((a, b) => (b.columnIndex ?? 0) - (a.columnIndex ?? 0))
+    [...cards].sort((a, b) => (b.column_index ?? 0) - (a.column_index ?? 0))
 
   const toColumns = (records: SpaceRequestRecord[]) => {
     const next = emptyColumns()
     for (const record of records) {
-      if (record.isArchived) continue
+      if (record.is_archived) continue
       const stage = normalizeStage(record.stage) as RequestStage
       const bucket = REQUEST_STAGES.includes(stage) ? stage : 'inquiry'
       next[bucket] = [...next[bucket], { ...record, id: record.id }]
@@ -79,12 +79,12 @@
   const flattenColumns = (board: Record<RequestStage, BoardCard[]>) =>
     Object.values(board).flat() as SpaceRequestRecord[]
 
-  /** Top of list = highest columnIndex. */
+  /** Top of list = highest column_index. */
   const withColumnIndexes = (stage: RequestStage, items: BoardCard[]): BoardCard[] =>
     items.map((item, positionFromTop) => ({
       ...item,
       stage,
-      columnIndex: indexForColumnPosition(positionFromTop, items.length),
+      column_index: indexForColumnPosition(positionFromTop, items.length),
     }))
 
   const requestsQuery = createQuery(() => ({
@@ -135,17 +135,17 @@
     mutationFn: ({
       id,
       stage,
-      columnIndex,
+      column_index,
     }: {
       id: string
       stage: RequestStage
-      columnIndex: number
-    }) => updateRequestPlacement(scope, id, { stage, columnIndex }),
-    onMutate: async ({ id, stage, columnIndex }) => {
+      column_index: number
+    }) => updateRequestPlacement(scope, id, { stage, column_index }),
+    onMutate: async ({ id, stage, column_index }) => {
       await queryClient.cancelQueries({ queryKey })
       const previous = queryClient.getQueryData<SpaceRequestRecord[]>(queryKey)
       const optimistic = (previous ?? []).map((record) =>
-        record.id === id ? { ...record, stage, columnIndex } : record,
+        record.id === id ? { ...record, stage, column_index } : record,
       )
       setCache(optimistic)
       return { previous }
@@ -197,14 +197,14 @@
   }))
 
   const dateMutation = createMutation(() => ({
-    mutationFn: ({ id, dateRequested }: { id: string; dateRequested: string }) =>
-      updateRequestDate(scope, id, dateRequested),
-    onMutate: async ({ id, dateRequested }) => {
+    mutationFn: ({ id, date_requested }: { id: string; date_requested: string }) =>
+      updateRequestDate(scope, id, date_requested),
+    onMutate: async ({ id, date_requested }) => {
       await queryClient.cancelQueries({ queryKey })
       const previous = queryClient.getQueryData<SpaceRequestRecord[]>(queryKey)
       setCache(
         (previous ?? []).map((record) =>
-          record.id === id ? { ...record, dateRequested } : record,
+          record.id === id ? { ...record, date_requested } : record,
         ),
       )
       return { previous }
@@ -259,7 +259,7 @@
       if (!before) return true
       return (
         normalizeStage(before.stage) !== stage ||
-        (before.columnIndex ?? 0) !== (item.columnIndex ?? 0)
+        (before.column_index ?? 0) !== (item.column_index ?? 0)
       )
     })
 
@@ -275,7 +275,7 @@
         placementMutation.mutateAsync({
           id: item.id,
           stage,
-          columnIndex: item.columnIndex ?? 0,
+          column_index: item.column_index ?? 0,
         }),
       ),
     ).finally(() => {
@@ -290,10 +290,10 @@
     managerMutation.mutate({ id: card.id, managerId })
   }
 
-  const assignDate = (card: BoardCard, dateRequested: string) => {
-    const current = toDateInputValue(card.dateRequested)
-    if (!dateRequested || dateRequested === current) return
-    dateMutation.mutate({ id: card.id, dateRequested })
+  const assignDate = (card: BoardCard, date_requested: string) => {
+    const current = toDateInputValue(card.date_requested)
+    if (!date_requested || date_requested === current) return
+    dateMutation.mutate({ id: card.id, date_requested })
   }
 
   const archiveCard = (card: BoardCard, stage: RequestStage) => {
@@ -385,7 +385,7 @@
               {#each columns[stage] as card (card.id)}
                 <article class="requests_board-card" animate:flip={{ duration: flipDurationMs }}>
                   <div class="requests_board-card_header">
-                    <p class="requests_board-card_name">{card.clientName || '—'}</p>
+                    <p class="requests_board-card_name">{card.client_name || '—'}</p>
                     {#if canEdit}
                       <!-- svelte-ignore a11y_no_static_element_interactions a11y_no_noninteractive_element_interactions -->
                       <div
@@ -431,7 +431,7 @@
                   <dl class="requests_board-card_meta">
                     <div>
                       <dt>{localeCtx.t.requests.clientPhone}</dt>
-                      <dd>{card.clientPhoneNumber || '—'}</dd>
+                      <dd>{card.client_phone_number || '—'}</dd>
                     </div>
                     <div>
                       <dt>{localeCtx.t.requests.dateRequested}</dt>
@@ -447,13 +447,13 @@
                             <input
                               class="requests_board-date"
                               type="date"
-                              value={toDateInputValue(card.dateRequested)}
+                              value={toDateInputValue(card.date_requested)}
                               aria-label={localeCtx.t.requests.dateRequested}
                               onchange={(event) => assignDate(card, event.currentTarget.value)}
                             />
                           </div>
                         {:else}
-                          {toDateInputValue(card.dateRequested) || '—'}
+                          {toDateInputValue(card.date_requested) || '—'}
                         {/if}
                       </dd>
                     </div>

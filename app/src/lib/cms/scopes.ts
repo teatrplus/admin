@@ -6,16 +6,16 @@ export type SiteScope = (typeof SITE_SCOPES)[number]
 export const ACTIVE_SCOPES: readonly SiteScope[] = ['space']
 
 export const GLOBAL_COLLECTIONS = {
-  staff: 'staff',
+  staff: '_user_staff',
 } as const
 
 export const scopedCollection = {
-  landing: (scope: SiteScope) => `${scope}_landing`,
-  request: (scope: SiteScope) => `${scope}_request`,
-  venueItem: (scope: SiteScope) => `${scope}_venue_item`,
-  advantageItem: (scope: SiteScope) => `${scope}_advantage_item`,
-  galleryItem: (scope: SiteScope) => `${scope}_gallery_item`,
-  processItem: (scope: SiteScope) => `${scope}_process_item`,
+  landing: (scope: SiteScope) => `${scope === 'space' ? 's' : 't'}_landing`,
+  request: (scope: SiteScope) => `${scope === 'space' ? 's' : 't'}_request`,
+  venueItem: (scope: SiteScope) => `${scope === 'space' ? 's' : 't'}_venue_item`,
+  advantageItem: (scope: SiteScope) => `${scope === 'space' ? 's' : 't'}_advantage_item`,
+  galleryItem: (scope: SiteScope) => `${scope === 'space' ? 's' : 't'}_gallery_item`,
+  processItem: (scope: SiteScope) => `${scope === 'space' ? 's' : 't'}_process_item`,
 } as const
 
 export type ScopedCollectionKey = keyof typeof scopedCollection

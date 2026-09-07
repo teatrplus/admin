@@ -15,7 +15,7 @@ cronAdd('instagram_refresh', '23 4 * * *', () => {
   const result = startInstagramRefresh('cron')
 
   if (result.httpStatus === 202) {
-    $app.logger().info('instagram daily refresh started', 'snapshotId', result.body.snapshotId || '')
+    $app.logger().info('instagram daily refresh started', 'snapshot_id', result.body.snapshotId || '')
     return
   }
 
@@ -48,7 +48,7 @@ routerAdd(
     const result = lib.startInstagramRefresh('manual')
     return e.json(result.httpStatus, result.body)
   },
-  $apis.requireAuth('_superusers', 'staff'),
+  $apis.requireAuth('_superusers', '_user_staff'),
 )
 
 routerAdd(
@@ -67,5 +67,5 @@ routerAdd(
     const result = lib.tickInstagramRefresh()
     return e.json(result.httpStatus, result.body)
   },
-  $apis.requireAuth('_superusers', 'staff'),
+  $apis.requireAuth('_superusers', '_user_staff'),
 )

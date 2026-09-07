@@ -121,11 +121,11 @@
   }
 
   const dateMutation = createMutation(() => ({
-    mutationFn: ({ id, dateRequested }: { id: string; dateRequested: string }) =>
-      updateRequestDate(scope, id, dateRequested),
-    onMutate: async ({ id, dateRequested }) => {
+    mutationFn: ({ id, date_requested }: { id: string; date_requested: string }) =>
+      updateRequestDate(scope, id, date_requested),
+    onMutate: async ({ id, date_requested }) => {
       await queryClient.cancelQueries(requestsScopeQueryFilter(scope))
-      patchRow(id, { dateRequested })
+      patchRow(id, { date_requested })
     },
     onError: (error) => {
       pushToast(error instanceof Error ? error.message : localeCtx.t.common.error, 'error')
@@ -203,9 +203,9 @@
   }))
 
   const onDateChange = (row: SpaceRequestRecord, next: string) => {
-    const current = toDateInputValue(row.dateRequested)
+    const current = toDateInputValue(row.date_requested)
     if (!next || next === current) return
-    dateMutation.mutate({ id: row.id, dateRequested: next })
+    dateMutation.mutate({ id: row.id, date_requested: next })
   }
 
   const onStageChange = (row: SpaceRequestRecord, next: string) => {
@@ -282,14 +282,14 @@
 {#snippet rowControls(row: SpaceRequestRecord, mode: 'archive' | 'unarchive')}
   {@const stage = normalizeStage(row.stage) as RequestStage}
   {@const assigned = row.expand?.manager || (row.manager ? findManager(String(row.manager)) : null)}
-  <td>{row.clientName || '—'}</td>
-  <td>{row.clientPhoneNumber || '—'}</td>
+  <td>{row.client_name || '—'}</td>
+  <td>{row.client_phone_number || '—'}</td>
   {#if canEdit}
     <td>
       <input
         class="requests_table-date"
         type="date"
-        value={toDateInputValue(row.dateRequested)}
+        value={toDateInputValue(row.date_requested)}
         aria-label={localeCtx.t.requests.dateRequested}
         onchange={(event) => onDateChange(row, event.currentTarget.value)}
       />
@@ -319,7 +319,7 @@
       {@render rowMenu(row, mode)}
     </td>
   {:else}
-    <td>{toDateInputValue(row.dateRequested) || '—'}</td>
+    <td>{toDateInputValue(row.date_requested) || '—'}</td>
     <td>{managerLabel(assigned)}</td>
     <td>{localeCtx.t.requests.stages[stage] ?? stage}</td>
   {/if}

@@ -12,7 +12,7 @@ export const getAccount = async (): Promise<AuthUser> => {
     return (await pb.collection(SUPERUSERS_COLLECTION).getOne(user.id)) as SuperuserRecord
   }
 
-  return (await pb.collection('staff').getOne(user.id)) as StaffRecord
+  return (await pb.collection('_user_staff').getOne(user.id)) as StaffRecord
 }
 
 export const updateAccount = async (formData: FormData): Promise<AuthUser> => {
@@ -27,7 +27,7 @@ export const updateAccount = async (formData: FormData): Promise<AuthUser> => {
     return updated
   }
 
-  const updated = (await pb.collection('staff').update(user.id, formData)) as StaffRecord
+  const updated = (await pb.collection('_user_staff').update(user.id, formData)) as StaffRecord
   if (pb.authStore.token) {
     pb.authStore.save(pb.authStore.token, updated)
   }

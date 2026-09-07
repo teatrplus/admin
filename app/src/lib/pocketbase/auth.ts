@@ -15,7 +15,9 @@ export const normalizeRole = (role: string | undefined | null): StaffRole | null
 export const isSuperuser = (): boolean => pb.authStore.isSuperuser
 
 export const isStaffUser = (user: AuthUser | null | undefined): user is StaffRecord =>
-  user != null && user.collectionName === 'staff'
+  user != null &&
+  // Collection IDs survive renames, including records cached in existing sessions.
+  (user.collectionId === 'pbc_829252413' || user.collectionName === '_user_staff')
 
 export const getCurrentUser = (): AuthUser | null => {
   if (!pb.authStore.isValid || !pb.authStore.record) return null
@@ -24,7 +26,7 @@ export const getCurrentUser = (): AuthUser | null => {
 
 export const login = async (email: string, password: string): Promise<AuthUser> => {
   try {
-    const auth = await pb.collection('staff').authWithPassword(email, password)
+    const auth = await pb.collection('_user_staff').authWithPassword(email, password)
     return auth.record as StaffRecord
   } catch (error) {
     if (!(error instanceof ClientResponseError) || error.status !== 400) {

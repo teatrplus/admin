@@ -7,7 +7,7 @@ export const CONTENT_LOCALES = ['ru', 'en', 'uz'] as const
 export type ContentLocale = (typeof CONTENT_LOCALES)[number]
 
 const expand =
-  'venueItems,advantageItems,galleryItems,processItems,headerPhoneManager,telegramManager,footerContactManagers'
+  'venue_items,advantage_items,gallery_items,process_items,header_phone_manager,telegram_manager,footer_contact_managers'
 
 const asRelationId = (value: string | string[] | undefined | null) => {
   if (Array.isArray(value)) return value[0] ?? ''
@@ -144,12 +144,12 @@ export const youtubeThumbnailUrl = (url: string) => {
 const toHeadBodyRow = (item: HeadBodyItem): HeadBodyRow => ({
   localId: newLocalId(),
   id: item.id,
-  headRu: item.headRu ?? '',
-  headEn: item.headEn ?? '',
-  headUz: item.headUz ?? '',
-  bodyRu: item.bodyRu ?? '',
-  bodyEn: item.bodyEn ?? '',
-  bodyUz: item.bodyUz ?? '',
+  headRu: item.head_ru ?? '',
+  headEn: item.head_en ?? '',
+  headUz: item.head_uz ?? '',
+  bodyRu: item.body_ru ?? '',
+  bodyEn: item.body_en ?? '',
+  bodyUz: item.body_uz ?? '',
 })
 
 const withMinHeadBody = (items: HeadBodyItem[] | undefined) => {
@@ -179,24 +179,24 @@ export const landingToForm = (record: SpaceLandingRecord | null): LandingFormSta
 
   return {
     landingId: record.id,
-    headerPhoneManagerId: asRelationId(record.headerPhoneManager),
-    telegramManagerId: asRelationId(record.telegramManager),
-    presentationUrl: record.presentationUrl ?? '',
-    venueItems: withMinHeadBody(record.expand?.venueItems),
-    advantageItems: withMinHeadBody(record.expand?.advantageItems),
-    processItems: withMinHeadBody(record.expand?.processItems),
-    galleryItems: (record.expand?.galleryItems ?? []).map((item) =>
+    headerPhoneManagerId: asRelationId(record.header_phone_manager),
+    telegramManagerId: asRelationId(record.telegram_manager),
+    presentationUrl: record.presentation_url ?? '',
+    venueItems: withMinHeadBody(record.expand?.venue_items),
+    advantageItems: withMinHeadBody(record.expand?.advantage_items),
+    processItems: withMinHeadBody(record.expand?.process_items),
+    galleryItems: (record.expand?.gallery_items ?? []).map((item) =>
       emptyGalleryRow({
         recordId: item.id,
-        captionRu: item.captionRu ?? '',
-        captionEn: item.captionEn ?? '',
-        captionUz: item.captionUz ?? '',
-        youtubeUrl: item.youtubeUrl ?? '',
+        captionRu: item.caption_ru ?? '',
+        captionEn: item.caption_en ?? '',
+        captionUz: item.caption_uz ?? '',
+        youtubeUrl: item.youtube_url ?? '',
         existingFile: item.file,
         previewUrl: item.file ? pb.files.getURL(item, item.file) : undefined,
       }),
     ),
-    footerContactManagerIds: record.footerContactManagers ?? [],
+    footerContactManagerIds: record.footer_contact_managers ?? [],
     partnerFiles: [],
     existingPartners: (record.partners ?? []).map((name) => ({
       name,
@@ -355,12 +355,12 @@ export const serializeLandingForm = (form: LandingFormState) =>
   })
 
 const headBodyPayload = (row: HeadBodyRow) => ({
-  headRu: row.headRu,
-  headEn: row.headEn,
-  headUz: row.headUz,
-  bodyRu: row.bodyRu,
-  bodyEn: row.bodyEn,
-  bodyUz: row.bodyUz,
+  head_ru: row.headRu,
+  head_en: row.headEn,
+  head_uz: row.headUz,
+  body_ru: row.bodyRu,
+  body_en: row.bodyEn,
+  body_uz: row.bodyUz,
 })
 
 const upsertHeadBody = async (collection: string, row: HeadBodyRow): Promise<string> => {
@@ -374,9 +374,9 @@ const upsertHeadBody = async (collection: string, row: HeadBodyRow): Promise<str
 }
 
 const setGalleryCaptions = (formData: FormData, row: GalleryRow) => {
-  formData.set('captionRu', row.captionRu)
-  formData.set('captionEn', row.captionEn)
-  formData.set('captionUz', row.captionUz)
+  formData.set('caption_ru', row.captionRu)
+  formData.set('caption_en', row.captionEn)
+  formData.set('caption_uz', row.captionUz)
 }
 
 const upsertGallery = async (collection: string, row: GalleryRow): Promise<string> => {
@@ -391,7 +391,7 @@ const upsertGallery = async (collection: string, row: GalleryRow): Promise<strin
 
     const formData = new FormData()
     setGalleryCaptions(formData, row)
-    formData.set('youtubeUrl', '')
+    formData.set('youtube_url', '')
     formData.set('file', row.file)
     if (row.recordId) {
       await pb.collection(collection).update(row.recordId, formData)
@@ -404,7 +404,7 @@ const upsertGallery = async (collection: string, row: GalleryRow): Promise<strin
   if (hasYoutube) {
     const formData = new FormData()
     setGalleryCaptions(formData, row)
-    formData.set('youtubeUrl', youtubeUrl)
+    formData.set('youtube_url', youtubeUrl)
     formData.set('file', '')
     if (row.recordId) {
       await pb.collection(collection).update(row.recordId, formData)
@@ -416,10 +416,10 @@ const upsertGallery = async (collection: string, row: GalleryRow): Promise<strin
 
   if (hasImage) {
     const payload = {
-      captionRu: row.captionRu,
-      captionEn: row.captionEn,
-      captionUz: row.captionUz,
-      youtubeUrl: '',
+      caption_ru: row.captionRu,
+      caption_en: row.captionEn,
+      caption_uz: row.captionUz,
+      youtube_url: '',
     }
     if (row.recordId) {
       await pb.collection(collection).update(row.recordId, payload)
@@ -452,17 +452,17 @@ export const saveLanding = async (scope: SiteScope, form: LandingFormState) => {
   const galleryIds = await Promise.all(form.galleryItems.map((row) => upsertGallery(galleryCollection, row)))
 
   const landingForm = new FormData()
-  landingForm.set('headerPhoneManager', form.headerPhoneManagerId)
-  landingForm.set('telegramManager', form.telegramManagerId)
-  landingForm.set('presentationUrl', form.presentationUrl)
-  for (const id of venueIds) landingForm.append('venueItems', id)
-  for (const id of advantageIds) landingForm.append('advantageItems', id)
-  for (const id of processIds) landingForm.append('processItems', id)
-  for (const id of galleryIds) landingForm.append('galleryItems', id)
+  landingForm.set('header_phone_manager', form.headerPhoneManagerId)
+  landingForm.set('telegram_manager', form.telegramManagerId)
+  landingForm.set('presentation_url', form.presentationUrl)
+  for (const id of venueIds) landingForm.append('venue_items', id)
+  for (const id of advantageIds) landingForm.append('advantage_items', id)
+  for (const id of processIds) landingForm.append('process_items', id)
+  for (const id of galleryIds) landingForm.append('gallery_items', id)
   if (form.footerContactManagerIds.length === 0) {
-    landingForm.set('footerContactManagers', '')
+    landingForm.set('footer_contact_managers', '')
   } else {
-    for (const id of form.footerContactManagerIds) landingForm.append('footerContactManagers', id)
+    for (const id of form.footerContactManagerIds) landingForm.append('footer_contact_managers', id)
   }
   // PocketBase leaves multi-file fields unchanged when omitted — clear explicitly.
   if (form.existingPartners.length === 0 && form.partnerFiles.length === 0) {
@@ -488,7 +488,7 @@ export const saveLanding = async (scope: SiteScope, form: LandingFormState) => {
 export const ASSIGNABLE_STAFF_ROLES = ['admin', 'moderator', 'manager'] as const
 
 export const listManagers = async () => {
-  const records = await pb.collection('staff').getFullList({
+  const records = await pb.collection('_user_staff').getFullList({
     filter: "role = 'admin' || role = 'moderator' || role = 'manager'",
     sort: 'name',
   })

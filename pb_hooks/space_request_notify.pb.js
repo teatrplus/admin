@@ -1,7 +1,7 @@
 /// <reference path="../pb_data/types.d.ts" />
 
 /**
- * Public landing form → space_request create.
+ * Public landing form → s_request create.
  * Runs after the record is saved so a notification failure never blocks the visitor.
  */
 onRecordAfterCreateSuccess((event) => {
@@ -19,4 +19,4 @@ onRecordAfterCreateSuccess((event) => {
   for (const message of errors) {
     $app.logger().error('space_request notification failed', 'requestId', record.id, 'detail', message)
   }
-}, 'space_request')
+}, 's_request')

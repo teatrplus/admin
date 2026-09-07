@@ -136,8 +136,8 @@
     return role !== null && (ASSIGNABLE_STAFF_ROLES as readonly string[]).includes(role)
   }
 
-  const hasPhoneNumber = (staff: StaffRecord) => Boolean(staff.phoneNumber?.trim())
-  const hasTelegramUsername = (staff: StaffRecord) => Boolean(staff.telegramUsername?.trim())
+  const hasPhoneNumber = (staff: StaffRecord) => Boolean(staff.phone_number?.trim())
+  const hasTelegramUsername = (staff: StaffRecord) => Boolean(staff.telegram_username?.trim())
 
   const assignableStaff = $derived.by(() => {
     const byId = new Map<string, StaffRecord>()

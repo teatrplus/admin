@@ -1,5 +1,5 @@
 /**
- * Bright Data → instagram_post sync.
+ * Bright Data → t_instagram_post sync.
  * Loaded from pb_hooks — keep side-effect free; callers own logging.
  *
  * Bright Data discovery is async and can take several minutes. Do not hold an
@@ -7,8 +7,8 @@
  * tick (UI poll + minute cron) until the snapshot is ready and posts are saved.
  */
 
-const POSTS_COLLECTION = 'instagram_post'
-const SYNC_COLLECTION = 'instagram_sync'
+const POSTS_COLLECTION = 't_instagram_post'
+const SYNC_COLLECTION = 't_instagram_sync'
 const SYNC_ID = 'instagramsync00'
 const POSTS_LIMIT = 9
 const DEFAULT_PROFILE_URL = 'https://www.instagram.com/teatr__plus/'
@@ -134,7 +134,7 @@ const normalizePost = (raw) => {
 
 const findExisting = (instagramId) => {
   try {
-    return $app.findFirstRecordByData(POSTS_COLLECTION, 'instagramId', instagramId)
+    return $app.findFirstRecordByData(POSTS_COLLECTION, 'instagram_id', instagramId)
   } catch {
     return null
   }
@@ -264,11 +264,11 @@ const upsertPosts = (posts) => {
     const isNew = !record
     if (!record) record = new Record(collection)
 
-    record.set('instagramId', post.instagramId)
+    record.set('instagram_id', post.instagramId)
     record.set('permalink', post.permalink)
     record.set('caption', post.caption)
-    record.set('postedAt', toDateTime(post.datetime))
-    record.set('mediaType', post.mediaType)
+    record.set('posted_at', toDateTime(post.datetime))
+    record.set('media_type', post.mediaType)
 
     const hasImage = !isNew && record.getString('image')
     if (!hasImage) {
@@ -287,7 +287,7 @@ const upsertPosts = (posts) => {
   const existing = $app.findAllRecords(POSTS_COLLECTION)
   for (const record of existing) {
     if (!record) continue
-    if (!keep[record.getString('instagramId')]) $app.delete(record)
+    if (!keep[record.getString('instagram_id')]) $app.delete(record)
   }
 
   return saved
@@ -326,7 +326,7 @@ const dateField = (record, key) => {
 }
 
 const serializeSync = (record) => {
-  const snapshotId = record.getString('snapshotId')
+  const snapshotId = record.getString('snapshot_id')
   const error = record.getString('error')
   const source = record.getString('source')
 
@@ -337,8 +337,8 @@ const serializeSync = (record) => {
     snapshotId: snapshotId || undefined,
     error: error || undefined,
     source: source || undefined,
-    startedAt: dateField(record, 'startedAt'),
-    finishedAt: dateField(record, 'finishedAt'),
+    startedAt: dateField(record, 'started_at'),
+    finishedAt: dateField(record, 'finished_at'),
   }
 }
 
@@ -357,7 +357,7 @@ const ensureSyncRecord = () => {
 }
 
 const isTimedOut = (record) => {
-  const started = record.getDateTime('startedAt')
+  const started = record.getDateTime('started_at')
   if (!started || typeof started.unix !== 'function') return false
   if (typeof started.isZero === 'function' && started.isZero()) return false
   const startedUnix = started.unix()
@@ -368,7 +368,7 @@ const isTimedOut = (record) => {
 const markFailed = (record, error) => {
   record.set('status', 'failed')
   record.set('error', String(error || 'Instagram refresh failed').slice(0, 500))
-  record.set('finishedAt', new DateTime())
+  record.set('finished_at', new DateTime())
   $app.save(record)
   $app.logger().error('instagram refresh failed', 'detail', record.getString('error'))
 }
@@ -446,13 +446,13 @@ const startInstagramRefresh = (source) => {
 
     record.set('status', 'running')
     record.set('source', source === 'cron' ? 'cron' : 'manual')
-    record.set('snapshotId', triggered.snapshotId)
+    record.set('snapshot_id', triggered.snapshotId)
     record.set('error', '')
-    record.set('startedAt', new DateTime())
-    record.set('finishedAt', '')
+    record.set('started_at', new DateTime())
+    record.set('finished_at', '')
     $app.save(record)
 
-    $app.logger().info('instagram refresh started', 'snapshotId', triggered.snapshotId, 'source', source)
+    $app.logger().info('instagram refresh started', 'snapshot_id', triggered.snapshotId, 'source', source)
     return { httpStatus: 202, body: serializeSync(record) }
   } catch (error) {
     return {
@@ -490,7 +490,7 @@ const tickInstagramRefresh = () => {
       return { httpStatus: 200, body: serializeSync(record) }
     }
 
-    const snapshotId = record.getString('snapshotId')
+    const snapshotId = record.getString('snapshot_id')
     if (!snapshotId) {
       markFailed(record, 'Instagram refresh has no snapshot_id')
       return { httpStatus: 200, body: serializeSync(record) }
@@ -514,7 +514,7 @@ const tickInstagramRefresh = () => {
     record.set('status', 'success')
     record.set('count', saved.count)
     record.set('error', '')
-    record.set('finishedAt', new DateTime())
+    record.set('finished_at', new DateTime())
     $app.save(record)
     triggerWebsiteRebuild()
     $app.logger().info('instagram refresh completed', 'count', saved.count)
@@ -533,7 +533,7 @@ const canRefreshInstagram = (auth) => {
   if (typeof auth.isSuperuser === 'function' && auth.isSuperuser()) return true
 
   const collection = auth.collection()
-  if (!collection || collection.name !== 'staff') return false
+  if (!collection || collection.name !== '_user_staff') return false
 
   const role = String(auth.getString('role') || '').trim()
   return role === 'admin' || role === 'moderator'

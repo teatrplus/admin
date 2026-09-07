@@ -83,8 +83,8 @@
       password: '',
       passwordConfirm: '',
       name: isStaffUser(account) ? (account.name ?? '') : '',
-      phoneNumber: isStaffUser(account) ? (account.phoneNumber ?? '') : '',
-      telegramUsername: isStaffUser(account) ? (account.telegramUsername ?? '') : '',
+      phoneNumber: isStaffUser(account) ? (account.phone_number ?? '') : '',
+      telegramUsername: isStaffUser(account) ? (account.telegram_username ?? '') : '',
     })
   })
 
@@ -94,8 +94,8 @@
 
     if (isStaffAccount) {
       formData.set('name', form.values.name)
-      formData.set('phoneNumber', form.values.phoneNumber)
-      formData.set('telegramUsername', form.values.telegramUsername)
+      formData.set('phone_number', form.values.phoneNumber)
+      formData.set('telegram_username', form.values.telegramUsername)
     }
 
     if (form.values.password) {
@@ -114,8 +114,8 @@
         password: '',
         passwordConfirm: '',
         name: isStaffUser(updated) ? (updated.name ?? '') : '',
-        phoneNumber: isStaffUser(updated) ? (updated.phoneNumber ?? '') : '',
-        telegramUsername: isStaffUser(updated) ? (updated.telegramUsername ?? '') : '',
+        phoneNumber: isStaffUser(updated) ? (updated.phone_number ?? '') : '',
+        telegramUsername: isStaffUser(updated) ? (updated.telegram_username ?? '') : '',
       })
       await queryClient.invalidateQueries({ queryKey: ['account'] })
       pushToast(localeCtx.t.account.updated, 'success')

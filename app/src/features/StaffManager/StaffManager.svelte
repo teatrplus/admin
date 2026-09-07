@@ -106,8 +106,8 @@
     const formData = new FormData()
     formData.set('email', form.values.email)
     formData.set('name', form.values.name)
-    formData.set('phoneNumber', form.values.phoneNumber)
-    formData.set('telegramUsername', form.values.telegramUsername)
+    formData.set('phone_number', form.values.phoneNumber)
+    formData.set('telegram_username', form.values.telegramUsername)
     formData.set('role', form.values.role)
     for (const scopeValue of scopes) {
       formData.append('scope', scopeValue)
@@ -137,8 +137,8 @@
       password: '',
       passwordConfirm: '',
       name: member.name ?? '',
-      phoneNumber: member.phoneNumber ?? '',
-      telegramUsername: member.telegramUsername ?? '',
+      phoneNumber: member.phone_number ?? '',
+      telegramUsername: member.telegram_username ?? '',
       role: normalizeRole(member.role) ?? 'manager',
       scopeTheater: (member.scope ?? []).includes('theater'),
       scopeSpace: (member.scope ?? []).includes('space'),

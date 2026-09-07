@@ -1,5 +1,5 @@
 /**
- * Notification helpers for public space_request submissions.
+ * Notification helpers for public s_request submissions.
  * Loaded from pb_hooks — keep side-effect free; callers own logging.
  */
 
@@ -78,9 +78,9 @@ const formatTimestampRu = (value) => {
 }
 
 const requestSnapshot = (record) => {
-  const clientName = record.get('clientName')
-  const clientPhoneNumber = record.get('clientPhoneNumber')
-  const dateRequested = record.get('dateRequested')
+  const clientName = record.get('client_name')
+  const clientPhoneNumber = record.get('client_phone_number')
+  const dateRequested = record.get('date_requested')
   const stage = record.get('stage') || 'inquiry'
 
   return {
