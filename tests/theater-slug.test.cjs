@@ -20,6 +20,7 @@ test('English-first generation, transliteration and optional initial spelling', 
   assert.equal(slugify('Антонов Артём'), 'antonov-artem')
   for (const [fields, expected] of [
     [{ collection: 't_play', title_en: 'Colors', title_ru: 'Краски' }, 'colors'],
+    [{ collection: 't_course', title_en: 'Poetry School', title_ru: 'Школа поэзии' }, 'poetry-school'],
     [{ name_ru: 'Антонов Артём' }, 'antonov-artem'],
     [{ name_uz: 'O‘yinchoqlar ustaxonasi' }, 'oyinchoqlar-ustaxonasi'],
     [{ name_en: 'Antonov Artyom', slug: 'antonov-artem' }, 'antonov-artem'],
@@ -36,6 +37,9 @@ test('existing URL survives name changes and attempts to clear or replace the sl
     assign(app([], 'published-name'), person)
     assert.equal(person.getString('slug'), 'published-name')
   }
+  const course = record({ collection: 't_course', title_en: 'Renamed course', slug: 'replacement' }, 'poetry-school')
+  assign(app([], 'poetry-school'), course)
+  assert.equal(course.getString('slug'), 'poetry-school')
 })
 
 test('new duplicate names get suffixes without changing the first person', () => {

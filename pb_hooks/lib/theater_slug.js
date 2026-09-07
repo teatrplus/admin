@@ -20,8 +20,8 @@ function assign(app, record) {
   }
 
   const collection = record.collection().name
-  const field = collection === 't_play' ? 'title' : 'name'
-  const fallback = collection === 't_play' ? 'play' : 'person'
+  const field = collection === 't_staff' ? 'name' : 'title'
+  const fallback = collection === 't_staff' ? 'person' : collection === 't_course' ? 'course' : 'play'
   if (!record.id) record.set('id', $security.randomStringWithAlphabet(15, 'abcdefghijklmnopqrstuvwxyz0123456789'))
   const base = [record.getString('slug'), ...['en', 'ru', 'uz'].map((locale) => record.getString(`${field}_${locale}`))]
     .map(slugify).find(Boolean) || `${fallback}-${record.id}`

@@ -4,9 +4,9 @@
 onRecordCreate((event) => {
   require(`${__hooks}/lib/theater_slug.js`).assign(event.app, event.record)
   event.next()
-}, 't_staff', 't_play')
+}, 't_staff', 't_play', 't_course')
 
 onRecordUpdate((event) => {
   require(`${__hooks}/lib/theater_slug.js`).assign(event.app, event.record)
   event.next()
-}, 't_staff', 't_play')
+}, 't_staff', 't_play', 't_course')
