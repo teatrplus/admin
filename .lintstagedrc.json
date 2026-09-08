@@ -1,0 +1,3 @@
+{
+  "*": "pnpm --dir app exec prettier --write --ignore-unknown --ignore-path ../.prettierignore"
+}

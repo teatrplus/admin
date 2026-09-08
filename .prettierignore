@@ -1,0 +1,19 @@
+# Dependencies and generated output
+**/node_modules/
+app/dist/
+app/dist-ssr/
+**/pnpm-lock.yaml
+**/*.tsbuildinfo
+
+# PocketBase runtime data, binaries, and local configuration
+pb_data/
+pocketbase
+pocketbase.exe
+.env
+deploy/env.deploy
+**/*.local
+**/*.log
+
+# Local tooling and generated hook wrappers
+.serena/
+.husky/_/

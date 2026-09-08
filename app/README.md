@@ -1,5 +1,26 @@
 # Svelte + TS + Vite
 
+## Formatting and commit hooks
+
+Run these commands from `theaterplus-admin/app`:
+
+```sh
+pnpm install      # installs dependencies and enables Git hooks via prepare
+pnpm format       # formats the entire admin repository, including PocketBase code
+pnpm format:check # checks formatting without changing files
+```
+
+Before each commit, Husky runs lint-staged to format staged files with Prettier.
+Svelte components use `prettier-plugin-svelte`. Formatting changes are staged
+automatically; unstaged edits in partially staged files are hidden during formatting
+and restored afterward. Formatting errors block the commit.
+
+The repository root owns `prettier.config.cjs`, `.prettierignore`, and
+`.lintstagedrc.json`; dependencies remain in `app/`. Database files, build output,
+and lockfiles are excluded. `pnpm exec prettier --write .` from `app/` formats only
+the frontend; use `pnpm format` for the whole repository and its shared ignore rules.
+If installation scripts were disabled, run `pnpm prepare` from `app/`.
+
 This template should help get you started developing with Svelte and TypeScript in Vite.
 
 ## Recommended IDE Setup
