@@ -5,3 +5,5 @@ pb_data
 
 .env
 deploy/env.deploy
+
+__pycache__/

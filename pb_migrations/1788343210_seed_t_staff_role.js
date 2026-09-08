@@ -150,61 +150,65 @@ migrate(
       }
     }
 
-    const play_gohd1i0tdhgoo6b = app.findRecordById('t_play', 'gohd1i0tdhgoo6b')
-    play_gohd1i0tdhgoo6b.set('roles', [
-      '921a5b9af5525b7',
-      '43d334a42761ddf',
-      'e75710d4cba89f2',
-      'bfff38e390b81ae',
-      '7b021e2398ae398',
-      '3ffbb2149b98f04',
-      '22a1726632aab4b',
-      'd176a5675202121',
-      '934c662da4af946',
-      'e1c85263c59efef',
-      '6ba74d75c93b6e4',
-      '5b65dea672e3770',
-      '0f7509cf5acc52a',
-      'd1a2edfe4ca4a81',
-      'e31ccc2370ef792',
-    ])
-    app.save(play_gohd1i0tdhgoo6b)
-    const play_g4y4xrydwm24afv = app.findRecordById('t_play', 'g4y4xrydwm24afv')
-    play_g4y4xrydwm24afv.set('roles', [
-      '47c720459f81e23',
-      'b8c9298f1413bc8',
-      '930e3ceb3280c2e',
-      '9e4bde53455475f',
-      'a6162f0338710a9',
-      '413f36548efda97',
-      '3b4bee3ad07edc7',
-      '67bd21570e1a776',
-      'bacd7575ebc3852',
-      '1fa64d24dd4a3bd',
-      'c11bb7186b90d65',
-      'd06cdc0046ca45d',
-      'f160a8cefbd8a5e',
-      '25e11012a58036b',
-      '1e3aead05ef9794',
-      'a48eb4199fc79bc',
-      '90a6630d3c84bc6',
-      '65aeae930f0b921',
-      'b06b6891c234add',
-      'c3f0a297d5abb44',
-      'e29de697aacbdc5',
-      'c264b0a386c225f',
-      '12fdf1dd33ca878',
-      '6ef02d8d49db1dc',
-      '39cd18dda108bb6',
-      'f02643756a36716',
-      'c551683646161fc',
-      '9c1421f01103ff8',
-      'c5bea57b1671a73',
-      'e5ce2d27d09a8ad',
-      'e9dfb41510764b7',
-      'fe738a36b277714',
-    ])
-    app.save(play_g4y4xrydwm24afv)
+    const play_gohd1i0tdhgoo6b = app.findRecordsByFilter('t_play', 'id = {:id}', '', 1, 0, { id: 'gohd1i0tdhgoo6b' })[0]
+    if (play_gohd1i0tdhgoo6b) {
+      play_gohd1i0tdhgoo6b.set('roles', [
+        '921a5b9af5525b7',
+        '43d334a42761ddf',
+        'e75710d4cba89f2',
+        'bfff38e390b81ae',
+        '7b021e2398ae398',
+        '3ffbb2149b98f04',
+        '22a1726632aab4b',
+        'd176a5675202121',
+        '934c662da4af946',
+        'e1c85263c59efef',
+        '6ba74d75c93b6e4',
+        '5b65dea672e3770',
+        '0f7509cf5acc52a',
+        'd1a2edfe4ca4a81',
+        'e31ccc2370ef792',
+      ])
+      app.save(play_gohd1i0tdhgoo6b)
+    }
+    const play_g4y4xrydwm24afv = app.findRecordsByFilter('t_play', 'id = {:id}', '', 1, 0, { id: 'g4y4xrydwm24afv' })[0]
+    if (play_g4y4xrydwm24afv) {
+      play_g4y4xrydwm24afv.set('roles', [
+        '47c720459f81e23',
+        'b8c9298f1413bc8',
+        '930e3ceb3280c2e',
+        '9e4bde53455475f',
+        'a6162f0338710a9',
+        '413f36548efda97',
+        '3b4bee3ad07edc7',
+        '67bd21570e1a776',
+        'bacd7575ebc3852',
+        '1fa64d24dd4a3bd',
+        'c11bb7186b90d65',
+        'd06cdc0046ca45d',
+        'f160a8cefbd8a5e',
+        '25e11012a58036b',
+        '1e3aead05ef9794',
+        'a48eb4199fc79bc',
+        '90a6630d3c84bc6',
+        '65aeae930f0b921',
+        'b06b6891c234add',
+        'c3f0a297d5abb44',
+        'e29de697aacbdc5',
+        'c264b0a386c225f',
+        '12fdf1dd33ca878',
+        '6ef02d8d49db1dc',
+        '39cd18dda108bb6',
+        'f02643756a36716',
+        'c551683646161fc',
+        '9c1421f01103ff8',
+        'c5bea57b1671a73',
+        'e5ce2d27d09a8ad',
+        'e9dfb41510764b7',
+        'fe738a36b277714',
+      ])
+      app.save(play_g4y4xrydwm24afv)
+    }
   },
   (app) => {
     for (const playId of ['gohd1i0tdhgoo6b', 'g4y4xrydwm24afv']) {

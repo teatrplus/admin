@@ -7,15 +7,21 @@ on:
 
 concurrency:
   group: deploy-production
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
     environment: production
+    timeout-minutes: 30
 
     steps:
       - uses: actions/checkout@v4
+
+      - name: Validate deployment backup
+        run: |
+          bash -n deploy/deploy.sh
+          python3 tests/deploy-backup.test.py
 
       - uses: pnpm/action-setup@v4
         with:
@@ -37,7 +43,8 @@ jobs:
       - name: Deploy
         env:
           DEPLOY_HOST: ${{ vars.DEPLOY_HOST }}
-          REMOTE_ADMIN_DIR: ${{ vars.REMOTE_ADMIN_DIR || '/opt/teatrplus/admin' }}
+          REMOTE_ADMIN_DIR: ${{ vars.REMOTE_ADMIN_DIR || '/var/www/theaterplus-admin' }}
+          REMOTE_BACKUP_DIR: ${{ vars.REMOTE_BACKUP_DIR || '/var/backups/theaterplus' }}
           VITE_POCKETBASE_URL: ${{ vars.VITE_POCKETBASE_URL || 'https://admin.theaterplus.uz' }}
           DEPLOY_BACKUP_PB_DATA: ${{ vars.DEPLOY_BACKUP_PB_DATA || '1' }}
         run: |

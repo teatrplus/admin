@@ -19,7 +19,9 @@ migrate(
       if (matches.length !== 1) throw new Error(`Expected one production assignment: ${staff} / ${name}`)
       return matches[0].id
     })
-    const plays = ['g4y4xrydwm24afv', 'gohd1i0tdhgoo6b'].map((id) => app.findRecordById('t_play', id))
+    const plays = ['g4y4xrydwm24afv', 'gohd1i0tdhgoo6b'].flatMap((id) =>
+      app.findRecordsByFilter('t_play', 'id = {:id}', '', 1, 0, { id }),
+    )
     for (const play of plays) {
       const original = Array.from(play.getStringSlice('roles'))
       const added = assignments.filter((id) => !original.includes(id))

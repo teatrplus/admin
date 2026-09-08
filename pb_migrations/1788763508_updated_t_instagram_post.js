@@ -1,7 +1,7 @@
 /// <reference path="../pb_data/types.d.ts" />
 migrate(
   (app) => {
-    const collection = app.findCollectionByNameOrId('pbc_instagram_post')
+    const collection = app.findCollectionByNameOrId('t_instagram_post')
 
     // update collection data
     unmarshal(
@@ -68,7 +68,7 @@ migrate(
     return app.save(collection)
   },
   (app) => {
-    const collection = app.findCollectionByNameOrId('pbc_instagram_post')
+    const collection = app.findCollectionByNameOrId('t_instagram_post')
 
     // update collection data
     unmarshal(

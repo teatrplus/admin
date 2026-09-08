@@ -2,6 +2,8 @@
 
 migrate(
   (app) => {
+    // Sample images require a deliberate seed, never a network dependency at startup.
+    if ($os.getenv('THEATER_SEED_REMOTE_PHOTOS') !== '1') return
     const posts = [
       {
         slug: 'tashkent-flowers-fest-2026',

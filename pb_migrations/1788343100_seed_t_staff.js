@@ -469,7 +469,9 @@ migrate(
       record.set('quote_ru', person.quote_ru)
       record.set('quote_uz', person.quote_uz)
 
-      if (person.photo) {
+      // Network downloads in migrations can repeat after a transaction rollback.
+      // Import media explicitly; opt in only for a deliberate initial seed.
+      if (person.photo && $os.getenv('THEATER_SEED_REMOTE_PHOTOS') === '1') {
         try {
           record.set('photo', $filesystem.fileFromURL(person.photo, 60))
         } catch (err) {

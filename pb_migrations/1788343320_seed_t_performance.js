@@ -29,6 +29,7 @@ migrate(
     ]
 
     for (const row of rows) {
+      if (app.findRecordsByFilter('t_play', 'id = {:id}', '', 1, 0, { id: row.play }).length === 0) continue
       const record = new Record(collection)
       record.set('id', row.id)
       record.set('play', row.play)
