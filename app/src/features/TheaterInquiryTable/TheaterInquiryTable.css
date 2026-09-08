@@ -1,0 +1,60 @@
+.theater_inquiry_table {
+  display: grid;
+  gap: var(--space-6);
+  min-width: 0;
+}
+.theater_inquiry_table-title {
+  font-family: var(--font-heading);
+  font-size: var(--text-3xl);
+}
+.theater_inquiry_table-toolbar,
+.theater_inquiry_table-pagination {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-4);
+}
+.theater_inquiry_table-filter {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+.theater_inquiry_table-select {
+  padding: var(--space-2) var(--space-3);
+  color: var(--ink-main);
+  background: var(--bg-surface);
+  border: 1px solid var(--border-base);
+  font: inherit;
+}
+.theater_inquiry_table-scroll {
+  overflow-x: auto;
+  border: 1px solid var(--border-base);
+}
+.theater_inquiry_table-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--text-sm);
+}
+.theater_inquiry_table-heading {
+  text-align: left;
+  background: var(--bg-surface);
+  font-weight: var(--weight-semibold);
+  padding: var(--space-3);
+}
+.theater_inquiry_table-cell {
+  padding: var(--space-3);
+  border-top: 1px solid var(--border-base);
+  vertical-align: top;
+  overflow-wrap: anywhere;
+  min-width: 8rem;
+}
+.theater_inquiry_table-cell[data-content='message'] {
+  min-width: 15rem;
+  max-width: 25rem;
+  white-space: pre-wrap;
+}
+.theater_inquiry_table-status {
+  display: block;
+  margin-bottom: var(--space-2);
+  font-weight: var(--weight-semibold);
+}

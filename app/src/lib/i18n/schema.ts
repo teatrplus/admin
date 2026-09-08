@@ -1,4 +1,25 @@
 export type TranslationSchema = {
+  inquiries: {
+    title: string
+    name: string
+    email: string
+    phone: string
+    message: string
+    created: string
+    status: string
+    todo: string
+    done: string
+    all: string
+    empty: string
+    error: string
+    saveError: string
+    refresh: string
+    previous: string
+    next: string
+    complete: string
+    reopen: string
+    loading: string
+  }
   common: {
     brand: {
       beforePlus: string
@@ -34,6 +55,7 @@ export type TranslationSchema = {
     invalid: string
   }
   nav: {
+    inquiries: string
     sections: {
       space: string
       theater: string

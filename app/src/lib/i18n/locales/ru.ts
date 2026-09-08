@@ -1,6 +1,27 @@
 import type { TranslationSchema } from '../schema'
 
 export const ru: TranslationSchema = {
+  inquiries: {
+    title: 'Обращения',
+    name: 'Имя',
+    email: 'Email',
+    phone: 'Телефон',
+    message: 'Сообщение',
+    created: 'Получено',
+    status: 'Статус',
+    todo: 'К выполнению',
+    done: 'Выполнено',
+    all: 'Все',
+    empty: 'Обращений пока нет.',
+    error: 'Не удалось загрузить обращения.',
+    saveError: 'Не удалось изменить статус. Попробуйте ещё раз.',
+    refresh: 'Обновить',
+    previous: 'Назад',
+    next: 'Далее',
+    complete: 'Отметить выполненным',
+    reopen: 'Вернуть к выполнению',
+    loading: 'Загрузка…',
+  },
   common: {
     brand: {
       beforePlus: 'Театр',
@@ -36,6 +57,7 @@ export const ru: TranslationSchema = {
     invalid: 'Неверный email или пароль',
   },
   nav: {
+    inquiries: 'Обращения',
     sections: {
       space: 'Пространство',
       theater: 'Театр',

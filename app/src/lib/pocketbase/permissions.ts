@@ -12,15 +12,9 @@ export type AppRoute =
   | `/${SiteScope}/landing`
   | `/${SiteScope}/requests`
   | '/theater/social'
+  | '/theater/inquiries'
 
-export const REQUEST_STAGES = [
-  'inquiry',
-  'confirmed',
-  'rejected',
-  'preparation',
-  'completed',
-  'cancelled',
-] as const
+export const REQUEST_STAGES = ['inquiry', 'confirmed', 'rejected', 'preparation', 'completed', 'cancelled'] as const
 
 export const normalizeStage = (stage: string | undefined | null) => stage?.trim() ?? ''
 
@@ -84,6 +78,7 @@ export const canAccessRoute = (route: AppRoute): boolean => {
   if (route === '/' || route === '/forbidden') return true
   if (route === '/staff') return canAccessStaff()
   if (route === '/account') return canAccessAccount()
+  if (route === '/theater/inquiries') return canAccessRequests('theater')
   if (route === '/theater/social') return canAccessSocial()
 
   const match = route.match(/^\/(space|theater)\/(landing|requests)$/)
@@ -108,6 +103,7 @@ export const defaultRouteForUser = (): AppRoute => {
     if (canAccessRequests(scope)) return `/${scope}/requests`
   }
 
+  if (canAccessRequests('theater')) return '/theater/inquiries'
   if (canAccessSocial()) return '/theater/social'
 
   return '/forbidden'
@@ -131,13 +127,11 @@ export const navSectionsForUser = (): NavSection[] => {
     sections.push({ id: 'space', labelKey: 'space', items: spaceItems })
   }
 
-  if (canAccessSocial()) {
-    sections.push({
-      id: 'theater',
-      labelKey: 'theater',
-      items: [{ route: '/theater/social', labelKey: 'social', icon: 'social' }],
-    })
-  }
+  const theaterItems: NavSection['items'] = []
+  if (canAccessRequests('theater'))
+    theaterItems.push({ route: '/theater/inquiries', labelKey: 'inquiries', icon: 'requests' })
+  if (canAccessSocial()) theaterItems.push({ route: '/theater/social', labelKey: 'social', icon: 'social' })
+  if (theaterItems.length) sections.push({ id: 'theater', labelKey: 'theater', items: theaterItems })
 
   const globalItems: NavSection['items'] = []
   if (canAccessStaff()) {

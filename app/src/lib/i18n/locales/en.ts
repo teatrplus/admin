@@ -1,6 +1,27 @@
 import type { TranslationSchema } from '../schema'
 
 export const en: TranslationSchema = {
+  inquiries: {
+    title: 'Inquiries',
+    name: 'Name',
+    email: 'Email',
+    phone: 'Phone',
+    message: 'Message',
+    created: 'Received',
+    status: 'Status',
+    todo: 'To do',
+    done: 'Done',
+    all: 'All',
+    empty: 'No inquiries yet.',
+    error: 'Could not load inquiries.',
+    saveError: 'Could not update status. Please try again.',
+    refresh: 'Refresh',
+    previous: 'Previous',
+    next: 'Next',
+    complete: 'Mark done',
+    reopen: 'Reopen',
+    loading: 'Loading…',
+  },
   common: {
     brand: {
       beforePlus: 'Theater',
@@ -36,6 +57,7 @@ export const en: TranslationSchema = {
     invalid: 'Invalid email or password',
   },
   nav: {
+    inquiries: 'Inquiries',
     sections: {
       space: 'Space',
       theater: 'Theater',

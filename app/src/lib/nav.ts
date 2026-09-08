@@ -4,7 +4,7 @@ export type NavItemIcon = 'landing' | 'requests' | 'staff' | 'account' | 'social
 
 export type NavItem = {
   route: AppRoute
-  labelKey: 'landing' | 'requests' | 'staff' | 'account' | 'social'
+  labelKey: 'inquiries' | 'landing' | 'requests' | 'staff' | 'account' | 'social'
   icon: NavItemIcon
 }
 
