@@ -70,12 +70,4 @@
   {/if}
 </button>
 
-<input
-  bind:this={inputEl}
-  class="u_sr_only"
-  type="file"
-  {accept}
-  {multiple}
-  {disabled}
-  onchange={onInputChange}
-/>
+<input bind:this={inputEl} class="u_sr_only" type="file" {accept} {multiple} {disabled} onchange={onInputChange} />

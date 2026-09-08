@@ -50,7 +50,9 @@ const brightDataHeaders = (token) => ({
 const isHttpOk = (statusCode) => statusCode >= 200 && statusCode < 300
 
 const normalizeMediaType = (value) => {
-  const kind = String(value || '').trim().toLowerCase()
+  const kind = String(value || '')
+    .trim()
+    .toLowerCase()
   if (kind === 'video' || kind === 'reel') return 'video'
   if (kind === 'carousel') return 'carousel'
   return 'image'
@@ -108,9 +110,7 @@ const extractRawPosts = (payload) => {
 }
 
 const normalizePost = (raw) => {
-  const instagramId = String(
-    raw.id || raw.post_id || raw.pk || raw.shortcode || raw.content_id || '',
-  ).trim()
+  const instagramId = String(raw.id || raw.post_id || raw.pk || raw.shortcode || raw.content_id || '').trim()
   const permalink = String(raw.url || '').trim()
   const imageUrl =
     firstString(raw.image_url) ||
@@ -125,7 +125,9 @@ const normalizePost = (raw) => {
   return {
     instagramId: instagramId.slice(0, 64),
     permalink,
-    caption: String(raw.caption || raw.description || '').trim().slice(0, 2200),
+    caption: String(raw.caption || raw.description || '')
+      .trim()
+      .slice(0, 2200),
     datetime: raw.datetime || raw.date_posted || '',
     imageUrl,
     mediaType: normalizeMediaType(raw.content_type),
@@ -234,9 +236,7 @@ const parseSnapshotPayload = (response) => {
 }
 
 const downloadSnapshot = (token, snapshotId) => {
-  const url =
-    `https://api.brightdata.com/datasets/v3/snapshot/${encodeURIComponent(snapshotId)}` +
-    '?format=json'
+  const url = `https://api.brightdata.com/datasets/v3/snapshot/${encodeURIComponent(snapshotId)}` + '?format=json'
 
   const response = $http.send({
     method: 'GET',
@@ -389,11 +389,7 @@ const savePostsFromSnapshot = (token, snapshotId) => {
     .slice(0, POSTS_LIMIT)
 
   if (posts.length === 0) {
-    const n = Array.isArray(downloaded.payload)
-      ? downloaded.payload.length
-      : downloaded.payload
-        ? 1
-        : 0
+    const n = Array.isArray(downloaded.payload) ? downloaded.payload.length : downloaded.payload ? 1 : 0
     $app.logger().warn('instagram snapshot had no usable posts', 'records', n, 'extracted', rawPosts.length)
     return {
       ok: false,

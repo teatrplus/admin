@@ -17,9 +17,7 @@
   const localeCtx = useLocale()
 
   const label = $derived(
-    localeCtx.t.requests.pageOf
-      .replace('{page}', String(page))
-      .replace('{total}', String(totalPages)),
+    localeCtx.t.requests.pageOf.replace('{page}', String(page)).replace('{total}', String(totalPages)),
   )
 </script>
 

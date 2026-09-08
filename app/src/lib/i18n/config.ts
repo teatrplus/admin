@@ -14,8 +14,7 @@ export const LOCALE_LABELS: Record<Locale, string> = {
 export const isLocale = (value: string | undefined | null): value is Locale =>
   value !== undefined && value !== null && (LOCALES as readonly string[]).includes(value)
 
-export const normalizeLocale = (value: string | undefined | null): Locale =>
-  isLocale(value) ? value : DEFAULT_LOCALE
+export const normalizeLocale = (value: string | undefined | null): Locale => (isLocale(value) ? value : DEFAULT_LOCALE)
 
 export const readStoredLocale = (): Locale => {
   try {

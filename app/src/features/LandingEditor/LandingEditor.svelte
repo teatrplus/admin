@@ -160,9 +160,7 @@
       byId.set(currentUser.id, currentUser)
     }
 
-    return [...byId.values()].sort((a, b) =>
-      (a.name || a.email).localeCompare(b.name || b.email),
-    )
+    return [...byId.values()].sort((a, b) => (a.name || a.email).localeCompare(b.name || b.email))
   })
 
   const phoneStaffOptions = $derived.by((): SelectOption[] =>
@@ -267,13 +265,11 @@
   }
 
   const addPartnerFiles = (files: File[]) => {
-    const pending = files.map(
-      (file): PendingPartnerFile => ({
-        localId: crypto.randomUUID(),
-        file,
-        previewUrl: URL.createObjectURL(file),
-      }),
-    )
+    const pending = files.map((file): PendingPartnerFile => ({
+      localId: crypto.randomUUID(),
+      file,
+      previewUrl: URL.createObjectURL(file),
+    }))
     form.partnerFiles = [...form.partnerFiles, ...pending]
   }
 
@@ -764,9 +760,7 @@
                   if (checked) {
                     form.footerContactManagerIds = [...form.footerContactManagerIds, option.value]
                   } else {
-                    form.footerContactManagerIds = form.footerContactManagerIds.filter(
-                      (id) => id !== option.value,
-                    )
+                    form.footerContactManagerIds = form.footerContactManagerIds.filter((id) => id !== option.value)
                   }
                 }}
               />

@@ -71,9 +71,7 @@
       const assigned = record.expand?.manager
       if (assigned) byId.set(assigned.id, assigned)
     }
-    return [...byId.values()].sort((a, b) =>
-      (a.name || a.email).localeCompare(b.name || b.email),
-    )
+    return [...byId.values()].sort((a, b) => (a.name || a.email).localeCompare(b.name || b.email))
   })
 
   const managerLabel = (manager?: StaffRecord | null) =>
@@ -139,8 +137,7 @@
   }))
 
   const stageMutation = createMutation(() => ({
-    mutationFn: ({ id, stage }: { id: string; stage: RequestStage }) =>
-      updateRequestStage(scope, id, stage),
+    mutationFn: ({ id, stage }: { id: string; stage: RequestStage }) => updateRequestStage(scope, id, stage),
     onMutate: async ({ id, stage }) => {
       await queryClient.cancelQueries(requestsScopeQueryFilter(scope))
       patchRow(id, { stage })
@@ -154,8 +151,7 @@
   }))
 
   const managerMutation = createMutation(() => ({
-    mutationFn: ({ id, managerId }: { id: string; managerId: string }) =>
-      updateRequestManager(scope, id, managerId),
+    mutationFn: ({ id, managerId }: { id: string; managerId: string }) => updateRequestManager(scope, id, managerId),
     onMutate: async ({ id, managerId }) => {
       await queryClient.cancelQueries(requestsScopeQueryFilter(scope))
       const manager = managerId ? findManager(managerId) : null
@@ -237,10 +233,7 @@
 {#snippet rowMenu(row: SpaceRequestRecord, mode: 'archive' | 'unarchive')}
   {@const stage = normalizeStage(row.stage) as RequestStage}
   <DropdownMenu.Root>
-    <DropdownMenu.Trigger
-      class="requests_board-menu_trigger"
-      aria-label={localeCtx.t.requests.actions}
-    >
+    <DropdownMenu.Trigger class="requests_board-menu_trigger" aria-label={localeCtx.t.requests.actions}>
       <MoreVertIcon width="18" height="18" />
     </DropdownMenu.Trigger>
     <DropdownMenu.Portal>
@@ -333,7 +326,7 @@
       <p class="requests_board-status" data-tone="error">
         {activeQuery.error instanceof Error ? activeQuery.error.message : localeCtx.t.common.error}
       </p>
-    {:else if !(activeQuery.data?.items.length)}
+    {:else if !activeQuery.data?.items.length}
       <p class="requests_board-status">{localeCtx.t.requests.empty}</p>
     {:else}
       <div class="requests_table-scroll">
@@ -381,11 +374,9 @@
       <p class="requests_board-status">{localeCtx.t.common.loading}</p>
     {:else if archivedQuery.isError}
       <p class="requests_board-status" data-tone="error">
-        {archivedQuery.error instanceof Error
-          ? archivedQuery.error.message
-          : localeCtx.t.common.error}
+        {archivedQuery.error instanceof Error ? archivedQuery.error.message : localeCtx.t.common.error}
       </p>
-    {:else if !(archivedQuery.data?.items.length)}
+    {:else if !archivedQuery.data?.items.length}
       <p class="requests_board-status">{localeCtx.t.requests.emptyArchived}</p>
     {:else}
       <div class="requests_table-scroll">

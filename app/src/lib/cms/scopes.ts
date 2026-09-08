@@ -20,7 +20,6 @@ export const scopedCollection = {
 
 export type ScopedCollectionKey = keyof typeof scopedCollection
 
-export const isSiteScope = (value: string): value is SiteScope =>
-  (SITE_SCOPES as readonly string[]).includes(value)
+export const isSiteScope = (value: string): value is SiteScope => (SITE_SCOPES as readonly string[]).includes(value)
 
 export const scopeLabelKey = (scope: SiteScope) => `scopes.${scope}` as const

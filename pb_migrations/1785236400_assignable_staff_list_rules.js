@@ -5,8 +5,7 @@ migrate(
     const auth = "@request.auth.id != ''"
     const isAdmin = `${auth} && @request.auth.role = 'admin'`
     const isStaff = `${auth} && @request.auth.role != ''`
-    const isAssignableRole =
-      "role = 'admin' || role = 'moderator' || role = 'manager'"
+    const isAssignableRole = "role = 'admin' || role = 'moderator' || role = 'manager'"
     // Any authenticated staff can list assignable contacts (admin/moderator/manager).
     // Admins can still list everyone (including viewers); others can always see themselves.
     const staffList = `${auth} && (${isAdmin} || id = @request.auth.id || (${isStaff} && (${isAssignableRole})))`

@@ -16,9 +16,13 @@ test('course migrations preserve URLs and enforce publication and write permissi
   const hooks = path.join(temporary, 'hooks')
   fs.mkdirSync(migrations)
   fs.mkdirSync(path.join(hooks, 'lib'), { recursive: true })
-  for (const file of ['theater_slug.pb.js', 'lib/theater_slug.js']) fs.copyFileSync(path.join(root, 'pb_hooks', file), path.join(hooks, file))
-  for (const file of ['1788800800_theater_courses.js', '1788800810_seed_theater_courses.js']) fs.copyFileSync(path.join(root, 'pb_migrations', file), path.join(migrations, file))
-  fs.writeFileSync(path.join(migrations, '1788800790_fixture.js'), `migrate((app) => {
+  for (const file of ['theater_slug.pb.js', 'lib/theater_slug.js'])
+    fs.copyFileSync(path.join(root, 'pb_hooks', file), path.join(hooks, file))
+  for (const file of ['1788800800_theater_courses.js', '1788800810_seed_theater_courses.js'])
+    fs.copyFileSync(path.join(root, 'pb_migrations', file), path.join(migrations, file))
+  fs.writeFileSync(
+    path.join(migrations, '1788800790_fixture.js'),
+    `migrate((app) => {
     const staff = new Collection({ name: 't_staff', type: 'base', listRule: '', viewRule: '', fields: [{ type: 'text', name: 'name_en' }, { type: 'text', name: 'slug' }] })
     app.save(staff)
     const person = new Record(staff)
@@ -26,8 +30,11 @@ test('course migrations preserve URLs and enforce publication and write permissi
     person.set('name_en', 'Sherzod Sismatov')
     app.save(person)
     app.save(new Collection({ name: 't_media_library', type: 'base', fields: [] }))
-  }, () => {})`)
-  fs.writeFileSync(path.join(migrations, '1788800820_assertions.js'), `migrate((app) => {
+  }, () => {})`,
+  )
+  fs.writeFileSync(
+    path.join(migrations, '1788800820_assertions.js'),
+    `migrate((app) => {
     if (app.countRecords('t_course') !== 4 || app.countRecords('t_course_section') !== 14) throw new Error('Incomplete seed')
     const original = app.findFirstRecordByData('t_course', 'slug', 'acting')
     original.set('title_en', 'A renamed acting course')
@@ -52,7 +59,8 @@ test('course migrations preserve URLs and enforce publication and write permissi
     duplicate.set('enrollment_status', 'enquire')
     app.save(duplicate)
     if (duplicate.getString('slug') === 'acting') throw new Error('Slug collision was not resolved')
-  }, () => {})`)
+  }, () => {})`,
+  )
   const args = [`--dir=${path.join(temporary, 'data')}`, `--migrationsDir=${migrations}`, `--hooksDir=${hooks}`]
   const migrate = spawnSync(binary, ['migrate', 'up', ...args], { encoding: 'utf8' })
   assert.equal(migrate.status, 0, migrate.stdout + migrate.stderr)
@@ -62,14 +70,28 @@ test('course migrations preserve URLs and enforce publication and write permissi
   const port = await new Promise((resolve, reject) => {
     const probe = net.createServer()
     probe.once('error', reject)
-    probe.listen(0, '127.0.0.1', () => { const port = probe.address().port; probe.close(() => resolve(port)) })
+    probe.listen(0, '127.0.0.1', () => {
+      const port = probe.address().port
+      probe.close(() => resolve(port))
+    })
   })
   const server = spawn(binary, ['serve', ...args, `--http=127.0.0.1:${port}`], { stdio: 'ignore' })
-  t.after(async () => { if (server.exitCode === null) await new Promise((resolve) => { server.once('exit', resolve); server.kill('SIGTERM') }) })
+  t.after(async () => {
+    if (server.exitCode === null)
+      await new Promise((resolve) => {
+        server.once('exit', resolve)
+        server.kill('SIGTERM')
+      })
+  })
   const base = `http://127.0.0.1:${port}/api`
   let ready = false
   for (let attempt = 0; attempt < 100; attempt++) {
-    try { if ((await fetch(`${base}/health`)).ok) { ready = true; break } } catch {}
+    try {
+      if ((await fetch(`${base}/health`)).ok) {
+        ready = true
+        break
+      }
+    } catch {}
     await new Promise((resolve) => setTimeout(resolve, 50))
   }
   assert.ok(ready, 'Temporary PocketBase server did not start')
@@ -77,7 +99,11 @@ test('course migrations preserve URLs and enforce publication and write permissi
   const courses = await (await get('t_course/records?expand=teachers.staff')).json()
   assert.equal(courses.totalItems, 4)
   assert.ok(courses.items.every((course) => course.published && !('source_url' in course)))
-  assert.ok(courses.items.every((course) => ['ru', 'en', 'uz'].every((locale) => course[`title_${locale}`] && course[`description_${locale}`])))
+  assert.ok(
+    courses.items.every((course) =>
+      ['ru', 'en', 'uz'].every((locale) => course[`title_${locale}`] && course[`description_${locale}`]),
+    ),
+  )
   const acting = courses.items.find((course) => course.slug === 'acting')
   assert.equal(acting.expand.teachers[0].expand.staff.id, '0e23f88702e8a8c')
   assert.equal(courses.items.find((course) => course.slug === 'speak-with-confidence').enrollment_status, 'waitlist')
@@ -86,7 +112,11 @@ test('course migrations preserve URLs and enforce publication and write permissi
   assert.equal((await get('t_course/records/testdraftcourse')).status, 404)
   assert.equal((await get('t_course_section/records/testdraftsect01')).status, 404)
   for (const collection of ['t_course', 't_course_teacher', 't_course_section']) {
-    const response = await fetch(`${base}/collections/${collection}/records`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: '{}' })
+    const response = await fetch(`${base}/collections/${collection}/records`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: '{}',
+    })
     assert.equal(response.status, 403, `${collection} must reject anonymous writes`)
   }
 })

@@ -68,7 +68,7 @@
         <div
           class="toast_list-item"
           data-exiting={toast.exiting ? 'true' : undefined}
-          style:--c-toast-item-offset-top="{(offsets[toast.id] ?? 0) + 'px'}"
+          style:--c-toast-item-offset-top={(offsets[toast.id] ?? 0) + 'px'}
         >
           <ToastAlert {toast} onHeight={setHeight} />
         </div>

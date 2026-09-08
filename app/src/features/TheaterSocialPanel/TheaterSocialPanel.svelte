@@ -75,16 +75,19 @@
   }))
 
   const bannerTone = $derived(
-    job?.status === 'success' ? 'success' : job?.status === 'failed' ? 'error' : job?.status === 'running' ? 'warning' : 'neutral',
+    job?.status === 'success'
+      ? 'success'
+      : job?.status === 'failed'
+        ? 'error'
+        : job?.status === 'running'
+          ? 'warning'
+          : 'neutral',
   )
 
   const bannerMessage = $derived.by(() => {
     if (!job || job.status === 'idle') return ''
     if (job.status === 'running') {
-      return localeCtx.t.theater_social_panel.running.replace(
-        '{time}',
-        formatDateTime(job.startedAt, localeCtx.locale),
-      )
+      return localeCtx.t.theater_social_panel.running.replace('{time}', formatDateTime(job.startedAt, localeCtx.locale))
     }
     if (job.status === 'success') {
       return localeCtx.t.theater_social_panel.successAt
@@ -130,11 +133,7 @@
         </div>
       {/if}
 
-      <Button
-        type="button"
-        isLoading={startMutation.isPending || isRunning}
-        onclick={() => startMutation.mutate()}
-      >
+      <Button type="button" isLoading={startMutation.isPending || isRunning} onclick={() => startMutation.mutate()}>
         {localeCtx.t.theater_social_panel.refresh}
       </Button>
     </div>

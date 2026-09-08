@@ -1,12 +1,6 @@
 /// <reference path="../pb_data/types.d.ts" />
 
-const INTERNAL_COLLECTIONS = new Set([
-  '_superusers',
-  '_mfas',
-  '_otps',
-  '_authOrigins',
-  '_externalAuths',
-])
+const INTERNAL_COLLECTIONS = new Set(['_superusers', '_mfas', '_otps', '_authOrigins', '_externalAuths'])
 
 const withSystemRead = (rule, isSystemUser) => {
   if (rule === '') return ''

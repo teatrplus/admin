@@ -30,30 +30,9 @@
 </script>
 
 {#if locale === 'ru'}
-  <FormField
-    label={label}
-    name={`${nameBase}-ru`}
-    bind:value={ru}
-    error={errorRu}
-    {multiline}
-    {required}
-  />
+  <FormField {label} name={`${nameBase}-ru`} bind:value={ru} error={errorRu} {multiline} {required} />
 {:else if locale === 'en'}
-  <FormField
-    label={label}
-    name={`${nameBase}-en`}
-    bind:value={en}
-    error={errorEn}
-    {multiline}
-    {required}
-  />
+  <FormField {label} name={`${nameBase}-en`} bind:value={en} error={errorEn} {multiline} {required} />
 {:else}
-  <FormField
-    label={label}
-    name={`${nameBase}-uz`}
-    bind:value={uz}
-    error={errorUz}
-    {multiline}
-    {required}
-  />
+  <FormField {label} name={`${nameBase}-uz`} bind:value={uz} error={errorUz} {multiline} {required} />
 {/if}

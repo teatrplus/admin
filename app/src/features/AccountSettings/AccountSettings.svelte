@@ -68,9 +68,7 @@
   const isStaffAccount = $derived(account ? isStaffUser(account) : false)
 
   const roleLabel = $derived(
-    account && isStaffAccount
-      ? localeCtx.t.staff.roles[normalizeRole(account.role) ?? 'manager']
-      : '',
+    account && isStaffAccount ? localeCtx.t.staff.roles[normalizeRole(account.role) ?? 'manager'] : '',
   )
 
   const formatScopes = (scopes: StaffScope[] | undefined) =>

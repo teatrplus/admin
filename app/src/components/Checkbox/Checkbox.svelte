@@ -38,10 +38,7 @@
 </script>
 
 <!-- svelte-ignore a11y_no_static_element_interactions -->
-<div
-  class={['checkbox', className].filter(Boolean).join(' ')}
-  onpointerdown={handlePointerDown}
->
+<div class={['checkbox', className].filter(Boolean).join(' ')} onpointerdown={handlePointerDown}>
   <CheckboxPrimitive.Root
     {id}
     class="checkbox-control u_pressable"

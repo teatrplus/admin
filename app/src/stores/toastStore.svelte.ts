@@ -36,13 +36,14 @@ const dismissToast = (id: number) => {
     dismissTimers.delete(id)
   }
 
-  toastState.items = toastState.items.map((toast) =>
-    toast.id === id ? { ...toast, exiting: true } : toast,
-  )
+  toastState.items = toastState.items.map((toast) => (toast.id === id ? { ...toast, exiting: true } : toast))
 
-  window.setTimeout(() => {
-    removeToast(id)
-  }, readDurationMs('--duration-base', 300))
+  window.setTimeout(
+    () => {
+      removeToast(id)
+    },
+    readDurationMs('--duration-base', 300),
+  )
 }
 
 export const pushToast = (message: string, type: ToastType) => {

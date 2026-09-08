@@ -4,12 +4,12 @@ The course catalogue is managed in PocketBase at `/theater-school/`, `/en/theate
 
 ## Content model
 
-| Collection | Responsibility |
-| --- | --- |
-| `t_course` | One continuing course: title, summary, description, audience, practical details, enrollment status, cover, teacher relations and stable slug. |
-| `t_course_section` | An ordered section owned by one course. `about`, `audience`, `outcomes`, `format` stay visible; `program` and `faq` use native expandable sections. |
-| `t_course_teacher` | A reusable teacher. Link `staff` to reuse a theater member's name, portrait and profile; otherwise enter a guest's name, role, biography and optional photo. |
-| `t_media_library.courses` | Tag existing or newly uploaded photos with all relevant courses. Photos continue to support staff tags and translated captions/alt text. |
+| Collection                | Responsibility                                                                                                                                               |
+| ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `t_course`                | One continuing course: title, summary, description, audience, practical details, enrollment status, cover, teacher relations and stable slug.                |
+| `t_course_section`        | An ordered section owned by one course. `about`, `audience`, `outcomes`, `format` stay visible; `program` and `faq` use native expandable sections.          |
+| `t_course_teacher`        | A reusable teacher. Link `staff` to reuse a theater member's name, portrait and profile; otherwise enter a guest's name, role, biography and optional photo. |
+| `t_media_library.courses` | Tag existing or newly uploaded photos with all relevant courses. Photos continue to support staff tags and translated captions/alt text.                     |
 
 All visitor-facing CMS text has `_ru`, `_en`, `_uz` fields. The requested locale falls back to Russian, then English and Uzbek. Paragraph fields use plain text with blank lines; `items_*` uses one item per line. HTML from Elementor is never rendered. Translate the body and list together; missing individual fields fall back independently.
 
@@ -31,12 +31,12 @@ Authenticated source text was captured on 2026-09-07 in [course-source-ru.json](
 
 The original courses are:
 
-| New slug | WordPress source | Confirmed details |
-| --- | --- | --- |
-| `acting` | [Acting](https://teatrplus.uz/theater-school/kurs-aktyorskogo-masterstva/) | Ages 9+; Monday/Thursday 18:00–19:30, 90 minutes, at Theater+; Sherzod Sismatov. |
-| `animation-laboratory` | [Animation](https://teatrplus.uz/theater-school/laboratoriya-taktilnoj-animaczii-i-media-arta/) | Groups 9–12 and 12–16; 16 practical classes, eight two-hour classes/month; Dante Rustav. |
-| `speak-with-confidence` | [Public speaking](https://teatrplus.uz/theater-school/oratorskoe-iskusstvo-govoryu-uverenno/) | Four programme modules, including all originally collapsed content; intake closed, waiting-list enquiries; Mikhail Doloko. |
-| `poetry-school` | [Poetry](https://teatrplus.uz/theater-school/shkola-poezii-2/) | One month of practical classes; Ashot Danielyan. |
+| New slug                | WordPress source                                                                                | Confirmed details                                                                                                          |
+| ----------------------- | ----------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
+| `acting`                | [Acting](https://teatrplus.uz/theater-school/kurs-aktyorskogo-masterstva/)                      | Ages 9+; Monday/Thursday 18:00–19:30, 90 minutes, at Theater+; Sherzod Sismatov.                                           |
+| `animation-laboratory`  | [Animation](https://teatrplus.uz/theater-school/laboratoriya-taktilnoj-animaczii-i-media-arta/) | Groups 9–12 and 12–16; 16 practical classes, eight two-hour classes/month; Dante Rustav.                                   |
+| `speak-with-confidence` | [Public speaking](https://teatrplus.uz/theater-school/oratorskoe-iskusstvo-govoryu-uverenno/)   | Four programme modules, including all originally collapsed content; intake closed, waiting-list enquiries; Mikhail Doloko. |
+| `poetry-school`         | [Poetry](https://teatrplus.uz/theater-school/shkola-poezii-2/)                                  | One month of practical classes; Ashot Danielyan.                                                                           |
 
 Editorial changes: removed an accidental editing instruction from the animation introduction; repaired spacing, punctuation and the acting list's inconsistent verb form; changed the poetry page's address to the reader to consistent formal Russian. The poetry text retains the discussion of emotion and self-expression without presenting the class as a clinical therapy. No prices, start dates, qualifications, class sizes or testimonials were invented. The source's dummy/AI artwork was omitted. Upload real course photographs when available.
 

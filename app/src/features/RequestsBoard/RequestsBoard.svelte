@@ -113,9 +113,7 @@
       const assigned = record.expand?.manager
       if (assigned) byId.set(assigned.id, assigned)
     }
-    return [...byId.values()].sort((a, b) =>
-      (a.name || a.email).localeCompare(b.name || b.email),
-    )
+    return [...byId.values()].sort((a, b) => (a.name || a.email).localeCompare(b.name || b.email))
   })
 
   const managerLabel = (manager?: StaffRecord | null) =>
@@ -132,15 +130,8 @@
   }
 
   const placementMutation = createMutation(() => ({
-    mutationFn: ({
-      id,
-      stage,
-      column_index,
-    }: {
-      id: string
-      stage: RequestStage
-      column_index: number
-    }) => updateRequestPlacement(scope, id, { stage, column_index }),
+    mutationFn: ({ id, stage, column_index }: { id: string; stage: RequestStage; column_index: number }) =>
+      updateRequestPlacement(scope, id, { stage, column_index }),
     onMutate: async ({ id, stage, column_index }) => {
       await queryClient.cancelQueries({ queryKey })
       const previous = queryClient.getQueryData<SpaceRequestRecord[]>(queryKey)
@@ -163,8 +154,7 @@
   }))
 
   const managerMutation = createMutation(() => ({
-    mutationFn: ({ id, managerId }: { id: string; managerId: string }) =>
-      updateRequestManager(scope, id, managerId),
+    mutationFn: ({ id, managerId }: { id: string; managerId: string }) => updateRequestManager(scope, id, managerId),
     onMutate: async ({ id, managerId }) => {
       await queryClient.cancelQueries({ queryKey })
       const previous = queryClient.getQueryData<SpaceRequestRecord[]>(queryKey)
@@ -202,11 +192,7 @@
     onMutate: async ({ id, date_requested }) => {
       await queryClient.cancelQueries({ queryKey })
       const previous = queryClient.getQueryData<SpaceRequestRecord[]>(queryKey)
-      setCache(
-        (previous ?? []).map((record) =>
-          record.id === id ? { ...record, date_requested } : record,
-        ),
-      )
+      setCache((previous ?? []).map((record) => (record.id === id ? { ...record, date_requested } : record)))
       return { previous }
     },
     onError: (error, _vars, context) => {
@@ -257,10 +243,7 @@
     const dirty = ordered.filter((item) => {
       const before = byId.get(item.id)
       if (!before) return true
-      return (
-        normalizeStage(before.stage) !== stage ||
-        (before.column_index ?? 0) !== (item.column_index ?? 0)
-      )
+      return normalizeStage(before.stage) !== stage || (before.column_index ?? 0) !== (item.column_index ?? 0)
     })
 
     if (!dirty.length) {
@@ -402,11 +385,7 @@
                             <MoreVertIcon width="18" height="18" />
                           </DropdownMenu.Trigger>
                           <DropdownMenu.Portal>
-                            <DropdownMenu.Content
-                              class="requests_board-menu_content"
-                              sideOffset={6}
-                              align="end"
-                            >
+                            <DropdownMenu.Content class="requests_board-menu_content" sideOffset={6} align="end">
                               <DropdownMenu.Item
                                 class="requests_board-menu_item"
                                 textValue={localeCtx.t.requests.archive}
@@ -487,8 +466,7 @@
                           aria-label={localeCtx.t.requests.manager}
                         >
                           {@const assigned =
-                            card.expand?.manager ||
-                            (card.manager ? findManager(String(card.manager)) : null)}
+                            card.expand?.manager || (card.manager ? findManager(String(card.manager)) : null)}
                           {#if assigned}
                             <Avatar name={assigned.name} email={assigned.email} id={assigned.id} size="sm" />
                             <span class="requests_board-manager_value">{managerLabel(assigned)}</span>
@@ -504,11 +482,7 @@
                         </SelectPrimitive.Trigger>
 
                         <SelectPrimitive.Portal>
-                          <SelectPrimitive.Content
-                            class="requests_board-manager_content"
-                            sideOffset={6}
-                            align="start"
-                          >
+                          <SelectPrimitive.Content class="requests_board-manager_content" sideOffset={6} align="start">
                             <SelectPrimitive.Viewport class="requests_board-manager_viewport">
                               <SelectPrimitive.Item
                                 class="requests_board-manager_item"
@@ -534,12 +508,7 @@
                                   label={managerLabel(manager)}
                                 >
                                   {#snippet children({ selected })}
-                                    <Avatar
-                                      name={manager.name}
-                                      email={manager.email}
-                                      id={manager.id}
-                                      size="sm"
-                                    />
+                                    <Avatar name={manager.name} email={manager.email} id={manager.id} size="sm" />
                                     <span class="requests_board-manager_item_label">
                                       {managerLabel(manager)}
                                     </span>
@@ -557,8 +526,7 @@
                       </SelectPrimitive.Root>
                     {:else}
                       {@const assigned =
-                        card.expand?.manager ||
-                        (card.manager ? findManager(String(card.manager)) : null)}
+                        card.expand?.manager || (card.manager ? findManager(String(card.manager)) : null)}
                       <div class="requests_board-manager_trigger" data-readonly="true">
                         {#if assigned}
                           <Avatar name={assigned.name} email={assigned.email} id={assigned.id} size="sm" />

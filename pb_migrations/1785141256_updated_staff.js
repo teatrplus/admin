@@ -1,47 +1,47 @@
 /// <reference path="../pb_data/types.d.ts" />
-migrate((app) => {
-  const collection = app.findCollectionByNameOrId("pbc_829252413")
+migrate(
+  (app) => {
+    const collection = app.findCollectionByNameOrId('pbc_829252413')
 
-  // update field
-  collection.fields.addAt(8, new Field({
-    "help": "",
-    "hidden": false,
-    "id": "select1466534506",
-    "maxSelect": 0,
-    "name": "role",
-    "presentable": false,
-    "required": false,
-    "system": false,
-    "type": "select",
-    "values": [
-      "admin",
-      "moderator",
-      "manager",
-      "viewer"
-    ]
-  }))
+    // update field
+    collection.fields.addAt(
+      8,
+      new Field({
+        help: '',
+        hidden: false,
+        id: 'select1466534506',
+        maxSelect: 0,
+        name: 'role',
+        presentable: false,
+        required: false,
+        system: false,
+        type: 'select',
+        values: ['admin', 'moderator', 'manager', 'viewer'],
+      }),
+    )
 
-  return app.save(collection)
-}, (app) => {
-  const collection = app.findCollectionByNameOrId("pbc_829252413")
+    return app.save(collection)
+  },
+  (app) => {
+    const collection = app.findCollectionByNameOrId('pbc_829252413')
 
-  // update field
-  collection.fields.addAt(8, new Field({
-    "help": "",
-    "hidden": false,
-    "id": "select1466534506",
-    "maxSelect": 0,
-    "name": "role",
-    "presentable": false,
-    "required": false,
-    "system": false,
-    "type": "select",
-    "values": [
-      "admin",
-      "moderator",
-      "manager"
-    ]
-  }))
+    // update field
+    collection.fields.addAt(
+      8,
+      new Field({
+        help: '',
+        hidden: false,
+        id: 'select1466534506',
+        maxSelect: 0,
+        name: 'role',
+        presentable: false,
+        required: false,
+        system: false,
+        type: 'select',
+        values: ['admin', 'moderator', 'manager'],
+      }),
+    )
 
-  return app.save(collection)
-})
+    return app.save(collection)
+  },
+)

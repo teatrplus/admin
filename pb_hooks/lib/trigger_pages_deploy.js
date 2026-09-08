@@ -52,11 +52,13 @@ const isQueuedDeployHook = (deployment) => {
 const clearQueuedDeployHookDeployments = () => {
   const config = cloudflareApiConfig()
   if (!config) {
-    $app.logger().warn(
-      'skipping pages deploy queue cleanup',
-      'reason',
-      'set CLOUDFLARE_ACCOUNT_ID, CLOUDFLARE_PAGES_PROJECT_NAME, and CLOUDFLARE_API_TOKEN to enable',
-    )
+    $app
+      .logger()
+      .warn(
+        'skipping pages deploy queue cleanup',
+        'reason',
+        'set CLOUDFLARE_ACCOUNT_ID, CLOUDFLARE_PAGES_PROJECT_NAME, and CLOUDFLARE_API_TOKEN to enable',
+      )
     return null
   }
 
@@ -122,15 +124,17 @@ const onCmsRecordChange = (collectionName, event) => {
   const error = triggerPagesDeploy(collectionName)
   if (!error) return
 
-  $app.logger().error(
-    'cloudflare pages deploy hook failed',
-    'collection',
-    collectionName,
-    'recordId',
-    event?.record?.id ?? '',
-    'detail',
-    error,
-  )
+  $app
+    .logger()
+    .error(
+      'cloudflare pages deploy hook failed',
+      'collection',
+      collectionName,
+      'recordId',
+      event?.record?.id ?? '',
+      'detail',
+      error,
+    )
 }
 
 module.exports = {

@@ -74,7 +74,7 @@
     }}
   >
     <SelectPrimitive.Trigger
-      id={id}
+      {id}
       class="select-trigger"
       aria-label={ariaLabel ?? label}
       data-invalid={error ? 'true' : 'false'}

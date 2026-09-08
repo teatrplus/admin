@@ -8,11 +8,17 @@ function record(fields = {}, originalSlug = '') {
     isNew: () => !originalSlug,
     collection: () => ({ name: fields.collection || 't_staff' }),
     getString: (key) => fields[key] || '',
-    set: (key, value) => { fields[key] = value },
+    set: (key, value) => {
+      fields[key] = value
+    },
     original: () => ({ getString: () => originalSlug }),
   }
 }
-const app = (used = [], originalSlug = '') => ({ findRecordById: () => ({ getString: () => originalSlug }), findRecordsByFilter: (_collection, _filter, _sort, _limit, _offset, params) => used.includes(params.slug) ? [{}] : [] })
+const app = (used = [], originalSlug = '') => ({
+  findRecordById: () => ({ getString: () => originalSlug }),
+  findRecordsByFilter: (_collection, _filter, _sort, _limit, _offset, params) =>
+    used.includes(params.slug) ? [{}] : [],
+})
 
 test('English-first generation, transliteration and optional initial spelling', () => {
   assert.equal(slugify('Toy\r\nWorkshop'), 'toy-workshop')
@@ -50,7 +56,8 @@ test('new duplicate names get suffixes without changing the first person', () =>
 
 test('unnamed records and reserved routes remain valid and distinct', () => {
   for (const [name_en, expected] of [
-    ['', 'person-aaaaaaaaaaaaaaa'], ['index', 'person-index'],
+    ['', 'person-aaaaaaaaaaaaaaa'],
+    ['index', 'person-index'],
     ['bbbbbbbbbbbbbbb', 'person-bbbbbbbbbbbbbbb'],
   ]) {
     const person = record({ name_en })

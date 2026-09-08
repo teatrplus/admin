@@ -51,14 +51,7 @@ migrate(
     }
 
     const requests = app.findCollectionByNameOrId('space_request')
-    fixSelectValues(requests, 'stage', [
-      'inquiry',
-      'confirmed',
-      'rejected',
-      'preparation',
-      'completed',
-      'cancelled',
-    ])
+    fixSelectValues(requests, 'stage', ['inquiry', 'confirmed', 'rejected', 'preparation', 'completed', 'cancelled'])
     requests.listRule = auth
     requests.viewRule = auth
     requests.createRule = ''

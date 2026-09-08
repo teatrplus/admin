@@ -90,9 +90,7 @@ export type FormState<T extends Record<string, unknown>> = {
   touch: (key: keyof T) => void
   reset: (next?: Partial<T>) => void
   toFormData: () => FormData
-  validate: (
-    schema: BaseSchema<unknown, unknown, BaseIssue<unknown>>,
-  ) => { success: true } | { success: false }
+  validate: (schema: BaseSchema<unknown, unknown, BaseIssue<unknown>>) => { success: true } | { success: false }
 }
 
 export const createFormState = <T extends Record<string, unknown>>(initial: T): FormState<T> => {

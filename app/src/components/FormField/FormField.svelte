@@ -47,8 +47,7 @@
       data-invalid={error ? 'true' : 'false'}
       {required}
       {disabled}
-      autocomplete={autocomplete ?? undefined}
-    ></textarea>
+      autocomplete={autocomplete ?? undefined}></textarea>
   {:else}
     <input
       class="form_field-control"
