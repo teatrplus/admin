@@ -57,6 +57,7 @@ export const ru: TranslationSchema = {
     invalid: 'Неверный email или пароль',
   },
   nav: {
+    masks: 'Маски и музей',
     inquiries: 'Обращения',
     sections: {
       space: 'Пространство',

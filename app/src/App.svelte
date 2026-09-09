@@ -17,6 +17,7 @@
   const loadRequestsBoard = () => import('./features/RequestsBoard/RequestsBoard.svelte')
   const loadTheaterInquiryTable = () => import('./features/TheaterInquiryTable/TheaterInquiryTable.svelte')
   const loadTheaterSocialPanel = () => import('./features/TheaterSocialPanel/TheaterSocialPanel.svelte')
+  const loadTheaterMasksPanel = () => import('./features/TheaterMasksPanel/TheaterMasksPanel.svelte')
 
   initLocaleContext()
 
@@ -98,6 +99,14 @@
         <TheaterInquiryTable />
       {:catch}
         <p class="app_route_status" role="alert">Failed to load inquiries.</p>
+      {/await}
+    </AdminShell>
+  {:else if route === '/theater/masks'}
+    <AdminShell>
+      {#await loadTheaterMasksPanel() then { default: TheaterMasksPanel }}
+        <TheaterMasksPanel />
+      {:catch}
+        <p class="app_route_status" role="alert">Failed to load masks editor.</p>
       {/await}
     </AdminShell>
   {:else if route === '/theater/social'}

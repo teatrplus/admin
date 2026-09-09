@@ -55,6 +55,7 @@ export type TranslationSchema = {
     invalid: string
   }
   nav: {
+    masks: string
     inquiries: string
     sections: {
       space: string

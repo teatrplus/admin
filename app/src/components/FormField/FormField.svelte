@@ -1,6 +1,7 @@
 <script lang="ts">
   import { Label } from 'bits-ui'
   import type { Snippet } from 'svelte'
+  import type { HTMLInputAttributes } from 'svelte/elements'
   import './FormField.css'
 
   let {
@@ -26,7 +27,7 @@
     required?: boolean
     multiline?: boolean
     disabled?: boolean
-    autocomplete?: string
+    autocomplete?: HTMLInputAttributes['autocomplete']
     oninput?: (event: Event & { currentTarget: HTMLInputElement }) => void
     input?: Snippet
   } = $props()

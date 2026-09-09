@@ -9,6 +9,7 @@ onRecordCreate(
   't_staff',
   't_play',
   't_course',
+  't_mask',
 )
 
 onRecordUpdate(
@@ -19,4 +20,5 @@ onRecordUpdate(
   't_staff',
   't_play',
   't_course',
+  't_mask',
 )

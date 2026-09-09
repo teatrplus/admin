@@ -13,6 +13,7 @@ export type AppRoute =
   | `/${SiteScope}/requests`
   | '/theater/social'
   | '/theater/inquiries'
+  | '/theater/masks'
 
 export const REQUEST_STAGES = ['inquiry', 'confirmed', 'rejected', 'preparation', 'completed', 'cancelled'] as const
 
@@ -80,6 +81,7 @@ export const canAccessRoute = (route: AppRoute): boolean => {
   if (route === '/account') return canAccessAccount()
   if (route === '/theater/inquiries') return canAccessRequests('theater')
   if (route === '/theater/social') return canAccessSocial()
+  if (route === '/theater/masks') return isAdmin()
 
   const match = route.match(/^\/(space|theater)\/(landing|requests)$/)
   if (!match) return false
@@ -128,6 +130,7 @@ export const navSectionsForUser = (): NavSection[] => {
   }
 
   const theaterItems: NavSection['items'] = []
+  if (isAdmin()) theaterItems.push({ route: '/theater/masks', labelKey: 'masks', icon: 'landing' })
   if (canAccessRequests('theater'))
     theaterItems.push({ route: '/theater/inquiries', labelKey: 'inquiries', icon: 'requests' })
   if (canAccessSocial()) theaterItems.push({ route: '/theater/social', labelKey: 'social', icon: 'social' })

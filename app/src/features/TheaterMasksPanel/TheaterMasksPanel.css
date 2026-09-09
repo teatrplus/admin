@@ -1,0 +1,84 @@
+.theater_masks_panel {
+  display: grid;
+  gap: var(--space-6);
+}
+.theater_masks_panel-eyebrow {
+  color: var(--ink-muted);
+  font-size: var(--text-sm);
+}
+.theater_masks_panel-title {
+  font-family: var(--font-heading);
+  font-size: var(--text-2xl);
+}
+.theater_masks_panel-layout {
+  display: grid;
+  align-items: start;
+  gap: var(--space-6);
+}
+.theater_masks_panel-list,
+.theater_masks_panel-editor,
+.theater_masks_panel-fields {
+  display: grid;
+  gap: var(--space-4);
+  min-width: 0;
+}
+.theater_masks_panel-fields {
+  border: 0;
+  padding: 0;
+}
+.theater_masks_panel-legend {
+  padding-block: var(--space-4);
+  font-size: var(--text-lg);
+}
+.theater_masks_panel-mask {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3);
+  text-align: start;
+  border: 1px solid var(--border-base);
+  border-radius: var(--radius-md);
+  background: var(--bg-surface);
+  color: var(--ink-main);
+  cursor: pointer;
+}
+.theater_masks_panel-mask[aria-current='true'] {
+  border-color: var(--border-focus);
+}
+.theater_masks_panel-mask:focus-visible {
+  outline: 2px solid var(--border-focus);
+}
+.theater_masks_panel-thumbnail {
+  width: 3rem;
+  height: 4rem;
+  object-fit: contain;
+}
+.theater_masks_panel-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+.theater_masks_panel-media {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+}
+.theater_masks_panel-photo {
+  display: grid;
+  gap: var(--space-2);
+}
+.theater_masks_panel-preview {
+  width: 12rem;
+  height: 12rem;
+  object-fit: contain;
+  background: var(--bg-surface);
+}
+.theater_masks_panel-hint {
+  color: var(--ink-muted);
+  font-size: var(--text-sm);
+}
+@media (min-width: 48rem) {
+  .theater_masks_panel-layout {
+    grid-template-columns: 16rem minmax(0, 1fr);
+  }
+}
