@@ -44,3 +44,24 @@ is no longer used by the refresh worker.
   The seed preserves the supplied editorial statistic and does not invent a third play.
 
 Bundled files in `pb_migrations/home-assets` make the migration independent of the website checkout.
+
+## Admin editor
+
+Open **Theater → Homepage** (`/theater/home`) to edit all homepage content together, including
+RU/EN/UZ copy, ordered featured plays and statistics, the about mask, buttons, avatar and portrait.
+The Instagram profile field updates both `t_contact.instagram_url` and the homepage Instagram button.
+
+`GET` and `POST /api/theater/home` require a staff admin, a moderator with the `theater` scope,
+or a PocketBase superuser. Admin access follows the existing app convention of access to all scopes.
+Managers, viewers, space-only moderators, and anonymous visitors cannot use the editor endpoint.
+Generic collection write rules remain unchanged; the endpoint only saves the homepage's linked
+records and the contact's Instagram URL. No schema migration is needed for this editor.
+
+A save is transactional across copy blocks, buttons, relations, contact URL, and media. A revision
+check rejects stale edits with HTTP 409; reload before reconciling another editor's changes. Removed
+statistics are unlinked rather than deleted, because copy blocks may be shared. Saved content still
+requires a website rebuild to publish.
+
+Validation: `python3 tests/theater-home.test.py` starts and cleans up a disposable seeded PocketBase
+instance to check role/scope access, multipart saves, ordering, image removal, new statistics, stale
+edits, rollback, and locked generic writes. Add `--serve` to keep the fixture on port 18093 for UI checks.

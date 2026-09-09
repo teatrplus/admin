@@ -14,6 +14,7 @@ export type AppRoute =
   | '/theater/social'
   | '/theater/inquiries'
   | '/theater/masks'
+  | '/theater/home'
 
 export const REQUEST_STAGES = ['inquiry', 'confirmed', 'rejected', 'preparation', 'completed', 'cancelled'] as const
 
@@ -81,6 +82,7 @@ export const canAccessRoute = (route: AppRoute): boolean => {
   if (route === '/account') return canAccessAccount()
   if (route === '/theater/inquiries') return canAccessRequests('theater')
   if (route === '/theater/social') return canAccessSocial()
+  if (route === '/theater/home') return canAccessLanding('theater')
   if (route === '/theater/masks') return isAdmin()
 
   const match = route.match(/^\/(space|theater)\/(landing|requests)$/)
@@ -105,6 +107,7 @@ export const defaultRouteForUser = (): AppRoute => {
     if (canAccessRequests(scope)) return `/${scope}/requests`
   }
 
+  if (canAccessLanding('theater')) return '/theater/home'
   if (canAccessRequests('theater')) return '/theater/inquiries'
   if (canAccessSocial()) return '/theater/social'
 
@@ -130,6 +133,7 @@ export const navSectionsForUser = (): NavSection[] => {
   }
 
   const theaterItems: NavSection['items'] = []
+  if (canAccessLanding('theater')) theaterItems.push({ route: '/theater/home', labelKey: 'homepage', icon: 'landing' })
   if (isAdmin()) theaterItems.push({ route: '/theater/masks', labelKey: 'masks', icon: 'landing' })
   if (canAccessRequests('theater'))
     theaterItems.push({ route: '/theater/inquiries', labelKey: 'inquiries', icon: 'requests' })

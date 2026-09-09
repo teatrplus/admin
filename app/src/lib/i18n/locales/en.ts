@@ -57,6 +57,7 @@ export const en: TranslationSchema = {
     invalid: 'Invalid email or password',
   },
   nav: {
+    homepage: 'Homepage',
     masks: 'Masks & museum',
     inquiries: 'Inquiries',
     sections: {
