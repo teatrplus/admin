@@ -1,0 +1,108 @@
+/// <reference path="../pb_data/types.d.ts" />
+migrate(
+  (app) => {
+    const collection = new Collection({
+      createRule: null,
+      deleteRule: null,
+      fields: [
+        {
+          autogeneratePattern: '[a-z0-9]{15}',
+          help: '',
+          hidden: false,
+          id: 'text3208210256',
+          max: 15,
+          min: 15,
+          name: 'id',
+          pattern: '^[a-z0-9]+$',
+          presentable: false,
+          primaryKey: true,
+          required: true,
+          system: true,
+          type: 'text',
+        },
+        {
+          help: '',
+          hidden: false,
+          id: 'file3834550803',
+          maxSelect: 0,
+          maxSize: 0,
+          mimeTypes: null,
+          name: 'logo',
+          presentable: false,
+          protected: false,
+          required: false,
+          system: false,
+          thumbs: null,
+          type: 'file',
+        },
+        {
+          exceptDomains: null,
+          help: '',
+          hidden: false,
+          id: 'url2618047341',
+          name: 'website_url',
+          onlyDomains: null,
+          presentable: false,
+          required: false,
+          system: false,
+          type: 'url',
+        },
+        {
+          help: '',
+          hidden: false,
+          id: 'bool2544914204',
+          name: 'is_sponsor',
+          presentable: false,
+          required: false,
+          system: false,
+          type: 'bool',
+        },
+        {
+          help: '',
+          hidden: false,
+          id: 'bool3625215074',
+          name: 'is_hidden',
+          presentable: false,
+          required: false,
+          system: false,
+          type: 'bool',
+        },
+        {
+          hidden: false,
+          id: 'autodate2990389176',
+          name: 'created',
+          onCreate: true,
+          onUpdate: false,
+          presentable: false,
+          system: false,
+          type: 'autodate',
+        },
+        {
+          hidden: false,
+          id: 'autodate3332085495',
+          name: 'updated',
+          onCreate: true,
+          onUpdate: true,
+          presentable: false,
+          system: false,
+          type: 'autodate',
+        },
+      ],
+      id: 'pbc_254566637',
+      indexes: [],
+      listRule: null,
+      name: 't_partner',
+      system: false,
+      type: 'base',
+      updateRule: null,
+      viewRule: null,
+    })
+
+    return app.save(collection)
+  },
+  (app) => {
+    const collection = app.findCollectionByNameOrId('pbc_254566637')
+
+    return app.delete(collection)
+  },
+)
