@@ -18,7 +18,11 @@ test('course migrations preserve URLs and enforce publication and write permissi
   fs.mkdirSync(path.join(hooks, 'lib'), { recursive: true })
   for (const file of ['theater_slug.pb.js', 'lib/theater_slug.js'])
     fs.copyFileSync(path.join(root, 'pb_hooks', file), path.join(hooks, file))
-  for (const file of ['1788800800_theater_courses.js', '1788800810_seed_theater_courses.js'])
+  for (const file of [
+    '1788800800_theater_courses.js',
+    '1788800810_seed_theater_courses.js',
+    '1788950000_course_media_sections.js',
+  ])
     fs.copyFileSync(path.join(root, 'pb_migrations', file), path.join(migrations, file))
   fs.writeFileSync(
     path.join(migrations, '1788800790_fixture.js'),
@@ -60,6 +64,35 @@ test('course migrations preserve URLs and enforce publication and write permissi
     app.save(duplicate)
     if (duplicate.getString('slug') === 'acting') throw new Error('Slug collision was not resolved')
   }, () => {})`,
+  )
+  fs.writeFileSync(
+    path.join(migrations, '1788950010_media_assertions.js'),
+    `migrate((app) => {
+      const collection = app.findCollectionByNameOrId('t_course_section')
+      const course = app.findFirstRecordByData('t_course', 'slug', 'acting')
+      const photo = new Record(app.findCollectionByNameOrId('t_media_library'))
+      app.save(photo)
+      const gallery = new Record(collection)
+      gallery.set('course', course.id)
+      gallery.set('kind', 'gallery')
+      gallery.set('gallery', [photo.id])
+      app.save(gallery)
+      const teaser = new Record(collection)
+      teaser.set('course', course.id)
+      teaser.set('kind', 'teaser')
+      teaser.set('teaser_url', 'https://youtu.be/abcdefghijk?t=30')
+      app.save(teaser)
+      teaser.set('teaser_url', 'https://example.com/video')
+      let rejected = false
+      try { app.save(teaser) } catch (_) { rejected = true }
+      if (!rejected) throw new Error('Non-YouTube teaser was accepted')
+      const privateTeaser = new Record(collection)
+      privateTeaser.set('id', 'privateteaser01')
+      privateTeaser.set('course', 'testdraftcourse')
+      privateTeaser.set('kind', 'teaser')
+      privateTeaser.set('teaser_url', 'https://www.youtube.com/watch?v=abcdefghijk')
+      app.save(privateTeaser)
+    }, () => {})`,
   )
   const args = [`--dir=${path.join(temporary, 'data')}`, `--migrationsDir=${migrations}`, `--hooksDir=${hooks}`]
   const migrate = spawnSync(binary, ['migrate', 'up', ...args], { encoding: 'utf8' })
@@ -108,7 +141,13 @@ test('course migrations preserve URLs and enforce publication and write permissi
   assert.equal(acting.expand.teachers[0].expand.staff.id, '0e23f88702e8a8c')
   assert.equal(courses.items.find((course) => course.slug === 'speak-with-confidence').enrollment_status, 'waitlist')
   const sections = await (await get('t_course_section/records')).json()
-  assert.equal(sections.totalItems, 14)
+  assert.equal(sections.totalItems, 16)
+  assert.equal(sections.items.find((section) => section.kind === 'gallery').gallery.length, 1)
+  assert.equal(
+    sections.items.find((section) => section.kind === 'teaser').teaser_url,
+    'https://youtu.be/abcdefghijk?t=30',
+  )
+  assert.equal((await get('t_course_section/records/privateteaser01')).status, 404)
   assert.equal((await get('t_course/records/testdraftcourse')).status, 404)
   assert.equal((await get('t_course_section/records/testdraftsect01')).status, 404)
   for (const collection of ['t_course', 't_course_teacher', 't_course_section']) {

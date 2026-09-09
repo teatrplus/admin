@@ -15,7 +15,18 @@ All visitor-facing CMS text has `_ru`, `_en`, `_uz` fields. The requested locale
 
 `sort_order` orders courses and sections (ascending, then ID). On a course page the introduction comes first, followed by visible sections, the programme, teachers and FAQs. Sections are ordered within these groups. Teachers follow their selected relation order. Shared photos use the library's existing sort order and carousel.
 
-### Publishing and enrollment
+### Gallery and teaser sections
+
+Apply `1788950000_course_media_sections.js` to add `gallery` and `teaser` to `t_course_section.kind`. The `t_course` fields and existing section records are preserved.
+
+- For `gallery`, select photos in the section's `gallery` relation in display order. Upload new photos in `t_media_library`; its translated captions, alt text and people tags are reused. These photos do not need a course tag.
+- For `teaser`, paste a YouTube URL into `teaser_url`. Watch, share (`youtu.be`), Shorts, live and embed links are supported, including start times. The website uses the same privacy-enhanced, lazy-loaded 16:9 player as play pages. Other domains are rejected by the CMS; empty or unrecognized video links are hidden by the website.
+- Both kinds support translated headings, body paragraphs and lists. Empty headings fall back to the localized Gallery/Teaser label. Empty galleries are hidden.
+- Media sections follow `sort_order` among visible sections, before programme/teachers/FAQs. When any explicit gallery section exists, it replaces the automatic bottom gallery; courses without one retain their course-tagged gallery.
+
+Rebuild the website after editing. Rollback preserves the new fields and content.
+
+### Publishing and enrollment rules
 
 - New records default to unpublished. Course and section list/view rules expose only published courses. Only PocketBase superusers can write; guest teacher records and the shared media library are public.
 - Before publishing, enter at least a title and summary in one language. The build rejects missing required public copy or unresolved teachers rather than publishing a broken page. Unpublishing removes the page on the next build.
