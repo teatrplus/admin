@@ -11,7 +11,6 @@ const POSTS_COLLECTION = 't_instagram_post'
 const SYNC_COLLECTION = 't_instagram_sync'
 const SYNC_ID = 'instagramsync00'
 const POSTS_LIMIT = 9
-const DEFAULT_PROFILE_URL = 'https://www.instagram.com/teatr__plus/'
 const DEFAULT_DATASET_ID = 'gd_lk5ns7kz21pck8jpis'
 const HTTP_TIMEOUT = 60
 const IMAGE_TIMEOUT = 30
@@ -22,6 +21,18 @@ let starting = false
 let ticking = false
 
 const { readEnv } = require(`${__hooks}/lib/env.js`)
+
+// Read the same contact record used by the website; environment defaults must not override CMS edits.
+const readInstagramProfileUrl = (app) => {
+  const contacts = app.findRecordsByFilter('t_contact', '', 'created', 2)
+  if (contacts.length !== 1) throw new Error('t_contact: expected exactly one contact record')
+  const value = contacts[0].getString('instagram_url').trim()
+  const match = value.match(/^https?:\/\/(?:www\.)?instagram\.com\/([A-Za-z0-9._]{1,30})\/?(?:[?#].*)?$/i)
+  if (!match || ['p', 'reel', 'reels', 'stories', 'explore', 'accounts', 'direct'].includes(match[1].toLowerCase())) {
+    throw new Error('t_contact.instagram_url must be an Instagram profile URL')
+  }
+  return 'https://www.instagram.com/' + match[1] + '/'
+}
 
 const readJson = (response) => {
   if (response.json !== undefined && response.json !== null) return response.json
@@ -433,7 +444,7 @@ const startInstagramRefresh = (source) => {
     }
 
     const datasetId = readEnv('BRIGHTDATA_INSTAGRAM_DATASET_ID', DEFAULT_DATASET_ID)
-    const profileUrl = readEnv('INSTAGRAM_PROFILE_URL', DEFAULT_PROFILE_URL)
+    const profileUrl = readInstagramProfileUrl($app)
     const triggered = triggerSnapshot(token, datasetId, profileUrl)
     if (!triggered.ok) {
       markFailed(record, triggered.error)
@@ -536,6 +547,7 @@ const canRefreshInstagram = (auth) => {
 }
 
 module.exports = {
+  readInstagramProfileUrl,
   canRefreshInstagram,
   startInstagramRefresh,
   tickInstagramRefresh,
