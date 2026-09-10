@@ -1,5 +1,45 @@
 # Deployment
 
+## Copy a database between local and production
+
+Stop your local PocketBase process, then run from `theaterplus-admin`:
+
+```bash
+./pull-database.sh  # Production → local; backs up local first
+./push-database.sh  # Local → production; backs up production first
+```
+
+These replace **all collections, accounts (including passwords), PocketBase
+settings, and uploaded files** in `pb_data`. They are full copies, unlike the
+scoped `t_*` content import described below. The existing `pb_data` symlink is
+preserved. Environment files, the PocketBase binary, hooks, and migration files
+are not copied. If database settings use `PB_ENCRYPTION_KEY`, both environments
+must use the same key to read the copied settings.
+
+The scripts use `deploy/env.deploy` and the existing SSH identity. They require
+Python 3 and matching PocketBase versions on both machines, `lsof` locally, and
+passwordless `sudo systemctl` access for `deployer`. Production is briefly stopped
+for a consistent snapshot on pull, or backup and replacement on push. A failed
+push health check restores the previous production database and uploads. Keep
+local PocketBase stopped throughout the operation; start it again afterward.
+
+Transfers use private staging directories, SHA-256 verification, safe archive
+extraction, SQLite integrity checks, and the upload validation in `backup.py`.
+The scripts refuse a source database that has not applied all migration files
+present at the destination. Coordinate with deployments: do not deploy or run
+another database transfer concurrently. No frontend build or deployment runs.
+
+Local backups default to `database-sync-backups` beside the resolved `pb_data`
+directory. Override with `--backup-dir /absolute/path`. Production backups live
+under `${REMOTE_BACKUP_DIR:-/var/backups/theaterplus}/database-sync`. Each run has
+a separate timestamped directory, printed during execution; these backups are
+retained until manually removed. Archives contain a `pb_data/` directory and can
+be restored with PocketBase stopped. `PB_SERVICE` and `PB_HEALTH_URL` override
+`pocketbase.service` and `http://127.0.0.1:8090/api/health`.
+
+Use `./pull-database.sh --help` or `./push-database.sh --help` for options.
+Run transfer regression tests with `python3 tests/database-sync.test.py`.
+
 GitHub Actions builds and deploys `main`; production runs at
 `/var/www/theaterplus-admin`. Set `DEPLOY_HOST`, `REMOTE_ADMIN_DIR`, and
 `VITE_POCKETBASE_URL` as repository/environment variables. The backup directory
