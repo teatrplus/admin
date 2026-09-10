@@ -92,7 +92,7 @@ migrate((app) => {
 ''')
         shutil.copy(ROOT / 'pb_migrations/1789050000_site_publication.js', migrations)
         env = dict(os.environ)
-        env['CLOUDFLARE_PAGES_DEPLOY_HOOK_URL'] = f'http://127.0.0.1:{deploy.server_port}/landing'
+        env['SPACE_PAGES_DEPLOY_HOOK_URL'] = f'http://127.0.0.1:{deploy.server_port}/landing'
         env['WEBSITE_PAGES_DEPLOY_HOOK_URL'] = f'http://127.0.0.1:{deploy.server_port}/theater'
         args = [str(ROOT / 'pocketbase'), '--dir', str(base / 'pb_data'), '--hooksDir', str(hooks), '--migrationsDir', str(migrations)]
         subprocess.run(args + ['migrate', 'up'], check=True, capture_output=True, env=env)
@@ -250,7 +250,7 @@ migrate((app) => {
             save('s_gallery_item')
             process.terminate()
             process.wait(timeout=5)
-            del env['CLOUDFLARE_PAGES_DEPLOY_HOOK_URL']
+            del env['SPACE_PAGES_DEPLOY_HOOK_URL']
             process = start()
             assert publish()['failed'] == ['landing'] and pending() == ['landing']
             assert not any(site['publishing'] for site in request('GET', '/api/publication')['sites'])
@@ -258,7 +258,7 @@ migrate((app) => {
             if '--serve' in sys.argv:
                 process.terminate()
                 process.wait(timeout=5)
-                env['CLOUDFLARE_PAGES_DEPLOY_HOOK_URL'] = f'http://127.0.0.1:{deploy.server_port}/landing'
+                env['SPACE_PAGES_DEPLOY_HOOK_URL'] = f'http://127.0.0.1:{deploy.server_port}/landing'
                 process = start()
                 publish()
                 save('t_page_home', {'title': 'UI preview'}, theater['id'])

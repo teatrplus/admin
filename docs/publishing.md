@@ -53,10 +53,10 @@ automatic deploy hook on existing installations.
 
 Configure two distinct server-side environment variables:
 
-| Site    | Deploy hook                        |
-| ------- | ---------------------------------- |
-| Landing | `CLOUDFLARE_PAGES_DEPLOY_HOOK_URL` |
-| Theater | `WEBSITE_PAGES_DEPLOY_HOOK_URL`    |
+| Site    | Deploy hook                     |
+| ------- | ------------------------------- |
+| Landing | `SPACE_PAGES_DEPLOY_HOOK_URL`   |
+| Theater | `WEBSITE_PAGES_DEPLOY_HOOK_URL` |
 
 Missing configuration is a failed publication and leaves that site pending.
 The old Cloudflare API token/account/project queue-cleanup variables are no

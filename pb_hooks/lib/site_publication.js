@@ -1,6 +1,6 @@
 const SITES = ['landing', 'theater']
 const HOOK_ENV = {
-  landing: 'CLOUDFLARE_PAGES_DEPLOY_HOOK_URL',
+  landing: 'SPACE_PAGES_DEPLOY_HOOK_URL',
   theater: 'WEBSITE_PAGES_DEPLOY_HOOK_URL',
 }
 
