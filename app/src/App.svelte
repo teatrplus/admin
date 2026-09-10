@@ -19,6 +19,8 @@
   const loadTheaterSocialPanel = () => import('./features/TheaterSocialPanel/TheaterSocialPanel.svelte')
   const loadTheaterHomeEditor = () => import('./features/TheaterHomeEditor/TheaterHomeEditor.svelte')
   const loadTheaterMasksPanel = () => import('./features/TheaterMasksPanel/TheaterMasksPanel.svelte')
+  const loadTheaterContentLibrary = () => import('./features/TheaterContentLibrary/TheaterContentLibrary.svelte')
+  const loadTheaterPagePanel = () => import('./features/TheaterPagePanel/TheaterPagePanel.svelte')
 
   initLocaleContext()
 
@@ -117,6 +119,20 @@
       {:catch}
         <p class="app_route_status" role="alert">Failed to load masks editor.</p>
       {/await}
+    </AdminShell>
+  {:else if route === '/theater/content'}
+    <AdminShell>
+      {#await loadTheaterContentLibrary() then { default: TheaterContentLibrary }}
+        <TheaterContentLibrary />
+      {:catch}<p class="app_route_status" role="alert">Failed to load website content.</p>{/await}
+    </AdminShell>
+  {:else if route === '/theater/general' || route.startsWith('/theater/content/')}
+    <AdminShell>
+      {#await loadTheaterPagePanel() then { default: TheaterPagePanel }}
+        {#key route}<TheaterPagePanel
+            pageKey={route === '/theater/general' ? 'settings' : route.slice('/theater/content/'.length)}
+          />{/key}
+      {:catch}<p class="app_route_status" role="alert">Failed to load content editor.</p>{/await}
     </AdminShell>
   {:else if route === '/theater/social'}
     <AdminShell>

@@ -2,6 +2,7 @@ import { ACTIVE_SCOPES, type SiteScope } from '../cms/scopes'
 import type { NavSection } from '../nav'
 import { getCurrentUser, isStaffUser, isSuperuser, normalizeRole } from './auth'
 import type { StaffScope } from './types'
+import { findTheaterPanel } from '../theater-panels'
 
 export type AppRoute =
   | '/'
@@ -15,6 +16,9 @@ export type AppRoute =
   | '/theater/inquiries'
   | '/theater/masks'
   | '/theater/home'
+  | '/theater/general'
+  | '/theater/content'
+  | `/theater/content/${string}`
 
 export const REQUEST_STAGES = ['inquiry', 'confirmed', 'rejected', 'preparation', 'completed', 'cancelled'] as const
 
@@ -83,7 +87,11 @@ export const canAccessRoute = (route: AppRoute): boolean => {
   if (route === '/theater/inquiries') return canAccessRequests('theater')
   if (route === '/theater/social') return canAccessSocial()
   if (route === '/theater/home') return canAccessLanding('theater')
-  if (route === '/theater/masks') return isAdmin()
+  if (route === '/theater/general') return canAccessLanding('theater')
+  if (route === '/theater/masks') return canAccessLanding('theater')
+  if (route === '/theater/content') return canAccessLanding('theater')
+  if (route.startsWith('/theater/content/'))
+    return Boolean(findTheaterPanel(route.slice('/theater/content/'.length))) && canAccessLanding('theater')
 
   const match = route.match(/^\/(space|theater)\/(landing|requests)$/)
   if (!match) return false
@@ -133,8 +141,10 @@ export const navSectionsForUser = (): NavSection[] => {
   }
 
   const theaterItems: NavSection['items'] = []
-  if (canAccessLanding('theater')) theaterItems.push({ route: '/theater/home', labelKey: 'homepage', icon: 'homepage' })
-  if (isAdmin()) theaterItems.push({ route: '/theater/masks', labelKey: 'masks', icon: 'masks' })
+  if (canAccessLanding('theater')) {
+    theaterItems.push({ route: '/theater/content', labelKey: 'content', icon: 'landing' })
+    theaterItems.push({ route: '/theater/general', labelKey: 'general', icon: 'general' })
+  }
   if (canAccessRequests('theater'))
     theaterItems.push({ route: '/theater/inquiries', labelKey: 'inquiries', icon: 'inquiries' })
   if (canAccessSocial()) theaterItems.push({ route: '/theater/social', labelKey: 'social', icon: 'social' })

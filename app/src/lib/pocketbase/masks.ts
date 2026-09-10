@@ -4,6 +4,9 @@ import { pb } from './client'
 export const contentLocales = ['ru', 'en', 'uz'] as const
 export const maskFields = ['name', 'description'] as const
 const museumCopyFields: Record<string, [string, string]> = {
+  meta_title: ['seo_block', 'title'],
+  meta_description: ['seo_block', 'description'],
+  kicker: ['seo_block', 'lede'],
   title: ['intro_block', 'title'],
   lede: ['intro_block', 'lede'],
   description: ['intro_block', 'description'],
@@ -15,8 +18,8 @@ const museumCopyFields: Record<string, [string, string]> = {
   museum_button_label: ['visit_button', 'label'],
   excursion_button_label: ['excursion_button', 'label'],
 }
-export const museumFields = Object.keys(museumCopyFields)
-const museumExpand = 'intro_block,visit_block,visit_button,excursion_block,excursion_button'
+export const museumFields = [...Object.keys(museumCopyFields), 'gallery_alt']
+const museumExpand = 'intro_block,visit_block,visit_button,excursion_block,excursion_button,seo_block'
 const museumRevision = (record: RecordModel) =>
   [record, ...Object.values(record.expand ?? {})]
     .map((item) => item.id + ':' + item.updated)
@@ -35,6 +38,8 @@ export async function getMuseumContent() {
 export function museumDraft(record: RecordModel | undefined, page: boolean): Record<string, string> {
   const draft: Record<string, string> = {}
   if (page) {
+    for (const locale of contentLocales)
+      draft[`gallery_alt_${locale}`] = String(record?.[`gallery_alt_${locale}`] ?? '')
     for (const [field, [relation, source]] of Object.entries(museumCopyFields)) {
       const related = record?.expand?.[relation]
       if (!related) throw new Error(`Missing museum relation: ${relation}`)
@@ -81,6 +86,10 @@ export async function saveMuseumContent(
 }
 
 export const museumFieldLabels: Record<string, [string, string]> = {
+  meta_title: ['Search title', 'Заголовок для поиска'],
+  meta_description: ['Search description', 'Описание для поиска'],
+  kicker: ['Page kicker', 'Надзаголовок страницы'],
+  gallery_alt: ['Tour photo description', 'Описание фото экскурсии'],
   name: ['Name', 'Название'],
   description: ['Description', 'Описание'],
   title: ['Title', 'Заголовок'],

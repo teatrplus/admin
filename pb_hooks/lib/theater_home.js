@@ -89,6 +89,12 @@ const saveHome = (app, input, uploads) => {
     if (input.about_mask) tx.findRecordById('t_mask', text(input.about_mask))
     page.set('featured_plays', input.featured_plays)
     page.set('about_mask', text(input.about_mask))
+    for (const field of ['afisha_mask', 'cta_mask']) {
+      if (input[field] === undefined) continue
+      const id = text(input[field])
+      if (id) tx.findRecordById('t_mask', id)
+      page.set(field, id)
+    }
     contact.set('instagram_url', url(input.instagram_url))
     tx.save(contact)
     const { readInstagramProfileUrl } = require(__hooks + '/lib/instagram_refresh.js')

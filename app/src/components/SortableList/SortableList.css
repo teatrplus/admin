@@ -13,7 +13,7 @@
   /* Drag previews move under body, so each card must own its layout variables. */
   --c-item-padding: var(--space-4);
   --c-item-gap: var(--space-2);
-  --c-item-background: var(--bg-surface);
+  --c-item-background: var(--bg-page);
   --c-item-border: 1px;
   --c-handle-position: static;
   --c-handle-layer: auto;

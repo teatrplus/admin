@@ -6,10 +6,8 @@
   import Button from '@/components/Button/Button.svelte'
   import NavIcon from '@/components/NavIcon/NavIcon.svelte'
   import RawSvg from '@/components/RawSvg/RawSvg.svelte'
-  import Select from '@/components/Select/Select.svelte'
   import ThemeToggle from '@/components/ThemeToggle/ThemeToggle.svelte'
   import '@/components/RawSvg/RawSvg.css'
-  import { LOCALES, LOCALE_LABELS, type Locale } from '@/lib/i18n/config'
   import { useLocale } from '@/lib/i18n/context.svelte'
   import { getCurrentUser, logout } from '@/lib/pocketbase/auth'
   import { navSectionsForUser } from '@/lib/pocketbase/permissions'
@@ -27,11 +25,12 @@
   const user = $derived(getCurrentUser())
   const navSections = $derived(navSectionsForUser())
   const currentRoute = $derived(getRoute())
-  const currentSection = $derived(
-    navSections.find((section) => section.items.some((item) => item.route === currentRoute)),
-  )
-  const currentItem = $derived(currentSection?.items.find((item) => item.route === currentRoute))
-  const localeOptions = $derived(LOCALES.map((locale) => ({ value: locale, label: LOCALE_LABELS[locale] })))
+  const isCurrentItem = (item: NavItem) =>
+    item.route === currentRoute ||
+    (item.route === '/theater/content' &&
+      (currentRoute.startsWith('/theater/content/') || ['/theater/home', '/theater/masks'].includes(currentRoute)))
+  const currentSection = $derived(navSections.find((section) => section.items.some((item) => isCurrentItem(item))))
+  const currentItem = $derived(currentSection?.items.find((item) => isCurrentItem(item)))
 
   const desktop = new MediaQuery('(min-width: 48rem)')
   const isDesktopViewport = () => desktop.current
@@ -116,7 +115,7 @@
             <a
               class="admin_shell-nav_link"
               href={item.route}
-              aria-current={currentRoute === item.route ? 'page' : undefined}
+              aria-current={isCurrentItem(item) ? 'page' : undefined}
               title={itemLabel(item.labelKey)}
               onclick={(event) => {
                 if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return
@@ -169,16 +168,19 @@
         </div>
       </div>
       <div class="admin_shell-header_actions">
-        <ThemeToggle />
-        <div class="admin_shell-locale">
-          <Select
-            aria-label={localeCtx.t.common.language}
-            size="sm"
-            value={localeCtx.locale}
-            options={localeOptions}
-            onValueChange={(next) => localeCtx.setLocale(next as Locale)}
-          />
+        <div class="admin_shell-locale" role="group" aria-label={localeCtx.t.common.language}>
+          {#each ['en', 'ru'] as code, index}
+            {#if index}<span aria-hidden="true">/</span>{/if}
+            <button
+              class="admin_shell-locale_option u_reset_button"
+              type="button"
+              aria-pressed={localeCtx.locale === code}
+              lang={code}
+              onclick={() => localeCtx.setLocale(code as 'en' | 'ru')}>{code.toUpperCase()}</button
+            >
+          {/each}
         </div>
+        <ThemeToggle />
         <a
           class="admin_shell-user"
           href="/account"

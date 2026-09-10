@@ -1,0 +1,3465 @@
+{
+  "t_link_card": {
+    "name": "t_link_card",
+    "label": "Discovery links / Ссылки разделов",
+    "singleton": false,
+    "embedded": true,
+    "sections": [
+      {
+        "name": "content",
+        "label": "Content / Содержание",
+        "fields": [
+          {
+            "name": "copy",
+            "label": "Card / Карточка",
+            "type": "owned",
+            "collection": "_copy_block",
+            "many": false,
+            "fields": [
+              {
+                "name": "title",
+                "label": "Title / Заголовок",
+                "type": "localized",
+                "multiline": false
+              },
+              {
+                "name": "description",
+                "label": "Body / Текст",
+                "type": "localized",
+                "multiline": true
+              }
+            ]
+          },
+          {
+            "name": "button",
+            "label": "Link / Ссылка",
+            "type": "owned",
+            "collection": "_button",
+            "fields": [
+              {
+                "name": "label",
+                "label": "Label / Надпись",
+                "type": "localized"
+              },
+              {
+                "name": "url",
+                "label": "Link / Ссылка",
+                "type": "link"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "t_sponsor_touchpoint": {
+    "name": "t_sponsor_touchpoint",
+    "label": "Sponsor touchpoints / Размещения спонсоров",
+    "singleton": false,
+    "embedded": true,
+    "sections": [
+      {
+        "name": "content",
+        "label": "Content / Содержание",
+        "fields": [
+          {
+            "name": "copy",
+            "label": "Touchpoint / Размещение",
+            "type": "owned",
+            "collection": "_copy_block",
+            "many": false,
+            "fields": [
+              {
+                "name": "title",
+                "label": "Title / Заголовок",
+                "type": "localized",
+                "multiline": false
+              },
+              {
+                "name": "lede",
+                "label": "Introduction / Вступление",
+                "type": "localized",
+                "multiline": true
+              },
+              {
+                "name": "description",
+                "label": "Body / Текст",
+                "type": "localized",
+                "multiline": true
+              }
+            ]
+          },
+          {
+            "name": "examples",
+            "label": "Examples / Примеры",
+            "type": "localized",
+            "multiline": true
+          }
+        ]
+      }
+    ]
+  },
+  "t_sponsor_format": {
+    "name": "t_sponsor_format",
+    "label": "Sponsorship formats / Форматы спонсорства",
+    "singleton": false,
+    "embedded": true,
+    "sections": [
+      {
+        "name": "content",
+        "label": "Content / Содержание",
+        "fields": [
+          {
+            "name": "copy",
+            "label": "Format / Формат",
+            "type": "owned",
+            "collection": "_copy_block",
+            "many": false,
+            "fields": [
+              {
+                "name": "title",
+                "label": "Title / Заголовок",
+                "type": "localized",
+                "multiline": false
+              },
+              {
+                "name": "lede",
+                "label": "Introduction / Вступление",
+                "type": "localized",
+                "multiline": true
+              },
+              {
+                "name": "description",
+                "label": "Body / Текст",
+                "type": "localized",
+                "multiline": true
+              }
+            ]
+          },
+          {
+            "name": "items",
+            "label": "Included, one per line / Включено, по одному на строку",
+            "type": "localized",
+            "multiline": true
+          },
+          {
+            "name": "button",
+            "label": "Action / Действие",
+            "type": "owned",
+            "collection": "_button",
+            "fields": [
+              {
+                "name": "label",
+                "label": "Label / Надпись",
+                "type": "localized"
+              },
+              {
+                "name": "url",
+                "label": "Link / Ссылка",
+                "type": "link"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "t_festival_session": {
+    "name": "t_festival_session",
+    "label": "Festival programme / Программа фестиваля",
+    "singleton": false,
+    "embedded": true,
+    "sections": [
+      {
+        "name": "content",
+        "label": "Session / Событие",
+        "fields": [
+          {
+            "name": "starts_at",
+            "label": "Date and time / Дата и время",
+            "type": "date",
+            "required": true
+          },
+          {
+            "name": "copy",
+            "label": "Programme item / Пункт программы",
+            "type": "owned",
+            "collection": "_copy_block",
+            "many": false,
+            "fields": [
+              {
+                "name": "title",
+                "label": "Title / Заголовок",
+                "type": "localized",
+                "multiline": false
+              },
+              {
+                "name": "description",
+                "label": "Body / Текст",
+                "type": "localized",
+                "multiline": true
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "t_contact_phone": {
+    "name": "t_contact_phone",
+    "label": "Public phone numbers / Публичные телефоны",
+    "singleton": false,
+    "embedded": true,
+    "sections": [
+      {
+        "name": "content",
+        "label": "Phone / Телефон",
+        "fields": [
+          {
+            "name": "label",
+            "label": "Label / Подпись",
+            "type": "localized"
+          },
+          {
+            "name": "number",
+            "label": "Phone number / Номер телефона",
+            "type": "phone",
+            "required": true
+          }
+        ]
+      }
+    ]
+  },
+  "t_page_about": {
+    "name": "t_page_about",
+    "label": "About the theater / О театре",
+    "singleton": true,
+    "embedded": false,
+    "sections": [
+      {
+        "name": "history",
+        "label": "History / История",
+        "fields": [
+          {
+            "name": "seo",
+            "label": "Search preview / Поисковая выдача",
+            "type": "owned",
+            "collection": "_copy_block",
+            "many": false,
+            "fields": [
+              {
+                "name": "title",
+                "label": "Title / Заголовок",
+                "type": "localized",
+                "multiline": false
+              },
+              {
+                "name": "description",
+                "label": "Body / Текст",
+                "type": "localized",
+                "multiline": true
+              }
+            ]
+          },
+          {
+            "name": "history_block",
+            "label": "History / История",
+            "type": "owned",
+            "collection": "_copy_block",
+            "many": false,
+            "fields": [
+              {
+                "name": "title",
+                "label": "Title / Заголовок",
+                "type": "localized",
+                "multiline": false
+              },
+              {
+                "name": "lede",
+                "label": "Introduction / Вступление",
+                "type": "localized",
+                "multiline": true
+              },
+              {
+                "name": "description",
+                "label": "Body / Текст",
+                "type": "localized",
+                "multiline": true
+              }
+            ]
+          },
+          {
+            "name": "repertoire_button",
+            "label": "Repertoire / Репертуар",
+            "type": "owned",
+            "collection": "_button",
+            "fields": [
+              {
+                "name": "label",
+                "label": "Label / Надпись",
+                "type": "localized"
+              },
+              {
+                "name": "url",
+                "label": "Link / Ссылка",
+                "type": "link"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "image",
+        "label": "Image / Изображение",
+        "fields": [
+          {
+            "name": "image",
+            "label": "Image / Изображение",
+            "type": "file",
+            "many": false,
+            "video": false
+          },
+          {
+            "name": "image_alt",
+            "label": "Image description / Описание изображения",
+            "type": "localized"
+          },
+          {
+            "name": "image_caption",
+            "label": "Caption / Подпись",
+            "type": "localized"
+          }
+        ]
+      },
+      {
+        "name": "quote",
+        "label": "Quote / Цитата",
+        "fields": [
+          {
+            "name": "quote_block",
+            "label": "Quote / Цитата",
+            "type": "owned",
+            "collection": "_copy_block",
+            "many": false,
+            "fields": [
+              {
+                "name": "title",
+                "label": "Title / Заголовок",
+                "type": "localized",
+                "multiline": false
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "discover",
+        "label": "Explore the theater / Знакомство с театром",
+        "fields": [
+          {
+            "name": "discover_block",
+            "label": "Introduction / Вступление",
+            "type": "owned",
+            "collection": "_copy_block",
+            "many": false,
+            "fields": [
+              {
+                "name": "title",
+                "label": "Title / Заголовок",
+                "type": "localized",
+                "multiline": false
+              },
+              {
+                "name": "lede",
+                "label": "Introduction / Вступление",
+                "type": "localized",
+                "multiline": true
+              },
+              {
+                "name": "description",
+                "label": "Body / Текст",
+                "type": "localized",
+                "multiline": true
+              }
+            ]
+          },
+          {
+            "name": "links",
+            "label": "Destinations / Разделы",
+            "type": "owned",
+            "collection": "t_link_card",
+            "many": true,
+            "addLabel": "Add destination / Добавить пункт"
+          }
+        ]
+      }
+    ]
+  },
+  "t_page_director": {
+    "name": "t_page_director",
+    "label": "Artistic director / Художественный руководитель",
+    "singleton": true,
+    "embedded": false,
+    "sections": [
+      {
+        "name": "intro",
+        "label": "Name and biography / Имя и биография",
+        "fields": [
+          {
+            "name": "intro_block",
+            "label": "Introduction / Вступление",
+            "type": "owned",
+            "collection": "_copy_block",
+            "many": false,
+            "fields": [
+              {
+                "name": "title",
+                "label": "Full name / Полное имя",
+                "type": "localized",
+                "multiline": false
+              },
+              {
+                "name": "lede",
+                "label": "Position / Должность",
+                "type": "localized",
+                "multiline": true
+              },
+              {
+                "name": "description",
+                "label": "Introduction / Вступление",
+                "type": "localized",
+                "multiline": true
+              }
+            ]
+          },
+          {
+            "name": "education",
+            "label": "Education / Образование",
+            "type": "localized",
+            "multiline": true
+          },
+          {
+            "name": "biography",
+            "label": "Biography / Биография",
+            "type": "localized",
+            "multiline": true,
+            "hint": "Separate paragraphs with a blank line. / Разделяйте абзацы пустой строкой."
+          },
+          {
+            "name": "repertoire_button",
+            "label": "Repertoire / Репертуар",
+            "type": "owned",
+            "collection": "_button",
+            "fields": [
+              {
+                "name": "label",
+                "label": "Label / Надпись",
+                "type": "localized"
+              },
+              {
+                "name": "url",
+                "label": "Link / Ссылка",
+                "type": "link"
+              }
+            ]
+          }
+        ],
+        "description": "The introduction beside the portrait, followed by the full biography. / Вступление рядом с портретом и полная биография."
+      },
+      {
+        "name": "portrait",
+        "label": "Portrait / Портрет",
+        "fields": [
+          {
+            "name": "portrait",
+            "label": "Portrait / Портрет",
+            "type": "file",
+            "many": false,
+            "video": false
+          },
+          {
+            "name": "portrait_alt",
+            "label": "Image description / Описание изображения",
+            "type": "localized"
+          },
+          {
+            "name": "portrait_caption",
+            "label": "Caption / Подпись",
+            "type": "localized"
+          }
+        ]
+      },
+      {
+        "name": "awards",
+        "label": "Awards / Награды",
+        "fields": [
+          {
+            "name": "awards_block",
+            "label": "Heading / Заголовок",
+            "type": "owned",
+            "collection": "_copy_block",
+            "many": false,
+            "fields": [
+              {
+                "name": "title",
+                "label": "Title / Заголовок",
+                "type": "localized",
+                "multiline": false
+              },
+              {
+                "name": "lede",
+                "label": "Introduction / Вступление",
+                "type": "localized",
+                "multiline": true
+              }
+            ]
+          },
+          {
+            "name": "awards",
+            "label": "Awards / Награды",
+            "type": "owned",
+            "collection": "_copy_block",
+            "many": true,
+            "fields": [
+              {
+                "name": "title",
+                "label": "Award or honour / Награда или звание",
+                "type": "localized",
+                "multiline": false
+              },
+              {
+                "name": "lede",
+                "label": "Awarding institution and year / Организация и год",
+                "type": "localized",
+                "multiline": true
+              },
+              {
+                "name": "description",
+                "label": "Award details / О награде",
+                "type": "localized",
+                "multiline": true
+              }
+            ],
+            "addLabel": "Add award / Добавить награду"
+          }
+        ]
+      },
+      {
+        "name": "approach",
+        "label": "Approach / Подход",
+        "fields": [
+          {
+            "name": "approach_block",
+            "label": "Quote and approach / Цитата и подход",
+            "type": "owned",
+            "collection": "_copy_block",
+            "many": false,
+            "fields": [
+              {
+                "name": "title",
+                "label": "Quote / Цитата",
+                "type": "localized",
+                "multiline": true
+              },
+              {
+                "name": "lede",
+                "label": "Section label / Надзаголовок",
+                "type": "localized",
+                "multiline": false
+              },
+              {
+                "name": "description",
+                "label": "Approach to theater / Подход к театру",
+                "type": "localized",
+                "multiline": true
+              }
+            ]
+          },
+          {
+            "name": "interview_button",
+            "label": "Interview / Интервью",
+            "type": "owned",
+            "collection": "_button",
+            "fields": [
+              {
+                "name": "label",
+                "label": "Label / Надпись",
+                "type": "localized"
+              },
+              {
+                "name": "url",
+                "label": "Link / Ссылка",
+                "type": "link"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "collection",
+        "label": "Mask collection / Коллекция масок",
+        "fields": [
+          {
+            "name": "collection_block",
+            "label": "Introduction / Вступление",
+            "type": "owned",
+            "collection": "_copy_block",
+            "many": false,
+            "fields": [
+              {
+                "name": "title",
+                "label": "Title / Заголовок",
+                "type": "localized",
+                "multiline": false
+              },
+              {
+                "name": "lede",
+                "label": "Introduction / Вступление",
+                "type": "localized",
+                "multiline": true
+              },
+              {
+                "name": "description",
+                "label": "Body / Текст",
+                "type": "localized",
+                "multiline": true
+              }
+            ]
+          },
+          {
+            "name": "figures",
+            "label": "Figures / Показатели",
+            "type": "owned",
+            "collection": "_copy_block",
+            "many": true,
+            "fields": [
+              {
+                "name": "title",
+                "label": "Value / Значение",
+                "type": "localized",
+                "multiline": false
+              },
+              {
+                "name": "description",
+                "label": "What it describes / Что означает показатель",
+                "type": "localized",
+                "multiline": true
+              }
+            ],
+            "addLabel": "Add figure / Добавить показатель"
+          },
+          {
+            "name": "masks",
+            "label": "Masks / Маски",
+            "type": "relation",
+            "collection": "t_mask",
+            "many": true
+          },
+          {
+            "name": "collection_note",
+            "label": "Note / Примечание",
+            "type": "localized",
+            "multiline": true
+          },
+          {
+            "name": "museum_button",
+            "label": "Museum / Музей",
+            "type": "owned",
+            "collection": "_button",
+            "fields": [
+              {
+                "name": "label",
+                "label": "Label / Надпись",
+                "type": "localized"
+              },
+              {
+                "name": "url",
+                "label": "Link / Ссылка",
+                "type": "link"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "search",
+        "label": "Search preview / Вид в поиске",
+        "fields": [
+          {
+            "name": "seo",
+            "label": "Search preview / Поисковая выдача",
+            "type": "owned",
+            "collection": "_copy_block",
+            "many": false,
+            "fields": [
+              {
+                "name": "title",
+                "label": "Title / Заголовок",
+                "type": "localized",
+                "multiline": false
+              },
+              {
+                "name": "description",
+                "label": "Body / Текст",
+                "type": "localized",
+                "multiline": true
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "t_page_courses": {
+    "name": "t_page_courses",
+    "label": "Creative workshop page / Страница креативного цеха",
+    "singleton": true,
+    "embedded": false,
+    "sections": [
+      {
+        "name": "intro",
+        "label": "Introduction / Вступление",
+        "fields": [
+          {
+            "name": "seo",
+            "label": "Search preview / Поисковая выдача",
+            "type": "owned",
+            "collection": "_copy_block",
+            "many": false,
+            "fields": [
+              {
+                "name": "title",
+                "label": "Title / Заголовок",
+                "type": "localized",
+                "multiline": false
+              },
+              {
+                "name": "description",
+                "label": "Body / Текст",
+                "type": "localized",
+                "multiline": true
+              }
+            ]
+          },
+          {
+            "name": "intro_block",
+            "label": "Introduction / Вступление",
+            "type": "owned",
+            "collection": "_copy_block",
+            "many": false,
+            "fields": [
+              {
+                "name": "title",
+                "label": "Title / Заголовок",
+                "type": "localized",
+                "multiline": false
+              },
+              {
+                "name": "lede",
+                "label": "Introduction / Вступление",
+                "type": "localized",
+                "multiline": true
+              },
+              {
+                "name": "description",
+                "label": "Body / Текст",
+                "type": "localized",
+                "multiline": true
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "help",
+        "label": "Course advice / Помощь с выбором",
+        "fields": [
+          {
+            "name": "help_block",
+            "label": "Invitation / Приглашение",
+            "type": "owned",
+            "collection": "_copy_block",
+            "many": false,
+            "fields": [
+              {
+                "name": "title",
+                "label": "Title / Заголовок",
+                "type": "localized",
+                "multiline": false
+              },
+              {
+                "name": "description",
+                "label": "Body / Текст",
+                "type": "localized",
+                "multiline": true
+              }
+            ]
+          },
+          {
+            "name": "help_button",
+            "label": "Contact / Контакт",
+            "type": "owned",
+            "collection": "_button",
+            "fields": [
+              {
+                "name": "label",
+                "label": "Label / Надпись",
+                "type": "localized"
+              },
+              {
+                "name": "url",
+                "label": "Link / Ссылка",
+                "type": "link"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "t_page_contacts": {
+    "name": "t_page_contacts",
+    "label": "Contact page / Страница контактов",
+    "singleton": true,
+    "embedded": false,
+    "sections": [
+      {
+        "name": "intro",
+        "label": "Introduction / Вступление",
+        "fields": [
+          {
+            "name": "intro_block",
+            "label": "Introduction / Вступление",
+            "type": "owned",
+            "collection": "_copy_block",
+            "many": false,
+            "fields": [
+              {
+                "name": "title",
+                "label": "Title / Заголовок",
+                "type": "localized",
+                "multiline": false
+              },
+              {
+                "name": "lede",
+                "label": "Introduction / Вступление",
+                "type": "localized",
+                "multiline": true
+              },
+              {
+                "name": "description",
+                "label": "Body / Текст",
+                "type": "localized",
+                "multiline": true
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "t_page_sponsors": {
+    "name": "t_page_sponsors",
+    "label": "Sponsors page / Страница спонсоров",
+    "singleton": true,
+    "embedded": false,
+    "sections": [
+      {
+        "name": "hero",
+        "label": "Introduction / Вступление",
+        "fields": [
+          {
+            "name": "seo",
+            "label": "Search preview / Поисковая выдача",
+            "type": "owned",
+            "collection": "_copy_block",
+            "many": false,
+            "fields": [
+              {
+                "name": "title",
+                "label": "Title / Заголовок",
+                "type": "localized",
+                "multiline": false
+              },
+              {
+                "name": "description",
+                "label": "Body / Текст",
+                "type": "localized",
+                "multiline": true
+              }
+            ]
+          },
+          {
+            "name": "hero_block",
+            "label": "Introduction / Вступление",
+            "type": "owned",
+            "collection": "_copy_block",
+            "many": false,
+            "fields": [
+              {
+                "name": "title",
+                "label": "Title / Заголовок",
+                "type": "localized",
+                "multiline": false
+              },
+              {
+                "name": "lede",
+                "label": "Introduction / Вступление",
+                "type": "localized",
+                "multiline": true
+              },
+              {
+                "name": "description",
+                "label": "Body / Текст",
+                "type": "localized",
+                "multiline": true
+              }
+            ]
+          },
+          {
+            "name": "hero_accent",
+            "label": "Title accent / Акцент заголовка",
+            "type": "localized"
+          },
+          {
+            "name": "hero_note",
+            "label": "Note / Примечание",
+            "type": "localized",
+            "multiline": true
+          },
+          {
+            "name": "primary_button",
+            "label": "Primary action / Основное действие",
+            "type": "owned",
+            "collection": "_button",
+            "fields": [
+              {
+                "name": "label",
+                "label": "Label / Надпись",
+                "type": "localized"
+              },
+              {
+                "name": "url",
+                "label": "Link / Ссылка",
+                "type": "link"
+              }
+            ]
+          },
+          {
+            "name": "secondary_button",
+            "label": "Secondary action / Второе действие",
+            "type": "owned",
+            "collection": "_button",
+            "fields": [
+              {
+                "name": "label",
+                "label": "Label / Надпись",
+                "type": "localized"
+              },
+              {
+                "name": "url",
+                "label": "Link / Ссылка",
+                "type": "link"
+              }
+            ]
+          },
+          {
+            "name": "image",
+            "label": "Image / Изображение",
+            "type": "file",
+            "many": false,
+            "video": false
+          },
+          {
+            "name": "image_alt",
+            "label": "Image description / Описание изображения",
+            "type": "localized"
+          },
+          {
+            "name": "image_caption",
+            "label": "Caption / Подпись",
+            "type": "localized"
+          }
+        ]
+      },
+      {
+        "name": "audience",
+        "label": "Audience / Аудитория",
+        "fields": [
+          {
+            "name": "audience_block",
+            "label": "Introduction / Вступление",
+            "type": "owned",
+            "collection": "_copy_block",
+            "many": false,
+            "fields": [
+              {
+                "name": "title",
+                "label": "Title / Заголовок",
+                "type": "localized",
+                "multiline": false
+              },
+              {
+                "name": "lede",
+                "label": "Introduction / Вступление",
+                "type": "localized",
+                "multiline": true
+              },
+              {
+                "name": "description",
+                "label": "Body / Текст",
+                "type": "localized",
+                "multiline": true
+              }
+            ]
+          },
+          {
+            "name": "benefits",
+            "label": "Benefits / Преимущества",
+            "type": "owned",
+            "collection": "_copy_block",
+            "many": true,
+            "fields": [
+              {
+                "name": "title",
+                "label": "Title / Заголовок",
+                "type": "localized",
+                "multiline": false
+              },
+              {
+                "name": "description",
+                "label": "Body / Текст",
+                "type": "localized",
+                "multiline": true
+              }
+            ],
+            "addLabel": "Add benefit / Добавить пункт"
+          }
+        ]
+      },
+      {
+        "name": "visibility",
+        "label": "Visibility / Присутствие бренда",
+        "fields": [
+          {
+            "name": "visibility_block",
+            "label": "Introduction / Вступление",
+            "type": "owned",
+            "collection": "_copy_block",
+            "many": false,
+            "fields": [
+              {
+                "name": "title",
+                "label": "Title / Заголовок",
+                "type": "localized",
+                "multiline": false
+              },
+              {
+                "name": "lede",
+                "label": "Introduction / Вступление",
+                "type": "localized",
+                "multiline": true
+              },
+              {
+                "name": "description",
+                "label": "Body / Текст",
+                "type": "localized",
+                "multiline": true
+              }
+            ]
+          },
+          {
+            "name": "touchpoints",
+            "label": "Touchpoints / Размещения",
+            "type": "owned",
+            "collection": "t_sponsor_touchpoint",
+            "many": true,
+            "addLabel": "Add touchpoint / Добавить пункт"
+          },
+          {
+            "name": "festival_block",
+            "label": "Festivals / Фестивали",
+            "type": "owned",
+            "collection": "_copy_block",
+            "many": false,
+            "fields": [
+              {
+                "name": "title",
+                "label": "Title / Заголовок",
+                "type": "localized",
+                "multiline": false
+              },
+              {
+                "name": "lede",
+                "label": "Introduction / Вступление",
+                "type": "localized",
+                "multiline": true
+              },
+              {
+                "name": "description",
+                "label": "Body / Текст",
+                "type": "localized",
+                "multiline": true
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "formats",
+        "label": "Partnership formats / Форматы партнёрства",
+        "fields": [
+          {
+            "name": "formats_block",
+            "label": "Introduction / Вступление",
+            "type": "owned",
+            "collection": "_copy_block",
+            "many": false,
+            "fields": [
+              {
+                "name": "title",
+                "label": "Title / Заголовок",
+                "type": "localized",
+                "multiline": false
+              },
+              {
+                "name": "lede",
+                "label": "Introduction / Вступление",
+                "type": "localized",
+                "multiline": true
+              },
+              {
+                "name": "description",
+                "label": "Body / Текст",
+                "type": "localized",
+                "multiline": true
+              }
+            ]
+          },
+          {
+            "name": "formats",
+            "label": "Formats / Форматы",
+            "type": "owned",
+            "collection": "t_sponsor_format",
+            "many": true,
+            "addLabel": "Add format / Добавить пункт"
+          },
+          {
+            "name": "formats_note",
+            "label": "Note / Примечание",
+            "type": "localized",
+            "multiline": true
+          }
+        ]
+      },
+      {
+        "name": "process",
+        "label": "Process and questions / Процесс и вопросы",
+        "fields": [
+          {
+            "name": "process_block",
+            "label": "Introduction / Вступление",
+            "type": "owned",
+            "collection": "_copy_block",
+            "many": false,
+            "fields": [
+              {
+                "name": "title",
+                "label": "Title / Заголовок",
+                "type": "localized",
+                "multiline": false
+              },
+              {
+                "name": "lede",
+                "label": "Introduction / Вступление",
+                "type": "localized",
+                "multiline": true
+              }
+            ]
+          },
+          {
+            "name": "steps",
+            "label": "Steps / Шаги",
+            "type": "owned",
+            "collection": "_copy_block",
+            "many": true,
+            "fields": [
+              {
+                "name": "title",
+                "label": "Title / Заголовок",
+                "type": "localized",
+                "multiline": false
+              },
+              {
+                "name": "description",
+                "label": "Body / Текст",
+                "type": "localized",
+                "multiline": true
+              }
+            ],
+            "addLabel": "Add step / Добавить пункт"
+          },
+          {
+            "name": "faq_block",
+            "label": "Heading / Заголовок",
+            "type": "owned",
+            "collection": "_copy_block",
+            "many": false,
+            "fields": [
+              {
+                "name": "title",
+                "label": "Title / Заголовок",
+                "type": "localized",
+                "multiline": false
+              }
+            ]
+          },
+          {
+            "name": "faq",
+            "label": "Questions and answers / Вопросы и ответы",
+            "type": "owned",
+            "collection": "_copy_block",
+            "many": true,
+            "fields": [
+              {
+                "name": "title",
+                "label": "Title / Заголовок",
+                "type": "localized",
+                "multiline": false
+              },
+              {
+                "name": "description",
+                "label": "Body / Текст",
+                "type": "localized",
+                "multiline": true
+              }
+            ],
+            "addLabel": "Add questions and answer / Добавить пункт"
+          }
+        ]
+      },
+      {
+        "name": "contact",
+        "label": "Contact invitation / Приглашение к диалогу",
+        "fields": [
+          {
+            "name": "contact_block",
+            "label": "Invitation / Приглашение",
+            "type": "owned",
+            "collection": "_copy_block",
+            "many": false,
+            "fields": [
+              {
+                "name": "title",
+                "label": "Title / Заголовок",
+                "type": "localized",
+                "multiline": false
+              },
+              {
+                "name": "lede",
+                "label": "Introduction / Вступление",
+                "type": "localized",
+                "multiline": true
+              },
+              {
+                "name": "description",
+                "label": "Body / Текст",
+                "type": "localized",
+                "multiline": true
+              }
+            ]
+          },
+          {
+            "name": "contact_label",
+            "label": "Contact role / Контактное лицо",
+            "type": "localized"
+          },
+          {
+            "name": "contact_note",
+            "label": "Note / Примечание",
+            "type": "localized",
+            "multiline": true
+          },
+          {
+            "name": "contact_prompt",
+            "label": "Call prompt / Подсказка для звонка",
+            "type": "localized",
+            "multiline": true
+          },
+          {
+            "name": "contact_button",
+            "label": "Phone / Телефон",
+            "type": "owned",
+            "collection": "_button",
+            "fields": [
+              {
+                "name": "label",
+                "label": "Label / Надпись",
+                "type": "localized"
+              },
+              {
+                "name": "url",
+                "label": "Link / Ссылка",
+                "type": "link"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "t_page_festivals": {
+    "name": "t_page_festivals",
+    "label": "Festivals page / Страница фестивалей",
+    "singleton": true,
+    "embedded": false,
+    "sections": [
+      {
+        "name": "intro",
+        "label": "Festival archive / Архив фестивалей",
+        "fields": [
+          {
+            "name": "intro_block",
+            "label": "Introduction / Вступление",
+            "type": "owned",
+            "collection": "_copy_block",
+            "many": false,
+            "fields": [
+              {
+                "name": "title",
+                "label": "Title / Заголовок",
+                "type": "localized",
+                "multiline": false
+              },
+              {
+                "name": "lede",
+                "label": "Introduction / Вступление",
+                "type": "localized",
+                "multiline": true
+              },
+              {
+                "name": "description",
+                "label": "Body / Текст",
+                "type": "localized",
+                "multiline": true
+              }
+            ]
+          },
+          {
+            "name": "archive_block",
+            "label": "Archive introduction / Вступление архива",
+            "type": "owned",
+            "collection": "_copy_block",
+            "many": false,
+            "fields": [
+              {
+                "name": "title",
+                "label": "Title / Заголовок",
+                "type": "localized",
+                "multiline": false
+              },
+              {
+                "name": "lede",
+                "label": "Introduction / Вступление",
+                "type": "localized",
+                "multiline": true
+              },
+              {
+                "name": "description",
+                "label": "Body / Текст",
+                "type": "localized",
+                "multiline": true
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "empty",
+        "label": "Before the first festival / До первого фестиваля",
+        "fields": [
+          {
+            "name": "empty_block",
+            "label": "Introduction / Вступление",
+            "type": "owned",
+            "collection": "_copy_block",
+            "many": false,
+            "fields": [
+              {
+                "name": "title",
+                "label": "Title / Заголовок",
+                "type": "localized",
+                "multiline": false
+              },
+              {
+                "name": "lede",
+                "label": "Introduction / Вступление",
+                "type": "localized",
+                "multiline": true
+              },
+              {
+                "name": "description",
+                "label": "Body / Текст",
+                "type": "localized",
+                "multiline": true
+              }
+            ]
+          },
+          {
+            "name": "empty_kicker",
+            "label": "Kicker / Надзаголовок",
+            "type": "localized"
+          },
+          {
+            "name": "empty_preparation",
+            "label": "Preparation / Подготовка",
+            "type": "localized",
+            "multiline": true
+          },
+          {
+            "name": "empty_status",
+            "label": "Status / Статус",
+            "type": "localized"
+          },
+          {
+            "name": "empty_caption",
+            "label": "Image caption / Подпись изображения",
+            "type": "localized"
+          },
+          {
+            "name": "empty_mask",
+            "label": "Mask / Маска",
+            "type": "relation",
+            "collection": "t_mask",
+            "many": false
+          },
+          {
+            "name": "repertoire_button",
+            "label": "Repertoire / Репертуар",
+            "type": "owned",
+            "collection": "_button",
+            "fields": [
+              {
+                "name": "label",
+                "label": "Label / Надпись",
+                "type": "localized"
+              },
+              {
+                "name": "url",
+                "label": "Link / Ссылка",
+                "type": "link"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "invitation",
+        "label": "Invitation / Приглашение",
+        "fields": [
+          {
+            "name": "invitation_block",
+            "label": "Invitation / Приглашение",
+            "type": "owned",
+            "collection": "_copy_block",
+            "many": false,
+            "fields": [
+              {
+                "name": "title",
+                "label": "Title / Заголовок",
+                "type": "localized",
+                "multiline": false
+              },
+              {
+                "name": "description",
+                "label": "Body / Текст",
+                "type": "localized",
+                "multiline": true
+              }
+            ]
+          },
+          {
+            "name": "contact_button",
+            "label": "Contact / Контакт",
+            "type": "owned",
+            "collection": "_button",
+            "fields": [
+              {
+                "name": "label",
+                "label": "Label / Надпись",
+                "type": "localized"
+              },
+              {
+                "name": "url",
+                "label": "Link / Ссылка",
+                "type": "link"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "t_festival": {
+    "name": "t_festival",
+    "label": "Festivals / Фестивали",
+    "singleton": false,
+    "embedded": false,
+    "sections": [
+      {
+        "name": "identity",
+        "label": "Festival / Фестиваль",
+        "fields": [
+          {
+            "name": "published",
+            "label": "Published / Опубликовано",
+            "type": "bool"
+          },
+          {
+            "name": "slug",
+            "label": "URL slug / Адрес страницы",
+            "type": "text",
+            "required": false,
+            "hidden": true
+          },
+          {
+            "name": "starts_at",
+            "label": "Start date / Дата начала",
+            "type": "date",
+            "required": true
+          },
+          {
+            "name": "ends_at",
+            "label": "End date / Дата окончания",
+            "type": "date",
+            "required": true
+          },
+          {
+            "name": "intro_block",
+            "label": "Introduction / Вступление",
+            "type": "owned",
+            "collection": "_copy_block",
+            "many": false,
+            "fields": [
+              {
+                "name": "title",
+                "label": "Title / Заголовок",
+                "type": "localized",
+                "multiline": false
+              },
+              {
+                "name": "lede",
+                "label": "Introduction / Вступление",
+                "type": "localized",
+                "multiline": true
+              },
+              {
+                "name": "description",
+                "label": "Body / Текст",
+                "type": "localized",
+                "multiline": true
+              }
+            ]
+          },
+          {
+            "name": "location",
+            "label": "City and country / Город и страна",
+            "type": "localized"
+          },
+          {
+            "name": "format",
+            "label": "Format / Формат",
+            "type": "localized"
+          },
+          {
+            "name": "play",
+            "label": "Play / Спектакль",
+            "type": "relation",
+            "collection": "t_play",
+            "many": false
+          }
+        ]
+      },
+      {
+        "name": "story",
+        "label": "Story and photos / История и фотографии",
+        "fields": [
+          {
+            "name": "story",
+            "label": "Story / История",
+            "type": "localized",
+            "multiline": true
+          },
+          {
+            "name": "image",
+            "label": "Cover / Обложка",
+            "type": "file",
+            "many": false,
+            "video": false
+          },
+          {
+            "name": "image_alt",
+            "label": "Image description / Описание изображения",
+            "type": "localized"
+          },
+          {
+            "name": "image_caption",
+            "label": "Caption / Подпись",
+            "type": "localized"
+          },
+          {
+            "name": "gallery",
+            "label": "Gallery / Галерея",
+            "type": "file",
+            "many": true,
+            "video": false
+          }
+        ]
+      },
+      {
+        "name": "programme",
+        "label": "Programme / Программа",
+        "fields": [
+          {
+            "name": "programme",
+            "label": "Sessions / События",
+            "type": "owned",
+            "collection": "t_festival_session",
+            "many": true,
+            "addLabel": "Add session / Добавить пункт"
+          },
+          {
+            "name": "programme_note",
+            "label": "Programme note / Примечание к программе",
+            "type": "localized",
+            "multiline": true
+          }
+        ]
+      },
+      {
+        "name": "visit",
+        "label": "Visit / Посещение",
+        "fields": [
+          {
+            "name": "venue",
+            "label": "Venue / Площадка",
+            "type": "localized"
+          },
+          {
+            "name": "language",
+            "label": "Language / Язык",
+            "type": "localized"
+          },
+          {
+            "name": "access",
+            "label": "Accessibility / Доступность",
+            "type": "localized",
+            "multiline": true
+          },
+          {
+            "name": "booking_note",
+            "label": "Booking note / Примечание к билетам",
+            "type": "localized",
+            "multiline": true
+          },
+          {
+            "name": "booking_button",
+            "label": "Booking link / Ссылка на билеты",
+            "type": "owned",
+            "collection": "_button",
+            "fields": [
+              {
+                "name": "label",
+                "label": "Label / Надпись",
+                "type": "localized"
+              },
+              {
+                "name": "url",
+                "label": "Link / Ссылка",
+                "type": "link"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "outcome",
+        "label": "Report / Итоги",
+        "fields": [
+          {
+            "name": "outcome",
+            "label": "Report / Итоги",
+            "type": "localized",
+            "multiline": true
+          }
+        ]
+      }
+    ],
+    "sort": "-starts_at"
+  },
+  "t_page_team": {
+    "name": "t_page_team",
+    "label": "Team page / Страница команды",
+    "singleton": true,
+    "embedded": false,
+    "sections": [
+      {
+        "name": "intro",
+        "label": "Introduction / Вступление",
+        "fields": [
+          {
+            "name": "intro_block",
+            "label": "Introduction / Вступление",
+            "type": "owned",
+            "collection": "_copy_block",
+            "many": false,
+            "fields": [
+              {
+                "name": "title",
+                "label": "Title / Заголовок",
+                "type": "localized",
+                "multiline": false
+              },
+              {
+                "name": "description",
+                "label": "Body / Текст",
+                "type": "localized",
+                "multiline": true
+              }
+            ]
+          },
+          {
+            "name": "meta_description",
+            "label": "Search description / Описание для поиска",
+            "type": "localized",
+            "multiline": true
+          }
+        ]
+      }
+    ]
+  },
+  "t_page_news": {
+    "name": "t_page_news",
+    "label": "News page / Страница новостей",
+    "singleton": true,
+    "embedded": false,
+    "sections": [
+      {
+        "name": "intro",
+        "label": "Introduction / Вступление",
+        "fields": [
+          {
+            "name": "intro_block",
+            "label": "Introduction / Вступление",
+            "type": "owned",
+            "collection": "_copy_block",
+            "many": false,
+            "fields": [
+              {
+                "name": "title",
+                "label": "Title / Заголовок",
+                "type": "localized",
+                "multiline": false
+              },
+              {
+                "name": "lede",
+                "label": "Introduction / Вступление",
+                "type": "localized",
+                "multiline": true
+              },
+              {
+                "name": "description",
+                "label": "Body / Текст",
+                "type": "localized",
+                "multiline": true
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "t_page_repertoire": {
+    "name": "t_page_repertoire",
+    "label": "Repertoire page / Страница репертуара",
+    "singleton": true,
+    "embedded": false,
+    "sections": [
+      {
+        "name": "intro",
+        "label": "Introduction / Вступление",
+        "fields": [
+          {
+            "name": "intro_block",
+            "label": "Introduction / Вступление",
+            "type": "owned",
+            "collection": "_copy_block",
+            "many": false,
+            "fields": [
+              {
+                "name": "title",
+                "label": "Title / Заголовок",
+                "type": "localized",
+                "multiline": false
+              }
+            ]
+          },
+          {
+            "name": "meta_description",
+            "label": "Search description / Описание для поиска",
+            "type": "localized",
+            "multiline": true
+          }
+        ]
+      }
+    ]
+  },
+  "t_site_settings": {
+    "name": "t_site_settings",
+    "label": "Website settings / Настройки сайта",
+    "singleton": true,
+    "embedded": false,
+    "sections": [
+      {
+        "name": "identity",
+        "label": "Website identity / Название сайта",
+        "fields": [
+          {
+            "name": "identity_block",
+            "label": "Site name and description / Название и описание",
+            "type": "owned",
+            "collection": "_copy_block",
+            "many": false,
+            "fields": [
+              {
+                "name": "title",
+                "label": "Title / Заголовок",
+                "type": "localized",
+                "multiline": false
+              },
+              {
+                "name": "description",
+                "label": "Body / Текст",
+                "type": "localized",
+                "multiline": true
+              }
+            ]
+          },
+          {
+            "name": "seo",
+            "label": "Default search preview / Поисковая выдача по умолчанию",
+            "type": "owned",
+            "collection": "_copy_block",
+            "many": false,
+            "fields": [
+              {
+                "name": "title",
+                "label": "Title / Заголовок",
+                "type": "localized",
+                "multiline": false
+              },
+              {
+                "name": "description",
+                "label": "Body / Текст",
+                "type": "localized",
+                "multiline": true
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "announcement",
+        "label": "Announcement / Объявление",
+        "fields": [
+          {
+            "name": "announcement_enabled",
+            "label": "Show announcement / Показывать объявление",
+            "type": "bool"
+          },
+          {
+            "name": "announcement",
+            "label": "Announcement / Объявление",
+            "type": "localized",
+            "multiline": true
+          },
+          {
+            "name": "announcement_button",
+            "label": "Announcement link / Ссылка объявления",
+            "type": "owned",
+            "collection": "_button",
+            "fields": [
+              {
+                "name": "label",
+                "label": "Label / Надпись",
+                "type": "localized"
+              },
+              {
+                "name": "url",
+                "label": "Link / Ссылка",
+                "type": "link"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "footer",
+        "label": "Footer / Подвал",
+        "fields": [
+          {
+            "name": "copyright",
+            "label": "Copyright / Авторское право",
+            "type": "localized"
+          },
+          {
+            "name": "ticket_button",
+            "label": "Ticket operator / Билетный оператор",
+            "type": "owned",
+            "collection": "_button",
+            "fields": [
+              {
+                "name": "label",
+                "label": "Label / Надпись",
+                "type": "localized"
+              },
+              {
+                "name": "url",
+                "label": "Link / Ссылка",
+                "type": "link"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "t_contact": {
+    "name": "t_contact",
+    "label": "Contact details / Контактные данные",
+    "singleton": true,
+    "embedded": false,
+    "sections": [
+      {
+        "name": "phones",
+        "label": "Public contacts / Публичные контакты",
+        "fields": [
+          {
+            "name": "box_office_phones",
+            "label": "Box office / Касса",
+            "type": "owned",
+            "collection": "t_contact_phone",
+            "many": true,
+            "addLabel": "Add box office / Добавить пункт"
+          },
+          {
+            "name": "administration_phones",
+            "label": "Administration / Администрация",
+            "type": "owned",
+            "collection": "t_contact_phone",
+            "many": true,
+            "addLabel": "Add administration / Добавить пункт"
+          },
+          {
+            "name": "contact_email",
+            "label": "Email / Электронная почта",
+            "type": "email"
+          }
+        ]
+      },
+      {
+        "name": "address",
+        "label": "Address and maps / Адрес и карты",
+        "fields": [
+          {
+            "name": "address",
+            "label": "Address / Адрес",
+            "type": "localized"
+          },
+          {
+            "name": "map_alt",
+            "label": "Map description / Описание карты",
+            "type": "localized"
+          },
+          {
+            "name": "google_maps_url",
+            "label": "Google Maps",
+            "type": "url"
+          },
+          {
+            "name": "yandex_maps_url",
+            "label": "Yandex Maps / Яндекс Карты",
+            "type": "url"
+          },
+          {
+            "name": "map_light",
+            "label": "Light map / Светлая карта",
+            "type": "file",
+            "many": false,
+            "video": false
+          },
+          {
+            "name": "map_dark",
+            "label": "Dark map / Тёмная карта",
+            "type": "file",
+            "many": false,
+            "video": false
+          },
+          {
+            "name": "latitude",
+            "label": "Latitude / Широта",
+            "type": "number"
+          },
+          {
+            "name": "longitude",
+            "label": "Longitude / Долгота",
+            "type": "number"
+          }
+        ]
+      },
+      {
+        "name": "social",
+        "label": "Social profiles / Соцсети",
+        "fields": [
+          {
+            "name": "instagram_url",
+            "label": "Instagram",
+            "type": "url"
+          },
+          {
+            "name": "telegram_url",
+            "label": "Telegram",
+            "type": "url"
+          },
+          {
+            "name": "youtube_url",
+            "label": "YouTube",
+            "type": "url"
+          }
+        ]
+      }
+    ]
+  },
+  "t_play": {
+    "name": "t_play",
+    "label": "Plays / Спектакли",
+    "singleton": false,
+    "embedded": false,
+    "sections": [
+      {
+        "name": "intro",
+        "label": "Production story / О спектакле",
+        "fields": [
+          {
+            "name": "title",
+            "label": "Title / Заголовок",
+            "type": "localized",
+            "multiline": false,
+            "required": true
+          },
+          {
+            "name": "lede",
+            "label": "Introduction / Вступление",
+            "type": "localized",
+            "multiline": true
+          },
+          {
+            "name": "description",
+            "label": "Description / Описание",
+            "type": "localized",
+            "multiline": true
+          },
+          {
+            "name": "slug",
+            "label": "URL slug / Адрес страницы",
+            "type": "text",
+            "required": false,
+            "immutable": true,
+            "hidden": true
+          }
+        ]
+      },
+      {
+        "name": "visit",
+        "label": "Visitor information / Информация для зрителя",
+        "fields": [
+          {
+            "name": "duration_minutes",
+            "label": "Duration, minutes / Длительность, минуты",
+            "type": "number"
+          },
+          {
+            "name": "min_age",
+            "label": "Minimum age / Минимальный возраст",
+            "type": "number"
+          },
+          {
+            "name": "ticket_purchase_url",
+            "label": "Ticket link / Ссылка на билеты",
+            "type": "url"
+          }
+        ]
+      },
+      {
+        "name": "images",
+        "label": "Poster, cover and trailer / Афиша, обложка и трейлер",
+        "fields": [
+          {
+            "name": "thumbnail",
+            "label": "Poster / Афиша",
+            "type": "file",
+            "many": false,
+            "video": false
+          },
+          {
+            "name": "cover",
+            "label": "Cover / Обложка",
+            "type": "file",
+            "many": false,
+            "video": true
+          },
+          {
+            "name": "teaser_url",
+            "label": "Video link / Ссылка на видео",
+            "type": "url"
+          }
+        ]
+      },
+      {
+        "name": "cast",
+        "label": "Cast and creative team / Актёры и постановочная группа",
+        "fields": [
+          {
+            "name": "roles",
+            "label": "Production team / Участники спектакля",
+            "type": "owned",
+            "collection": "t_staff_role",
+            "fields": [
+              {
+                "name": "staff",
+                "label": "Team members / Сотрудники",
+                "type": "relation",
+                "collection": "t_staff",
+                "many": false,
+                "required": true
+              },
+              {
+                "name": "role",
+                "label": "Role or credit / Роль или должность",
+                "type": "owned",
+                "collection": "t_role",
+                "fields": [
+                  {
+                    "name": "name",
+                    "label": "Name / Имя",
+                    "type": "localized",
+                    "multiline": false
+                  },
+                  {
+                    "name": "description",
+                    "label": "Description / Описание",
+                    "type": "localized",
+                    "multiline": true
+                  },
+                  {
+                    "name": "type",
+                    "label": "Type / Тип",
+                    "type": "select",
+                    "options": ["actor", "production", "administration"],
+                    "many": false,
+                    "optionLabels": {
+                      "actor": "Actor / Актёр",
+                      "production": "Production / Постановочная группа",
+                      "administration": "Administration / Администрация"
+                    },
+                    "default": "actor"
+                  }
+                ],
+                "required": true
+              }
+            ],
+            "many": true,
+            "addLabel": "Add cast member / Добавить участника"
+          }
+        ]
+      },
+      {
+        "name": "performances",
+        "label": "Dates and tickets / Даты и билеты",
+        "fields": [
+          {
+            "name": "_performances",
+            "label": "Scheduled performances / Показы спектакля",
+            "type": "children",
+            "collection": "t_performance",
+            "via": "play",
+            "many": true,
+            "fields": [
+              {
+                "name": "start_at",
+                "label": "Date and time / Дата и время",
+                "type": "date",
+                "required": true
+              },
+              {
+                "name": "ticket_purchase_url",
+                "label": "Ticket link / Ссылка на билеты",
+                "type": "url"
+              },
+              {
+                "name": "price_uzs",
+                "label": "Price, UZS / Цена, сум",
+                "type": "number"
+              },
+              {
+                "name": "roles",
+                "label": "Cast for this performance (optional) / Состав на этот показ (необязательно)",
+                "type": "owned",
+                "collection": "t_staff_role",
+                "fields": [
+                  {
+                    "name": "staff",
+                    "label": "Team members / Сотрудники",
+                    "type": "relation",
+                    "collection": "t_staff",
+                    "many": false,
+                    "required": true
+                  },
+                  {
+                    "name": "role",
+                    "label": "Role or credit / Роль или должность",
+                    "type": "owned",
+                    "collection": "t_role",
+                    "fields": [
+                      {
+                        "name": "name",
+                        "label": "Name / Имя",
+                        "type": "localized",
+                        "multiline": false
+                      },
+                      {
+                        "name": "description",
+                        "label": "Description / Описание",
+                        "type": "localized",
+                        "multiline": true
+                      },
+                      {
+                        "name": "type",
+                        "label": "Type / Тип",
+                        "type": "select",
+                        "options": ["actor", "production", "administration"],
+                        "many": false,
+                        "optionLabels": {
+                          "actor": "Actor / Актёр",
+                          "production": "Production / Постановочная группа",
+                          "administration": "Administration / Администрация"
+                        },
+                        "default": "actor"
+                      }
+                    ],
+                    "required": true
+                  }
+                ],
+                "many": true,
+                "addLabel": "Add cast member / Добавить участника"
+              }
+            ],
+            "sort": "start_at",
+            "addLabel": "Add performance / Добавить показ"
+          }
+        ],
+        "description": "Leave the performance cast empty to use the production’s regular cast. / Оставьте состав показа пустым, чтобы использовать основной состав спектакля."
+      },
+      {
+        "name": "gallery",
+        "label": "Production gallery / Галерея спектакля",
+        "fields": [
+          {
+            "name": "_photos",
+            "label": "Page gallery / Галерея страницы",
+            "type": "children",
+            "collection": "t_media_library",
+            "via": "plays",
+            "many": true,
+            "fields": [
+              {
+                "name": "image",
+                "label": "Image / Изображение",
+                "type": "file",
+                "many": false,
+                "video": false,
+                "required": true
+              },
+              {
+                "name": "alt",
+                "label": "Image description / Описание изображения",
+                "type": "localized",
+                "multiline": false
+              },
+              {
+                "name": "description",
+                "label": "Photo caption / Подпись к фотографии",
+                "type": "localized",
+                "multiline": true
+              },
+              {
+                "name": "staff",
+                "label": "Team members / Сотрудники",
+                "type": "relation",
+                "collection": "t_staff",
+                "many": true
+              }
+            ],
+            "viaMany": true,
+            "detach": true,
+            "sort": "sort_order",
+            "gallery": true,
+            "addLabel": "Add photo / Добавить фотографию"
+          }
+        ]
+      }
+    ]
+  },
+  "t_performance": {
+    "name": "t_performance",
+    "label": "Performances / Показы",
+    "singleton": false,
+    "embedded": false,
+    "sections": [
+      {
+        "name": "content",
+        "label": "Content / Содержание",
+        "fields": [
+          {
+            "name": "start_at",
+            "label": "Date and time / Дата и время",
+            "type": "date"
+          },
+          {
+            "name": "ticket_purchase_url",
+            "label": "Ticket link / Ссылка на билеты",
+            "type": "url"
+          },
+          {
+            "name": "price_uzs",
+            "label": "Price, UZS / Цена, сум",
+            "type": "number"
+          }
+        ]
+      },
+      {
+        "name": "media",
+        "label": "Media and relations / Медиа и связи",
+        "fields": [
+          {
+            "name": "play",
+            "label": "Play / Спектакль",
+            "type": "relation",
+            "collection": "t_play",
+            "many": false
+          },
+          {
+            "name": "roles",
+            "label": "Roles and credits / Роли и должности",
+            "type": "relation",
+            "collection": "t_staff_role",
+            "many": true
+          }
+        ]
+      }
+    ]
+  },
+  "t_staff": {
+    "name": "t_staff",
+    "label": "Theater team / Команда театра",
+    "singleton": false,
+    "embedded": false,
+    "sections": [
+      {
+        "name": "identity",
+        "label": "Person and portrait / Сотрудник и портрет",
+        "fields": [
+          {
+            "name": "name",
+            "label": "Name / Имя",
+            "type": "localized",
+            "multiline": false,
+            "required": true
+          },
+          {
+            "name": "role",
+            "label": "Role / Роль",
+            "type": "select",
+            "options": ["actor", "production", "administration", "artistic_director"],
+            "many": false,
+            "optionLabels": {
+              "actor": "Actor / Актёр",
+              "production": "Production / Постановочная группа",
+              "administration": "Administration / Администрация",
+              "artistic_director": "Artistic director / Художественный руководитель"
+            }
+          },
+          {
+            "name": "photo",
+            "label": "Photo / Фотография",
+            "type": "file",
+            "many": false,
+            "video": false
+          },
+          {
+            "name": "slug",
+            "label": "URL slug / Адрес страницы",
+            "type": "text",
+            "required": false,
+            "immutable": true,
+            "hidden": true
+          }
+        ]
+      },
+      {
+        "name": "biography",
+        "label": "Biography / Биография",
+        "fields": [
+          {
+            "name": "description",
+            "label": "Description / Описание",
+            "type": "localized",
+            "multiline": true
+          },
+          {
+            "name": "education",
+            "label": "Education / Образование",
+            "type": "localized",
+            "multiline": true
+          },
+          {
+            "name": "quote",
+            "label": "Quote / Цитата",
+            "type": "localized",
+            "multiline": true
+          }
+        ],
+        "description": "Shown on the team card and personal page. / Показывается в карточке сотрудника и на его личной странице."
+      },
+      {
+        "name": "credits",
+        "label": "Roles and productions / Роли и спектакли",
+        "fields": [
+          {
+            "name": "_credits",
+            "label": "Production credits / Участие в спектаклях",
+            "type": "children",
+            "collection": "t_staff_role",
+            "via": "staff",
+            "many": true,
+            "fields": [
+              {
+                "name": "role",
+                "label": "Role or credit / Роль или должность",
+                "type": "owned",
+                "collection": "t_role",
+                "fields": [
+                  {
+                    "name": "name",
+                    "label": "Name / Имя",
+                    "type": "localized",
+                    "multiline": false
+                  },
+                  {
+                    "name": "description",
+                    "label": "Description / Описание",
+                    "type": "localized",
+                    "multiline": true
+                  },
+                  {
+                    "name": "type",
+                    "label": "Type / Тип",
+                    "type": "select",
+                    "options": ["actor", "production", "administration"],
+                    "many": false,
+                    "optionLabels": {
+                      "actor": "Actor / Актёр",
+                      "production": "Production / Постановочная группа",
+                      "administration": "Administration / Администрация"
+                    },
+                    "default": "actor"
+                  }
+                ],
+                "required": true
+              },
+              {
+                "name": "_plays",
+                "label": "Productions / Спектакли",
+                "type": "membership",
+                "collection": "t_play",
+                "via": "roles",
+                "viaMany": true,
+                "many": true
+              }
+            ],
+            "addLabel": "Add credit / Добавить роль"
+          }
+        ],
+        "description": "Create a role and choose the productions where this person performs it. / Добавьте роль и выберите спектакли, в которых сотрудник её исполняет."
+      },
+      {
+        "name": "gallery",
+        "label": "Personal gallery / Личная галерея",
+        "fields": [
+          {
+            "name": "_photos",
+            "label": "Page gallery / Галерея страницы",
+            "type": "children",
+            "collection": "t_media_library",
+            "via": "staff",
+            "many": true,
+            "fields": [
+              {
+                "name": "image",
+                "label": "Image / Изображение",
+                "type": "file",
+                "many": false,
+                "video": false,
+                "required": true
+              },
+              {
+                "name": "alt",
+                "label": "Image description / Описание изображения",
+                "type": "localized",
+                "multiline": false
+              },
+              {
+                "name": "description",
+                "label": "Photo caption / Подпись к фотографии",
+                "type": "localized",
+                "multiline": true
+              },
+              {
+                "name": "plays",
+                "label": "Plays / Спектакли",
+                "type": "relation",
+                "collection": "t_play",
+                "many": true
+              }
+            ],
+            "viaMany": true,
+            "detach": true,
+            "sort": "sort_order",
+            "gallery": true,
+            "addLabel": "Add photo / Добавить фотографию"
+          }
+        ]
+      }
+    ]
+  },
+  "t_role": {
+    "name": "t_role",
+    "label": "Roles and credits / Роли и должности",
+    "singleton": false,
+    "embedded": false,
+    "sections": [
+      {
+        "name": "content",
+        "label": "Content / Содержание",
+        "fields": [
+          {
+            "name": "name",
+            "label": "Name / Имя",
+            "type": "localized",
+            "multiline": false
+          },
+          {
+            "name": "description",
+            "label": "Description / Описание",
+            "type": "localized",
+            "multiline": true
+          },
+          {
+            "name": "type",
+            "label": "Type / Тип",
+            "type": "select",
+            "options": ["actor", "production", "administration"],
+            "many": false,
+            "optionLabels": {
+              "actor": "Actor / Актёр",
+              "production": "Production / Постановочная группа",
+              "administration": "Administration / Администрация"
+            },
+            "default": "actor"
+          }
+        ]
+      },
+      {
+        "name": "media",
+        "label": "Media and relations / Медиа и связи",
+        "fields": []
+      }
+    ]
+  },
+  "t_staff_role": {
+    "name": "t_staff_role",
+    "label": "Cast assignments / Назначения ролей",
+    "singleton": false,
+    "embedded": false,
+    "sections": [
+      {
+        "name": "content",
+        "label": "Content / Содержание",
+        "fields": []
+      },
+      {
+        "name": "media",
+        "label": "Media and relations / Медиа и связи",
+        "fields": [
+          {
+            "name": "staff",
+            "label": "Team members / Сотрудники",
+            "type": "relation",
+            "collection": "t_staff",
+            "many": false,
+            "required": true
+          },
+          {
+            "name": "role",
+            "label": "Role / Роль",
+            "type": "relation",
+            "collection": "t_role",
+            "many": false,
+            "required": true
+          }
+        ]
+      }
+    ]
+  },
+  "t_course": {
+    "name": "t_course",
+    "label": "Courses / Курсы",
+    "singleton": false,
+    "embedded": false,
+    "sections": [
+      {
+        "name": "intro",
+        "label": "Course introduction / О курсе",
+        "fields": [
+          {
+            "name": "title",
+            "label": "Title / Заголовок",
+            "type": "localized",
+            "multiline": false,
+            "required": true
+          },
+          {
+            "name": "discipline",
+            "label": "Discipline / Направление",
+            "type": "localized",
+            "multiline": false
+          },
+          {
+            "name": "summary",
+            "label": "Summary / Краткое описание",
+            "type": "localized",
+            "multiline": true,
+            "required": true
+          },
+          {
+            "name": "description",
+            "label": "Description / Описание",
+            "type": "localized",
+            "multiline": true
+          },
+          {
+            "name": "published",
+            "label": "Published / Опубликовано",
+            "type": "bool"
+          },
+          {
+            "name": "slug",
+            "label": "URL slug / Адрес страницы",
+            "type": "text",
+            "required": false,
+            "immutable": true,
+            "hidden": true
+          }
+        ],
+        "description": "The course card and the opening of its detail page. / Карточка курса и начало его страницы."
+      },
+      {
+        "name": "cover",
+        "label": "Course cover / Обложка курса",
+        "fields": [
+          {
+            "name": "cover",
+            "label": "Cover / Обложка",
+            "type": "file",
+            "many": false,
+            "video": false
+          },
+          {
+            "name": "cover_alt",
+            "label": "Cover description / Описание обложки",
+            "type": "localized",
+            "multiline": false
+          }
+        ]
+      },
+      {
+        "name": "attendance",
+        "label": "Who, where and when / Для кого, где и когда",
+        "fields": [
+          {
+            "name": "audience",
+            "label": "Audience / Аудитория",
+            "type": "localized",
+            "multiline": false
+          },
+          {
+            "name": "duration",
+            "label": "Duration / Длительность",
+            "type": "localized",
+            "multiline": false
+          },
+          {
+            "name": "schedule",
+            "label": "Schedule / Расписание",
+            "type": "localized",
+            "multiline": false
+          },
+          {
+            "name": "location",
+            "label": "Location / Место проведения",
+            "type": "localized",
+            "multiline": false
+          },
+          {
+            "name": "session_count",
+            "label": "Number of sessions / Количество занятий",
+            "type": "number"
+          },
+          {
+            "name": "session_minutes",
+            "label": "Session length, minutes / Длительность занятия, минуты",
+            "type": "number"
+          }
+        ]
+      },
+      {
+        "name": "enrollment",
+        "label": "Enrollment and fees / Запись и стоимость",
+        "fields": [
+          {
+            "name": "enrollment_status",
+            "label": "Enrollment status / Запись на курс",
+            "type": "select",
+            "options": ["enquire", "open", "waitlist", "closed"],
+            "many": false,
+            "required": true,
+            "optionLabels": {
+              "enquire": "Contact us / Уточнить условия",
+              "open": "Enrollment open / Запись открыта",
+              "waitlist": "Waiting list / Лист ожидания",
+              "closed": "Enrollment closed / Запись закрыта"
+            },
+            "default": "enquire"
+          },
+          {
+            "name": "contact_phone",
+            "label": "Contact phone / Контактный телефон",
+            "type": "text"
+          },
+          {
+            "name": "enrollment_url",
+            "label": "Enrollment link / Ссылка для записи",
+            "type": "url"
+          },
+          {
+            "name": "enrollment_note",
+            "label": "Enrollment note / Примечание к записи",
+            "type": "localized",
+            "multiline": true
+          },
+          {
+            "name": "price_uzs",
+            "label": "Price, UZS / Цена, сум",
+            "type": "number"
+          },
+          {
+            "name": "price_note",
+            "label": "Price note / Примечание к цене",
+            "type": "localized",
+            "multiline": true
+          }
+        ]
+      },
+      {
+        "name": "teachers",
+        "label": "Teachers / Преподаватели",
+        "fields": [
+          {
+            "name": "teachers",
+            "label": "Teaching team / Преподаватели курса",
+            "type": "owned",
+            "collection": "t_course_teacher",
+            "fields": [
+              {
+                "name": "staff",
+                "label": "Theater team member (optional) / Сотрудник театра (необязательно)",
+                "type": "relation",
+                "collection": "t_staff",
+                "many": false,
+                "hint": "Choose a team member to use their name and portrait, or leave empty for a guest teacher. / Выберите сотрудника, чтобы использовать его имя и портрет, или оставьте пустым для приглашённого преподавателя."
+              },
+              {
+                "name": "name",
+                "label": "Name / Имя",
+                "type": "localized",
+                "multiline": false,
+                "showWhen": {
+                  "field": "staff",
+                  "values": [""]
+                },
+                "required": true
+              },
+              {
+                "name": "photo",
+                "label": "Photo / Фотография",
+                "type": "file",
+                "many": false,
+                "video": false,
+                "showWhen": {
+                  "field": "staff",
+                  "values": [""]
+                }
+              },
+              {
+                "name": "role",
+                "label": "Role / Роль",
+                "type": "localized",
+                "multiline": false
+              },
+              {
+                "name": "bio",
+                "label": "Biography / Биография",
+                "type": "localized",
+                "multiline": true
+              }
+            ],
+            "many": true,
+            "addLabel": "Add teacher / Добавить преподавателя"
+          }
+        ],
+        "description": "Add a guest teacher or choose someone from the theater team. / Добавьте приглашённого преподавателя или выберите сотрудника театра."
+      },
+      {
+        "name": "programme",
+        "label": "Programme and page sections / Программа и разделы страницы",
+        "fields": [
+          {
+            "name": "_sections",
+            "label": "Course sections / Разделы курса",
+            "type": "children",
+            "collection": "t_course_section",
+            "via": "course",
+            "many": true,
+            "fields": [
+              {
+                "name": "kind",
+                "label": "Section kind / Тип раздела",
+                "type": "select",
+                "options": ["about", "audience", "outcomes", "program", "format", "faq", "gallery", "teaser"],
+                "many": false,
+                "required": true,
+                "optionLabels": {
+                  "about": "About / О курсе",
+                  "audience": "Audience / Для кого",
+                  "outcomes": "Outcomes / Результаты",
+                  "program": "Programme / Программа",
+                  "format": "Format / Формат",
+                  "faq": "Questions and answers / Вопросы и ответы",
+                  "gallery": "Gallery / Галерея",
+                  "teaser": "Video / Видео"
+                },
+                "default": "about"
+              },
+              {
+                "name": "title",
+                "label": "Title / Заголовок",
+                "type": "localized",
+                "multiline": false
+              },
+              {
+                "name": "body",
+                "label": "Body / Текст",
+                "type": "localized",
+                "multiline": true,
+                "showWhen": {
+                  "field": "kind",
+                  "values": ["about", "audience", "outcomes", "program", "format", "faq"]
+                }
+              },
+              {
+                "name": "items",
+                "label": "Items, one per line / Пункты, по одному на строку",
+                "type": "localized",
+                "multiline": true,
+                "showWhen": {
+                  "field": "kind",
+                  "values": ["about", "audience", "outcomes", "program", "format", "faq"]
+                }
+              },
+              {
+                "name": "teaser_url",
+                "label": "Video link / Ссылка на видео",
+                "type": "url",
+                "showWhen": {
+                  "field": "kind",
+                  "values": ["teaser"]
+                }
+              },
+              {
+                "name": "gallery",
+                "label": "Section photos / Фотографии раздела",
+                "type": "owned",
+                "collection": "t_media_library",
+                "fields": [
+                  {
+                    "name": "image",
+                    "label": "Image / Изображение",
+                    "type": "file",
+                    "many": false,
+                    "video": false,
+                    "required": true
+                  },
+                  {
+                    "name": "alt",
+                    "label": "Image description / Описание изображения",
+                    "type": "localized",
+                    "multiline": false
+                  },
+                  {
+                    "name": "description",
+                    "label": "Photo caption / Подпись к фотографии",
+                    "type": "localized",
+                    "multiline": true
+                  }
+                ],
+                "many": true,
+                "gallery": true,
+                "showWhen": {
+                  "field": "kind",
+                  "values": ["gallery"]
+                }
+              }
+            ],
+            "sort": "sort_order",
+            "addLabel": "Add section / Добавить раздел"
+          }
+        ],
+        "description": "Build the programme, questions, text sections, videos and photo galleries here. / Добавьте программу, вопросы, текстовые разделы, видео и фотогалереи."
+      },
+      {
+        "name": "gallery",
+        "label": "Course gallery / Галерея курса",
+        "fields": [
+          {
+            "name": "_photos",
+            "label": "Page gallery / Галерея страницы",
+            "type": "children",
+            "collection": "t_media_library",
+            "via": "courses",
+            "many": true,
+            "fields": [
+              {
+                "name": "image",
+                "label": "Image / Изображение",
+                "type": "file",
+                "many": false,
+                "video": false,
+                "required": true
+              },
+              {
+                "name": "alt",
+                "label": "Image description / Описание изображения",
+                "type": "localized",
+                "multiline": false
+              },
+              {
+                "name": "description",
+                "label": "Photo caption / Подпись к фотографии",
+                "type": "localized",
+                "multiline": true
+              },
+              {
+                "name": "staff",
+                "label": "Team members / Сотрудники",
+                "type": "relation",
+                "collection": "t_staff",
+                "many": true
+              },
+              {
+                "name": "plays",
+                "label": "Plays / Спектакли",
+                "type": "relation",
+                "collection": "t_play",
+                "many": true
+              }
+            ],
+            "viaMany": true,
+            "detach": true,
+            "sort": "sort_order",
+            "gallery": true,
+            "addLabel": "Add photo / Добавить фотографию"
+          }
+        ],
+        "description": "Shown when the course has no separate gallery section. / Показывается, если у курса нет отдельного раздела с галереей."
+      }
+    ],
+    "sort": "sort_order"
+  },
+  "t_course_teacher": {
+    "name": "t_course_teacher",
+    "label": "Course teachers / Преподаватели",
+    "singleton": false,
+    "embedded": false,
+    "sections": [
+      {
+        "name": "content",
+        "label": "Content / Содержание",
+        "fields": [
+          {
+            "name": "name",
+            "label": "Name / Имя",
+            "type": "localized",
+            "multiline": false
+          },
+          {
+            "name": "role",
+            "label": "Role / Роль",
+            "type": "localized",
+            "multiline": false
+          },
+          {
+            "name": "bio",
+            "label": "Biography / Биография",
+            "type": "localized",
+            "multiline": true
+          }
+        ]
+      },
+      {
+        "name": "media",
+        "label": "Media and relations / Медиа и связи",
+        "fields": [
+          {
+            "name": "staff",
+            "label": "Team members / Сотрудники",
+            "type": "relation",
+            "collection": "t_staff",
+            "many": false
+          },
+          {
+            "name": "photo",
+            "label": "Photo / Фотография",
+            "type": "file",
+            "many": false,
+            "video": false
+          }
+        ]
+      }
+    ]
+  },
+  "t_course_section": {
+    "name": "t_course_section",
+    "label": "Course sections / Разделы курсов",
+    "singleton": false,
+    "embedded": false,
+    "sections": [
+      {
+        "name": "content",
+        "label": "Content / Содержание",
+        "fields": [
+          {
+            "name": "kind",
+            "label": "Section kind / Тип раздела",
+            "type": "select",
+            "options": ["about", "audience", "outcomes", "program", "format", "faq", "gallery", "teaser"],
+            "many": false,
+            "required": true,
+            "optionLabels": {
+              "about": "About / О курсе",
+              "audience": "Audience / Для кого",
+              "outcomes": "Outcomes / Результаты",
+              "program": "Programme / Программа",
+              "format": "Format / Формат",
+              "faq": "Questions and answers / Вопросы и ответы",
+              "gallery": "Gallery / Галерея",
+              "teaser": "Video / Видео"
+            },
+            "default": "about"
+          },
+          {
+            "name": "title",
+            "label": "Title / Заголовок",
+            "type": "localized",
+            "multiline": false
+          },
+          {
+            "name": "body",
+            "label": "Body / Текст",
+            "type": "localized",
+            "multiline": true,
+            "showWhen": {
+              "field": "kind",
+              "values": ["about", "audience", "outcomes", "program", "format", "faq"]
+            }
+          },
+          {
+            "name": "items",
+            "label": "Items, one per line / Пункты, по одному на строку",
+            "type": "localized",
+            "multiline": true,
+            "showWhen": {
+              "field": "kind",
+              "values": ["about", "audience", "outcomes", "program", "format", "faq"]
+            }
+          },
+          {
+            "name": "teaser_url",
+            "label": "Video link / Ссылка на видео",
+            "type": "url",
+            "showWhen": {
+              "field": "kind",
+              "values": ["teaser"]
+            }
+          }
+        ]
+      },
+      {
+        "name": "media",
+        "label": "Media and relations / Медиа и связи",
+        "fields": [
+          {
+            "name": "course",
+            "label": "Course / Курс",
+            "type": "relation",
+            "collection": "t_course",
+            "many": false,
+            "required": true
+          },
+          {
+            "name": "gallery",
+            "label": "Gallery / Галерея",
+            "type": "relation",
+            "collection": "t_media_library",
+            "many": true
+          }
+        ]
+      }
+    ],
+    "sort": "sort_order"
+  },
+  "t_blog_post": {
+    "name": "t_blog_post",
+    "label": "News / Новости",
+    "singleton": false,
+    "embedded": false,
+    "sections": [
+      {
+        "name": "story",
+        "label": "Article / Статья",
+        "fields": [
+          {
+            "name": "title",
+            "label": "Title / Заголовок",
+            "type": "localized",
+            "multiline": false,
+            "required": true
+          },
+          {
+            "name": "excerpt",
+            "label": "Excerpt / Анонс",
+            "type": "localized",
+            "multiline": true,
+            "required": true
+          },
+          {
+            "name": "body",
+            "label": "Body / Текст",
+            "type": "localized",
+            "multiline": true,
+            "required": true
+          }
+        ]
+      },
+      {
+        "name": "publication",
+        "label": "Publication / Публикация",
+        "fields": [
+          {
+            "name": "published",
+            "label": "Published / Опубликовано",
+            "type": "bool"
+          },
+          {
+            "name": "published_at",
+            "label": "Publication date / Дата публикации",
+            "type": "date",
+            "required": true
+          },
+          {
+            "name": "author",
+            "label": "Author / Автор",
+            "type": "localized",
+            "multiline": false,
+            "required": true
+          },
+          {
+            "name": "slug",
+            "label": "URL slug / Адрес страницы",
+            "type": "text",
+            "required": false,
+            "hidden": true
+          }
+        ]
+      },
+      {
+        "name": "cover",
+        "label": "Cover / Обложка",
+        "fields": [
+          {
+            "name": "cover",
+            "label": "Cover / Обложка",
+            "type": "file",
+            "many": false,
+            "video": false,
+            "required": true
+          },
+          {
+            "name": "cover_alt",
+            "label": "Cover description / Описание обложки",
+            "type": "localized",
+            "multiline": false,
+            "required": true
+          },
+          {
+            "name": "photo_credit",
+            "label": "Photo credit / Автор фото",
+            "type": "localized",
+            "multiline": false
+          }
+        ]
+      },
+      {
+        "name": "gallery",
+        "label": "Article gallery / Галерея статьи",
+        "fields": [
+          {
+            "name": "gallery",
+            "label": "Gallery / Галерея",
+            "type": "file",
+            "many": true,
+            "video": false
+          },
+          {
+            "name": "gallery_alt",
+            "label": "Gallery description / Описание галереи",
+            "type": "localized",
+            "multiline": false
+          }
+        ]
+      }
+    ]
+  },
+  "t_partner": {
+    "name": "t_partner",
+    "label": "Partners and sponsors / Партнёры и спонсоры",
+    "singleton": false,
+    "embedded": false,
+    "sections": [
+      {
+        "name": "content",
+        "label": "Partner details / О партнёре",
+        "fields": [
+          {
+            "name": "name",
+            "label": "Name / Название",
+            "type": "localized"
+          },
+          {
+            "name": "website_url",
+            "label": "Website / Сайт",
+            "type": "url"
+          }
+        ]
+      },
+      {
+        "name": "logo",
+        "label": "Logo / Логотип",
+        "fields": [
+          {
+            "name": "logo",
+            "label": "Logo / Логотип",
+            "type": "file",
+            "many": false,
+            "video": false
+          }
+        ]
+      },
+      {
+        "name": "visibility",
+        "label": "Visibility / Отображение",
+        "fields": [
+          {
+            "name": "is_sponsor",
+            "label": "Sponsor / Спонсор",
+            "type": "bool"
+          },
+          {
+            "name": "is_hidden",
+            "label": "Hidden / Скрыто",
+            "type": "bool"
+          }
+        ]
+      }
+    ]
+  },
+  "t_media_library": {
+    "name": "t_media_library",
+    "label": "Media library / Медиатека",
+    "singleton": false,
+    "embedded": false,
+    "sections": [
+      {
+        "name": "content",
+        "label": "Content / Содержание",
+        "fields": [
+          {
+            "name": "alt",
+            "label": "Image description / Описание изображения",
+            "type": "localized",
+            "multiline": false
+          },
+          {
+            "name": "description",
+            "label": "Description / Описание",
+            "type": "localized",
+            "multiline": true
+          }
+        ]
+      },
+      {
+        "name": "media",
+        "label": "Media and relations / Медиа и связи",
+        "fields": [
+          {
+            "name": "image",
+            "label": "Image / Изображение",
+            "type": "file",
+            "many": false,
+            "video": false,
+            "required": true
+          },
+          {
+            "name": "plays",
+            "label": "Plays / Спектакли",
+            "type": "relation",
+            "collection": "t_play",
+            "many": true
+          },
+          {
+            "name": "staff",
+            "label": "Team members / Сотрудники",
+            "type": "relation",
+            "collection": "t_staff",
+            "many": true
+          },
+          {
+            "name": "courses",
+            "label": "Courses / Курсы",
+            "type": "relation",
+            "collection": "t_course",
+            "many": true
+          }
+        ]
+      }
+    ],
+    "sort": "sort_order"
+  },
+  "t_page_privacy_policy": {
+    "name": "t_page_privacy_policy",
+    "label": "Privacy policy / Политика конфиденциальности",
+    "singleton": true,
+    "embedded": false,
+    "sections": [
+      {
+        "name": "content",
+        "label": "Content / Содержание",
+        "fields": [
+          {
+            "name": "content",
+            "label": "Content / Содержание",
+            "type": "localized",
+            "multiline": true,
+            "required": true
+          }
+        ]
+      },
+      {
+        "name": "media",
+        "label": "Media and relations / Медиа и связи",
+        "fields": []
+      }
+    ]
+  },
+  "t_page_public_offer": {
+    "name": "t_page_public_offer",
+    "label": "Public offer / Публичная оферта",
+    "singleton": true,
+    "embedded": false,
+    "sections": [
+      {
+        "name": "content",
+        "label": "Content / Содержание",
+        "fields": [
+          {
+            "name": "content",
+            "label": "Content / Содержание",
+            "type": "localized",
+            "multiline": true,
+            "required": true
+          }
+        ]
+      },
+      {
+        "name": "media",
+        "label": "Media and relations / Медиа и связи",
+        "fields": []
+      }
+    ]
+  },
+  "t_page_theater_visit_rules": {
+    "name": "t_page_theater_visit_rules",
+    "label": "Visit rules / Правила посещения",
+    "singleton": true,
+    "embedded": false,
+    "sections": [
+      {
+        "name": "content",
+        "label": "Content / Содержание",
+        "fields": [
+          {
+            "name": "content",
+            "label": "Content / Содержание",
+            "type": "localized",
+            "multiline": true,
+            "required": true
+          }
+        ]
+      },
+      {
+        "name": "media",
+        "label": "Media and relations / Медиа и связи",
+        "fields": []
+      }
+    ]
+  }
+}

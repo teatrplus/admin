@@ -1,0 +1,14 @@
+.editor_back_link {
+  width: fit-content;
+  color: var(--ink-muted);
+  font-size: var(--text-sm);
+  text-decoration: none;
+}
+.editor_back_link:hover {
+  color: var(--action-primary);
+}
+.editor_back_link:focus-visible {
+  outline: 2px solid var(--border-focus);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}

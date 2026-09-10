@@ -2,6 +2,7 @@
   import GalleryImage from '@/components/GalleryImage/GalleryImage.svelte'
   import PageActions from '@/components/PageActions/PageActions.svelte'
   import PageHeader from '@/components/PageHeader/PageHeader.svelte'
+  import EditorBackLink from '@/components/EditorBackLink/EditorBackLink.svelte'
   import ContentLocaleTabs from '@/components/ContentLocaleTabs/ContentLocaleTabs.svelte'
   import { createQuery, useQueryClient } from '@tanstack/svelte-query'
   import Button from '@/components/Button/Button.svelte'
@@ -176,6 +177,7 @@
 />
 
 <section class="theater_masks_panel">
+  <EditorBackLink dirty={dirty || orderDirty} />
   <PageHeader
     title={localeCtx.t.nav.masks}
     eyebrow={localeCtx.t.nav.sections.theater}
@@ -252,10 +254,11 @@
                 name="mask-slug"
                 bind:value={draft.slug}
                 hint={tr(
-                  'Generated from the English name when left empty; stays fixed after creation.',
-                  'Генерируется из английского названия, если не указан; после создания не меняется.',
+                  'Used in /museum/mask/…/. Changing it changes the page address. Leave empty on creation to generate it from the name.',
+                  'Используется в /museum/mask/…/. При изменении меняется адрес страницы. При создании можно оставить пустым для генерации из названия.',
                 )}
-                disabled={Boolean(record)}
+                required={Boolean(record)}
+                disabled={saving}
                 error={fieldErrors.slug}
               />
             {/if}

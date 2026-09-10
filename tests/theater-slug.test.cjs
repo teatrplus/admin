@@ -1,6 +1,7 @@
 const test = require('node:test')
 const assert = require('node:assert/strict')
 const { assign, slugify } = require('../pb_hooks/lib/theater_slug.js')
+global.BadRequestError = class extends Error {}
 
 function record(fields = {}, originalSlug = '') {
   return {
@@ -54,6 +55,19 @@ test('new duplicate names get suffixes without changing the first person', () =>
   const person = record({ name_en: 'Same Name' })
   assign(app(['same-name', 'same-name-aaaaaaaaaaaaaaa']), person)
   assert.equal(person.getString('slug'), 'same-name-aaaaaaaaaaaaaaa-2')
+})
+
+test('existing mask addresses can change, normalize spelling and reject empty or duplicate addresses', () => {
+  const mask = record({ collection: 't_mask', name_en: 'New name', slug: 'Edited Mask' }, 'original-mask')
+  assign(app([], 'original-mask'), mask)
+  assert.equal(mask.getString('slug'), 'edited-mask')
+  for (const slug of ['', '!!!', 'taken']) {
+    const invalid = record({ collection: 't_mask', slug }, 'original-mask')
+    assert.throws(() => assign(app(['taken'], 'original-mask'), invalid), /empty|already in use/)
+  }
+  const renamed = record({ collection: 't_mask', name_en: 'Changed name', slug: 'original-mask' }, 'original-mask')
+  assign(app([], 'original-mask'), renamed)
+  assert.equal(renamed.getString('slug'), 'original-mask')
 })
 
 test('unnamed records and reserved routes remain valid and distinct', () => {

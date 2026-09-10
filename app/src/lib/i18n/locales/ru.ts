@@ -81,6 +81,8 @@ export const ru: TranslationSchema = {
     invalid: 'Неверный email или пароль',
   },
   nav: {
+    general: 'Общее',
+    content: 'Страницы сайта',
     homepage: 'Главная страница',
     masks: 'Маски и музей',
     inquiries: 'Обращения',

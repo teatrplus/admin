@@ -286,7 +286,28 @@
   font-weight: var(--weight-medium);
 }
 .admin_shell-locale {
-  width: 4.75rem;
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  color: var(--ink-muted);
+  font-size: var(--text-xs);
+  flex-shrink: 0;
+}
+.admin_shell-locale_option {
+  padding-block: var(--space-3);
+  padding-inline: var(--space-1);
+  color: var(--ink-muted);
+  cursor: pointer;
+}
+.admin_shell-locale_option[aria-pressed='true'],
+.admin_shell-locale_option:hover {
+  color: var(--ink-main);
+  font-weight: var(--weight-medium);
+}
+.admin_shell-locale_option:focus-visible {
+  outline: 2px solid var(--border-focus);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
 }
 .admin_shell-actions {
   flex-shrink: 0;

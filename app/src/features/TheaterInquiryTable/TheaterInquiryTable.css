@@ -52,9 +52,10 @@
   text-decoration: underline;
 }
 .theater_inquiry_table-status {
-  display: table;
+  display: flex;
+  width: max-content;
   margin-bottom: var(--space-3);
-  padding: var(--space-1) var(--space-2);
+  padding-inline: var(--space-2);
   border-radius: var(--radius-full);
   background: var(--intent-warning-subtle);
   color: var(--intent-warning-strong);

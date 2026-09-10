@@ -1,5 +1,6 @@
 const { test } = require('node:test')
 const assert = require('node:assert/strict')
+global.__hooks = require('node:path').resolve(__dirname, '../pb_hooks')
 global.BadRequestError = class extends Error {}
 global.ApiError = class extends Error {
   constructor(status, message) {
@@ -78,9 +79,15 @@ test('rolls back all order changes if one record fails', () => {
   assert.deepEqual(db.rows(), original)
 })
 
-test('museum permissions allow admins and reject other staff roles', () => {
-  const staff = (role) => ({ collection: () => ({ name: '_user_staff' }), getString: () => role })
+test('museum permissions allow admins and theater moderators', () => {
+  const staff = (role, scope = ['theater']) => ({
+    collection: () => ({ name: '_user_staff' }),
+    getString: () => role,
+    getStringSlice: () => scope,
+  })
   assert.equal(canEditMuseum(staff('admin')), true)
+  assert.equal(canEditMuseum(staff('moderator')), true)
+  assert.equal(canEditMuseum(staff('moderator', ['space'])), false)
   assert.equal(canEditMuseum(staff('manager')), false)
   assert.equal(canEditMuseum(null), false)
 })

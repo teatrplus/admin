@@ -1,6 +1,11 @@
 /// <reference types="svelte" />
 /// <reference types="vite/client" />
 
+declare module '~icons/*?raw' {
+  const content: string
+  export default content
+}
+
 declare module '~icons/*' {
   import type { Component } from 'svelte'
   const component: Component<Record<string, string>>

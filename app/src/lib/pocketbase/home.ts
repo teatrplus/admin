@@ -18,6 +18,8 @@ export type HomeDraft = {
   revision: string
   featured_plays: string[]
   about_mask: string
+  afisha_mask: string
+  cta_mask: string
   instagram_url: string
   copies: Record<string, Record<string, string>>
   buttons: Record<string, Record<string, string>>
@@ -38,6 +40,8 @@ export function homeDraft(data: HomeContent): HomeDraft {
     revision: data.revision,
     featured_plays: [...(data.page.featured_plays ?? [])],
     about_mask: data.page.about_mask ?? '',
+    afisha_mask: data.page.afisha_mask ?? '',
+    cta_mask: data.page.cta_mask ?? '',
     instagram_url: data.contact.instagram_url ?? '',
     copies: Object.fromEntries(copyRelations.map((field) => [field, blankCopy(data.copies[field])])),
     buttons: Object.fromEntries(

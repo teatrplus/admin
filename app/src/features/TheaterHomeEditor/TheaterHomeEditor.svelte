@@ -2,6 +2,7 @@
   import PageActions from '@/components/PageActions/PageActions.svelte'
   import EditorNavigation from '@/components/EditorNavigation/EditorNavigation.svelte'
   import PageHeader from '@/components/PageHeader/PageHeader.svelte'
+  import EditorBackLink from '@/components/EditorBackLink/EditorBackLink.svelte'
   import ContentLocaleTabs from '@/components/ContentLocaleTabs/ContentLocaleTabs.svelte'
   import RefreshIcon from '~icons/material-symbols/refresh'
   import { onMount } from 'svelte'
@@ -162,6 +163,7 @@
 />
 
 <section class="theater_home_editor">
+  <EditorBackLink {dirty} />
   <PageHeader
     title={localeCtx.t.nav.homepage}
     eyebrow={localeCtx.t.nav.sections.theater}
@@ -206,6 +208,13 @@
                 <p class="theater_home_editor-hint">
                   {tr('Up to 10 plays, shown in this order.', 'До 10 спектаклей, в указанном порядке.')}
                 </p>
+                <Select
+                  label={tr('Schedule mask', 'Маска возле афиши')}
+                  name="afisha-mask"
+                  options={maskOptions}
+                  bind:value={draft.afisha_mask}
+                  disabled={saving}
+                />
                 <SortableList
                   items={draft.featured_plays}
                   label={tr('Featured plays', 'Спектакли на главной')}
@@ -246,7 +255,7 @@
                 <h2 class="theater_home_editor-heading">
                   {sectionLabels[section]![localeCtx.locale === 'ru' ? 1 : 0]}
                 </h2>
-                {#each ['title', 'lede', 'description'] as field}
+                {#each ['title', 'lede', 'description'].filter((field) => ((section !== 'instagram_block' || field !== 'lede') && (section !== 'cta_block' || field !== 'description')) || ['ru', 'en', 'uz'].some((locale) => draft!.copies[section][`${field}_${locale}`])) as field}
                   <FormField
                     label={label(field, section)}
                     name={`${section}-${field}-${language}`}
@@ -254,6 +263,13 @@
                     multiline={field !== 'title'}
                   />
                 {/each}
+                {#if section === 'cta_block'}<Select
+                    label={tr('Ticket invitation mask', 'Маска возле приглашения')}
+                    name="cta-mask"
+                    options={maskOptions}
+                    bind:value={draft.cta_mask}
+                    disabled={saving}
+                  />{/if}
                 {#if section === 'about_block'}
                   <Select
                     label={tr('About mask', 'Маска в разделе «О театре»')}
@@ -262,20 +278,20 @@
                     bind:value={draft.about_mask}
                     disabled={saving}
                   />
-                  <h3 class="theater_home_editor-subheading">{tr('Statistics', 'Статистика')}</h3>
+                  <h3 class="theater_home_editor-subheading">{tr('Info', 'Инфо')}</h3>
                   <SortableList
                     items={draft.stats}
                     layout="grid"
-                    label={tr('Statistics', 'Статистика')}
+                    label={tr('Info', 'Инфо')}
                     itemLabel={(stat, index) =>
-                      `${tr('Statistic', 'Показатель')} ${index + 1}: ${stat[`title_${language}`] || ''}`}
+                      `${tr('Info', 'Инфо')} ${index + 1}: ${stat[`title_${language}`] || ''}`}
                     disabled={saving}
                     onReorder={(items) => (draft!.stats = items)}
                   >
                     {#snippet children(stat, index)}
                       <div class="theater_home_editor-stat">
                         <div class="theater_home_editor-actions">
-                          <span>{tr('Statistic', 'Показатель')} {index + 1}</span>
+                          <span>{tr('Info', 'Инфо')} {index + 1}</span>
                           <Button
                             variant="outline"
                             size="sm"
@@ -289,11 +305,6 @@
                           bind:value={stat[`title_${language}`]}
                         />
                         <FormField
-                          label={tr('Short label', 'Краткая подпись')}
-                          name={`stat-${index}-lede-${language}`}
-                          bind:value={stat[`lede_${language}`]}
-                        />
-                        <FormField
                           label={tr('Description', 'Описание')}
                           name={`stat-${index}-description-${language}`}
                           bind:value={stat[`description_${language}`]}
@@ -305,7 +316,7 @@
                     variant="outline"
                     disabled={draft.stats.length >= 10}
                     onclick={() => (draft!.stats = [...draft!.stats, blankCopy()])}
-                    >{tr('Add statistic', 'Добавить показатель')}</Button
+                    >{tr('Add info', 'Добавить информацию')}</Button
                   >
                 {/if}
                 {#if buttonFor[section]}

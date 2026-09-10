@@ -36,7 +36,7 @@ is no longer used by the refresh worker.
 ## Content without a matching field
 
 - Section headings, navigation, carousel controls, and accessibility UI labels remain in i18n.
-- Decorative masks `007` (schedule) and `004` (tickets) remain static: there are no corresponding relations.
+- Migration `1789040030_home_relic_choices.js` adds editable `afisha_mask` and `cta_mask` relations, seeded with masks `007` and `004`.
 - There is one Instagram avatar field, so the seed uses `logo.png` in both themes. The previous
   separate `logo-dark.png` variant is not migrated.
 - There is no portrait-alt field. The website derives it from the localized quote author and role.
@@ -54,8 +54,8 @@ The Instagram profile field updates both `t_contact.instagram_url` and the homep
 `GET` and `POST /api/theater/home` require a staff admin, a moderator with the `theater` scope,
 or a PocketBase superuser. Admin access follows the existing app convention of access to all scopes.
 Managers, viewers, space-only moderators, and anonymous visitors cannot use the editor endpoint.
-Generic collection write rules remain unchanged; the endpoint only saves the homepage's linked
-records and the contact's Instagram URL. No schema migration is needed for this editor.
+The later website-content migration opens theater content writes to admins and theater moderators; the endpoint only saves the homepage's linked
+records and the contact's Instagram URL. Apply the website-content migrations for the additional mask selectors.
 
 A save is transactional across copy blocks, buttons, relations, contact URL, and media. A revision
 check rejects stale edits with HTTP 409; reload before reconciling another editor's changes. Removed

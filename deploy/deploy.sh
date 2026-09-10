@@ -30,6 +30,7 @@ if [[ "${DEPLOY_BACKUP_PB_DATA:-1}" == "1" ]]; then
 fi
 
 echo "==> sync"
+rsync "$ROOT/shared/" "$DEPLOY_USER@$DEPLOY_HOST:$REMOTE_ADMIN_DIR/shared/"
 rsync "$ROOT/pb_hooks/" "$DEPLOY_USER@$DEPLOY_HOST:$REMOTE_ADMIN_DIR/pb_hooks/"
 rsync "$ROOT/pb_migrations/" "$DEPLOY_USER@$DEPLOY_HOST:$REMOTE_ADMIN_DIR/pb_migrations/"
 rsync --delete "$ROOT/app/dist/" "$DEPLOY_USER@$DEPLOY_HOST:$REMOTE_ADMIN_DIR/pb_public/"

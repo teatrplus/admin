@@ -15,6 +15,9 @@ const normalizePath = (pathname: string): AppRoute | '/unknown' => {
   if (path === '/theater/social') return '/theater/social'
   if (path === '/theater/home') return '/theater/home'
   if (path === '/theater/masks') return '/theater/masks'
+  if (['/theater/general', '/theater/content/settings', '/theater/content/t_site_settings'].includes(path))
+    return '/theater/general'
+  if (path === '/theater/content' || /^\/theater\/content\/[a-z_-]+$/.test(path)) return path as AppRoute
   return '/unknown'
 }
 

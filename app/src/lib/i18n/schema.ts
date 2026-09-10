@@ -79,6 +79,8 @@ export type TranslationSchema = {
     invalid: string
   }
   nav: {
+    general: string
+    content: string
     homepage: string
     masks: string
     inquiries: string

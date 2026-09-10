@@ -34,6 +34,7 @@ migrate((app) => {
   staff.fields.add(new SelectField({name:'role',maxSelect:1,values:['admin','moderator','manager','viewer']}))
   staff.fields.add(new SelectField({name:'scope',maxSelect:2,values:['theater','space']}))
   app.save(staff)
+  app.save(new Collection({name:'t_site_settings',type:'base'}))
 }, () => {})
 """)
         for name in ["1788941595_created_t_mask.js", "1788941958_created_t_page_masks.js", "1788947164_created__copy_block.js", "1788947206_created__button.js", "1788951000_museum_content.js", "1788952000_named_mask_urls.js"]:
@@ -43,6 +44,7 @@ migrate((app) => {
         shutil.copy(ROOT / "pb_hooks/lib/theater_slug.js", hooks / "lib")
         shutil.copy(ROOT / "pb_hooks/museum_page.pb.js", hooks)
         shutil.copy(ROOT / "pb_hooks/lib/museum_page.js", hooks / "lib")
+        shutil.copy(ROOT / "pb_hooks/lib/theater_home.js", hooks / "lib")
         shutil.copy(ROOT / "pb_hooks/mask_order.pb.js", hooks)
         shutil.copy(ROOT / "pb_hooks/lib/mask_order.js", hooks / "lib")
         (migrations / "museum-assets").symlink_to(ROOT / "pb_migrations/museum-assets", target_is_directory=True)
@@ -68,6 +70,9 @@ migrate((app) => {
                 record = dict(db.execute('select * from _button where id=?',(page[relation],)).fetchone())
                 for locale in ['en','ru','uz']: assert record['label_'+locale] == original[prefix+'_button_label_'+locale]
                 assert record['url'] == original[prefix+'_button_url'].replace('{locale}','ru')
+        shutil.copy(ROOT / 'pb_migrations/1789040010_theater_page_metadata.js', migrations)
+        shutil.copy(ROOT / 'pb_migrations/museum-metadata.json', migrations)
+        subprocess.run(args + ['migrate', 'up'], check=True, capture_output=True, text=True)
         subprocess.run(args + ["superuser", "upsert", "museum-root@example.com", PASSWORD], check=True, capture_output=True)
         with socket.socket() as sock:
             sock.bind(("127.0.0.1", 0))
@@ -127,9 +132,9 @@ migrate((app) => {
             def order_revision(items):
                 return '|'.join(sorted(f"{item['id']}:{item['sort_order']}" for item in items))
             reorder = {'ids': [mask['id'] for mask in reversed(masks)], 'revision': order_revision(masks)}
-            for token in [None, tokens['moderator'], tokens['manager'], tokens['viewer']]:
+            for token in [None, tokens['manager'], tokens['viewer']]:
                 assert request('POST', order_endpoint, reorder, token)[0] in [401, 403]
-            code, reordered = request('POST', order_endpoint, reorder, tokens['admin'])
+            code, reordered = request('POST', order_endpoint, reorder, tokens['moderator'])
             assert code == 200, reordered
             assert [mask['id'] for mask in reordered] == reorder['ids']
             assert [mask['sort_order'] for mask in reordered] == list(range(7))
@@ -164,8 +169,13 @@ migrate((app) => {
             duplicate = {key: value for key, value in page.items() if key not in ["id", "collectionId", "collectionName", "created", "updated", "excursion_photos"]}
             assert request("POST", page_path, duplicate, tokens["admin"])[0] in [400,403]
             path = mask_path + "/" + masks[0]["id"]
-            code, unchanged = request("PATCH", path, {"slug": masks[1]["slug"]}, tokens["admin"])
-            assert code == 200 and unchanged["slug"] == masks[0]["slug"]
+            code, invalid_slug = request("PATCH", path, {"slug": masks[1]["slug"]}, tokens["admin"])
+            assert code == 400 and 'slug' in invalid_slug['data']
+            assert request("GET", path)[1]['slug'] == masks[0]['slug']
+            code, renamed = request("PATCH", path, {"slug": "Edited Mask Address"}, tokens["admin"])
+            assert code == 200 and renamed['slug'] == 'edited-mask-address', renamed
+            assert request("PATCH", path, {"slug": ""}, tokens["admin"])[0] == 400
+            assert request("PATCH", path, {"slug": masks[0]['slug']}, tokens["admin"])[0] == 200
             assert request("PATCH", path, {"image": ""}, tokens["admin"])[0] == 400
             image = ROOT / "pb_migrations/museum-assets/mask-004.png"
             new_mask = [("sort_order", "8"), ("image", image)] + [
@@ -184,12 +194,12 @@ migrate((app) => {
             assert code == 200, updated
             code, binary = request("GET", f'/api/files/{updated["collectionId"]}/{updated["id"]}/{updated["image"]}')
             assert code == 200 and hashlib.sha256(binary).digest() == hashlib.sha256(image.read_bytes()).digest()
-            expand = 'intro_block,visit_block,visit_button,excursion_block,excursion_button'
+            expand = 'intro_block,visit_block,visit_button,excursion_block,excursion_button,seo_block'
             def load_page():
                 return request('GET', page_path + '/' + page['id'] + '?expand=' + expand)[1]
             def draft_page(item):
-                data = {}
-                for relation, fields in {'intro_block':{'title':'title','lede':'lede','description':'description'}, 'visit_block':{'title':'museum_title','description':'museum_description'}, 'excursion_block':{'title':'excursion_title','lede':'excursion_kicker','description':'excursion_description'}}.items():
+                data = {'gallery_alt_'+locale:item['gallery_alt_'+locale] for locale in ['en','ru','uz']}
+                for relation, fields in {'seo_block':{'title':'meta_title','lede':'kicker','description':'meta_description'}, 'intro_block':{'title':'title','lede':'lede','description':'description'}, 'visit_block':{'title':'museum_title','description':'museum_description'}, 'excursion_block':{'title':'excursion_title','lede':'excursion_kicker','description':'excursion_description'}}.items():
                     for source, target in fields.items():
                         for locale in ['en','ru','uz']: data[target+'_'+locale] = item['expand'][relation][source+'_'+locale]
                 for relation,prefix in [('visit_button','museum'),('excursion_button','excursion')]:
@@ -203,9 +213,9 @@ migrate((app) => {
             edit['draft']['title_en'] = 'Edited museum introduction'
             edit['draft']['museum_button_label_en'] = 'Visit us'
             edit['photos'] = [0] + list(reversed(current['excursion_photos']))
-            for token in [None, tokens['moderator'],tokens['manager'],tokens['viewer']]:
+            for token in [None, tokens['manager'],tokens['viewer']]:
                 assert request('POST',endpoint,{'content':json.dumps(edit)},token)[0] in [401,403]
-            code, changed = request('POST',endpoint,token=tokens['admin'],media=[('content',json.dumps(edit)),('excursion_photos',image)])
+            code, changed = request('POST',endpoint,token=tokens['moderator'],media=[('content',json.dumps(edit)),('excursion_photos',image)])
             assert code == 200, changed
             assert changed['expand']['intro_block']['title_en'] == edit['draft']['title_en']
             assert changed['expand']['visit_button']['label_en'] == 'Visit us'
@@ -221,7 +231,7 @@ migrate((app) => {
             code, restored = request('POST',endpoint,{'content':json.dumps(restore)},tokens['admin'])
             assert code == 200 and restored['excursion_photos'] == current['excursion_photos'], restored
             assert request('PATCH',page_path+'/'+page['id'],{'intro_block':''},tokens['admin'])[0] in [403,404]
-            print('PASS: minimal relation schema; preserved 3-language copy/media; public expansions; admin-only transactional edits; stale conflicts; rollback; gallery add/reorder/remove; mask URLs and permissions.', flush=True)
+            print('PASS: minimal relation schema; preserved 3-language copy/media; public expansions; admin/moderator transactional edits; stale conflicts; rollback; gallery add/reorder/remove; mask URLs and permissions.', flush=True)
             if "--serve" in sys.argv:
                 print(f"UI fixture: {origin}; press Enter to stop.", flush=True)
                 input()

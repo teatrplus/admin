@@ -15,6 +15,7 @@
   import CloseIcon from '~icons/material-symbols/close'
   import LogoutIcon from '~icons/material-symbols/logout'
   import LanguageIcon from '~icons/material-symbols/language'
+  import SettingsIcon from '~icons/material-symbols/settings-outline'
   import './NavIcon.css'
 
   const icons: Record<NavItemIcon, Component<Record<string, string>>> = {
@@ -26,6 +27,7 @@
     homepage: HomeIcon,
     masks: MasksIcon,
     inquiries: InboxIcon,
+    general: SettingsIcon,
   }
 
   let {

@@ -17,6 +17,8 @@
   const description = (item: NavItem) =>
     ({
       homepage: localeCtx.t.workspace.homeDescription,
+      content: localeCtx.t.nav.content,
+      general: localeCtx.t.nav.general,
       masks: localeCtx.t.workspace.masksDescription,
       inquiries: localeCtx.t.workspace.inquiriesDescription,
       landing: localeCtx.t.workspace.landingDescription,

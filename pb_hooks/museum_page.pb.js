@@ -4,7 +4,7 @@ routerAdd(
   '/api/theater/museum-page',
   (e) => {
     const lib = require(__hooks + '/lib/museum_page.js')
-    if (!lib.canEditMuseum(e.auth)) throw new ForbiddenError('Only admins can edit museum content.')
+    if (!lib.canEditMuseum(e.auth)) throw new ForbiddenError('Museum editing requires theater content access.')
     let input
     try {
       input = JSON.parse(e.requestInfo().body.content)

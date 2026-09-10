@@ -1,15 +1,11 @@
 const copies = {
+  seo_block: { title: 'meta_title', lede: 'kicker', description: 'meta_description' },
   intro_block: { title: 'title', lede: 'lede', description: 'description' },
   visit_block: { title: 'museum_title', description: 'museum_description' },
   excursion_block: { title: 'excursion_title', lede: 'excursion_kicker', description: 'excursion_description' },
 }
 const buttons = { visit_button: 'museum', excursion_button: 'excursion' }
-const canEditMuseum = (auth) =>
-  Boolean(
-    auth &&
-    (auth.collection().name === '_superusers' ||
-      (auth.collection().name === '_user_staff' && auth.getString('role') === 'admin')),
-  )
+const canEditMuseum = (auth) => require(__hooks + '/lib/theater_home.js').canEditHome(auth)
 const revision = (page) =>
   [page, ...Object.values(page.expand)]
     .map((record) => record.id + ':' + record.updated)
@@ -38,6 +34,8 @@ const saveMuseumPage = (app, input, uploads) => {
     const current = readMuseumPage(tx)
     if (revision(current) !== input.revision) throw new ApiError(409, 'The museum page changed. Reload before saving.')
     const page = tx.findRecordById('t_page_masks', current.id)
+    for (const locale of ['ru', 'en', 'uz'])
+      page.set('gallery_alt_' + locale, text(input.draft?.['gallery_alt_' + locale]))
     for (const [relation, fields] of Object.entries(copies)) {
       const record = tx.findRecordById('_copy_block', current[relation])
       for (const [field, source] of Object.entries(fields))

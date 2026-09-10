@@ -50,14 +50,18 @@ function slugify(value) {
 }
 
 function assign(app, record) {
+  const collection = record.collection().name
   // Reload persisted state: a Record reused after app.save() can retain an empty original().
   const original = record.isNew() ? '' : app.findRecordById(record.collection().name, record.id).getString('slug')
-  if (original) {
+  if (original && (collection !== 't_mask' || record.getString('slug') === original)) {
     record.set('slug', original)
     return
   }
 
-  const collection = record.collection().name
+  if (original && !slugify(record.getString('slug')))
+    throw new BadRequestError('A mask address cannot be empty.', {
+      slug: { code: 'validation_required', message: 'Enter a page address.' },
+    })
   const field = collection === 't_staff' || collection === 't_mask' ? 'name' : 'title'
   const fallback =
     collection === 't_staff'
@@ -79,6 +83,10 @@ function assign(app, record) {
     app.findRecordsByFilter(collection, 'slug = {:slug} && id != {:id}', '', 1, 0, { slug: candidate, id: record.id })
       .length === 0
   if (!available(slug)) {
+    if (original && collection === 't_mask')
+      throw new BadRequestError('This mask address is already in use.', {
+        slug: { code: 'validation_not_unique', message: 'Choose a unique page address.' },
+      })
     const suffixed = `${slug}-${record.id}`
     slug = suffixed
     for (let suffix = 2; !available(slug); suffix++) slug = `${suffixed}-${suffix}`

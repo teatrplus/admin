@@ -1,0 +1,1020 @@
+{
+  "t_page_about": [
+    {
+      "seo": {
+        "title_ru": "О театре",
+        "title_en": "About the theater",
+        "title_uz": "Teatr haqida",
+        "description_ru": "История Театр+ в Ташкенте: иммерсивные спектакли, команда и музей театральных масок. Театр, где зритель становится частью действия.",
+        "description_en": "Discover Theater+ in Tashkent: our story, immersive productions, the people behind them, and the theatrical mask museum.",
+        "description_uz": "Toshkentdagi Teatr+ tarixi, immersiv spektakllar, teatr jamoasi va teatr niqoblari muzeyi bilan tanishing."
+      },
+      "history_block": {
+        "title_ru": "Из смелой идеи —\nв живой театр",
+        "title_en": "A bold idea.\nA living theater.",
+        "title_uz": "Jasur g‘oyadan —\njonli teatrga",
+        "lede_ru": "Наша история",
+        "lede_en": "Our story",
+        "lede_uz": "Bizning tariximiz",
+        "description_ru": "«Театр +» — иммерсивный театр нового поколения, отличительной чертой которого является активное вовлечение зрителя в сценическое действие.\n\nТеатр родился из простой, но смелой идеи — создать пространство, где искусство становится живым, близким и понятным каждому, независимо от возраста.\n\nТеатр+ был основан и открыт в ноябре 2025 года и за столь короткий период успел завоевать любовь и признание зрителей Ташкента и гостей столицы.\n\nВ репертуаре театра представлены спектакли — «Сундук Деда Мороза», «Краски» и «Мастерская игрушек», а уже в 2026 году планируются премьеры новых постановок.",
+        "description_en": "Theater+ is a new generation of immersive theater, inviting audiences to take an active part in the action on stage.\n\nThe theater grew from a simple but bold idea: to create a space where art becomes alive, close and accessible to everyone, regardless of age.\n\nTheater+ was founded and opened in November 2025. In a short time, it has won the affection of audiences from Tashkent and visitors to the capital.\n\nThe repertoire includes “Father Frost’s Chest”, “Colors” and “The Toy Workshop”, with new productions planned for 2026.",
+        "description_uz": "«Teatr +» — tomoshabinni sahnadagi voqealarga faol jalb etishi bilan ajralib turadigan yangi avlod immersiv teatri.\n\nTeatr oddiy, ammo jasur g‘oyadan tug‘ildi: san’at har bir inson uchun, yoshidan qat’i nazar, jonli, yaqin va tushunarli bo‘ladigan makon yaratish.\n\nTeatr+ 2025-yil noyabr oyida tashkil etilib, o‘z eshiklarini ochdi. Qisqa vaqt ichida u Toshkent tomoshabinlari va poytaxt mehmonlarining mehrini qozondi.\n\nTeatr repertuaridan «Qorboboning sandig‘i», «Ranglar» va «O‘yinchoqlar ustaxonasi» spektakllari o‘rin olgan. 2026-yilda yangi spektakllar premyerasi rejalashtirilgan."
+      },
+      "repertoire_button": {
+        "label_ru": "Смотреть репертуар",
+        "label_en": "Explore the repertoire",
+        "label_uz": "Repertuarni ko‘rish",
+        "url": "https://theaterplus.uz/repertoire/"
+      },
+      "image": "@asset:harlequin.png",
+      "image_alt_ru": "Скульптура Арлекина с зеркалом в Театр+",
+      "image_alt_en": "Harlequin sculpture holding a mirror at Theater+",
+      "image_alt_uz": "Teatr+dagi qo‘lida ko‘zgu tutgan Arlekin haykali",
+      "image_caption_ru": "Наш мальчик · Театр+",
+      "image_caption_en": "Our boy · Theater+",
+      "image_caption_uz": "Bizning bolakay · Teatr+",
+      "quote_block": {
+        "title_ru": "Создать пространство, где искусство становится живым, близким и понятным каждому, независимо от возраста",
+        "title_en": "To create a space where art becomes alive, close and accessible to everyone, regardless of age",
+        "title_uz": "San’at har bir inson uchun, yoshidan qat’i nazar, jonli, yaqin va tushunarli bo‘ladigan makon yaratish"
+      },
+      "discover_block": {
+        "title_ru": "По ту сторону\nзрительного кресла",
+        "title_en": "Beyond the\naudience seat",
+        "title_uz": "Tomoshabin\no‘rindig‘idan nariga",
+        "lede_ru": "Ваше первое знакомство",
+        "lede_en": "Your first visit starts here",
+        "lede_uz": "Ilk tanishuv",
+        "description_ru": "Знакомство с театром можно начать ещё до первого спектакля. Выберите постановку, узнайте, кто её создаёт, или загляните в музей.",
+        "description_en": "Get to know the theater before your first performance. Choose a production, meet the people who make it happen, or explore the museum.",
+        "description_uz": "Teatr bilan tanishishni ilk spektakldan oldin boshlash mumkin. Spektakl tanlang, uni yaratayotgan insonlar bilan tanishing yoki muzeyga nazar soling."
+      },
+      "links": [
+        {
+          "copy": {
+            "title_ru": "Найдите свой спектакль",
+            "title_en": "Find your performance",
+            "title_uz": "O‘z spektaklingizni toping",
+            "description_ru": "Сюжеты, возрастные рекомендации, длительность и ближайшие показы — всё, чтобы выбрать спектакль для себя или всей семьи.",
+            "description_en": "Stories, age guidance, running times and upcoming dates: the details you need to choose a show for yourself or your family.",
+            "description_uz": "Mazmuni, yosh tavsiyalari, davomiyligi va yaqin namoyishlar — o‘zingiz yoki oilangiz uchun spektakl tanlashga yordam beradigan ma’lumotlar."
+          },
+          "button": {
+            "label_ru": "Смотреть репертуар",
+            "label_en": "Explore the repertoire",
+            "label_uz": "Repertuarni ko‘rish",
+            "url": "https://theaterplus.uz/repertoire/"
+          }
+        },
+        {
+          "copy": {
+            "title_ru": "Познакомьтесь с командой",
+            "title_en": "Meet the team",
+            "title_uz": "Jamoa bilan tanishing",
+            "description_ru": "На сцене и за кулисами: артисты, создатели постановок и люди, благодаря которым театр встречает зрителей каждый день.",
+            "description_en": "On stage and behind the scenes: the actors, creative teams and people who welcome audiences to the theater every day.",
+            "description_uz": "Sahnada va sahna ortida: aktyorlar, ijodkorlar va teatrda har kuni tomoshabinlarni kutib oladigan insonlar."
+          },
+          "button": {
+            "label_ru": "Команда театра",
+            "label_en": "Meet our people",
+            "label_uz": "Teatr jamoasi",
+            "url": "https://theaterplus.uz/team/"
+          }
+        },
+        {
+          "copy": {
+            "title_ru": "Загляните в музей масок",
+            "title_en": "Step into the mask museum",
+            "title_uz": "Niqoblar muzeyiga kiring",
+            "description_ru": "Первый музей театральных масок в СНГ — здесь, в Театр+. Посмотреть коллекцию можно бесплатно. Экскурсия с Михаилом Долóко — отдельное платное представление.",
+            "description_en": "The first theatrical mask museum in the CIS is here at Theater+. Viewing the collection is free. A tour with Mikhail Doloko is a separate, paid performance.",
+            "description_uz": "MDHdagi birinchi teatr niqoblari muzeyi shu yerda — Teatr+da. Kolleksiyani tomosha qilish bepul. Mixail Doloko bilan ekskursiya esa alohida pullik tomoshadir."
+          },
+          "button": {
+            "label_ru": "О музее и экскурсиях",
+            "label_en": "Museum and tours",
+            "label_uz": "Muzey va ekskursiyalar",
+            "url": "https://theaterplus.uz/museum/"
+          }
+        }
+      ]
+    }
+  ],
+  "t_page_director": [
+    {
+      "seo": {
+        "title_ru": "Михаил Долóко",
+        "title_en": "Mikhail Doloko",
+        "title_uz": "Mixail Doloko",
+        "description_ru": "Михаил Долоко — режиссёр и художественный руководитель Театр+ в Ташкенте. Биография, международные достижения и личная коллекция театральных масок.",
+        "description_en": "Mikhail Doloko, director and artistic director of Theater+ in Tashkent. His work, international recognition and personal collection of theatrical masks.",
+        "description_uz": "Mixail Doloko — Toshkentdagi Teatr+ rejissyori va badiiy rahbari. Tarjimayi holi, xalqaro yutuqlari va shaxsiy teatr niqoblari kolleksiyasi."
+      },
+      "intro_block": {
+        "title_ru": "Михаил Долóко",
+        "title_en": "Mikhail Doloko",
+        "title_uz": "Mixail Doloko",
+        "lede_ru": "О художественном руководителе",
+        "lede_en": "About the artistic director",
+        "lede_uz": "Badiiy rahbar haqida",
+        "description_ru": "Михаил Долóко — профессиональный режиссёр и художественный руководитель «Театра+». Также он основал и более 20 лет руководил театром «Кураж» (г. Москва).",
+        "description_en": "Mikhail Doloko is a professional stage director and artistic director of Theater+. He also founded the Kurazh theater in Moscow and led it for more than 20 years.",
+        "description_uz": "Mixail Doloko — professional rejissyor va «Teatr+» badiiy rahbari. Shuningdek, u Moskvadagi «Kuraj» teatriga asos solgan va yigirma yildan ortiq rahbarlik qilgan."
+      },
+      "education_ru": "Выпускник Государственного музыкального училища имени Гнесиных и Театрального института имени Б. В. Щукина.",
+      "education_en": "A graduate of the Gnessin State Music College and the Boris Shchukin Theatre Institute.",
+      "education_uz": "Gnesinlar nomidagi davlat musiqa bilim yurti va B. V. Shchukin nomidagi teatr instituti bitiruvchisi.",
+      "biography_ru": "Более двадцати лет занимается созданием театральных проектов для взрослой и детской аудитории. Автор и постановщик спектаклей различных жанров — от классической комедии до музыкальных и интерактивных шоу. Лауреат театральных фестивалей и международных творческих проектов.\n\nВ своей работе сочетает драматическое искусство, современную хореографию, пластику, элементы пантомимы и клоунады, уделяя особое внимание эмоциональному контакту со зрителем.",
+      "biography_en": "For more than twenty years, he has created theater projects for adults and children. His work as a writer and director ranges from classical comedy to musical and interactive shows. His productions have received recognition at theater festivals and international creative projects.\n\nHis work brings together drama, contemporary choreography, physical expression, pantomime and clowning, with particular attention to an emotional connection with the audience.",
+      "biography_uz": "Yigirma yildan ortiq vaqt davomida kattalar va bolalar uchun teatr loyihalarini yaratib kelmoqda. Klassik komediyadan tortib musiqiy va interaktiv tomoshalargacha bo‘lgan turli janrlardagi spektakllar muallifi va rejissyori. Teatr festivallari va xalqaro ijodiy loyihalar laureati.\n\nIjodida dramatik san’at, zamonaviy xoreografiya, plastika, pantomima va masxarabozlik unsurlarini uyg‘unlashtirib, tomoshabin bilan hissiy aloqaga alohida e’tibor qaratadi.",
+      "repertoire_button": {
+        "label_ru": "Спектакли Театр+",
+        "label_en": "Theater+ productions",
+        "label_uz": "Teatr+ spektakllari",
+        "url": "https://theaterplus.uz/repertoire/"
+      },
+      "portrait": "@asset:director.jpg",
+      "portrait_alt_ru": "Михаил Долóко — режиссёр и художественный руководитель Театр+",
+      "portrait_alt_en": "Mikhail Doloko, director and artistic director of Theater+",
+      "portrait_alt_uz": "Mixail Doloko — Teatr+ rejissyori va badiiy rahbari",
+      "portrait_caption_ru": "Режиссёр. Автор. Художественный руководитель.",
+      "portrait_caption_en": "Director. Author. Artistic director.",
+      "portrait_caption_uz": "Rejissyor. Muallif. Badiiy rahbar.",
+      "awards_block": {
+        "title_ru": "Международное\nпризнание",
+        "title_en": "International\nrecognition",
+        "title_uz": "Xalqaro\ne’tirof",
+        "lede_ru": "Награды и достижения",
+        "lede_en": "Awards and achievements",
+        "lede_uz": "Mukofotlar va yutuqlar"
+      },
+      "awards": [
+        {
+          "title_ru": "Выбор международной критики",
+          "title_en": "International critics’ choice",
+          "title_uz": "Xalqaro tanqidchilar tanlovi",
+          "lede_ru": "Эдинбург · Великобритания",
+          "lede_en": "Edinburgh · United Kingdom",
+          "lede_uz": "Edinburg · Buyuk Britaniya",
+          "description_ru": "Топ-7 лучших спектаклей по выбору международной критики на самом крупном театральном форуме мира — фестивале Fringe.",
+          "description_en": "Among the top seven productions chosen by international critics at Fringe, the world’s largest theater festival.",
+          "description_uz": "Dunyoning eng yirik teatr forumi — Fringe festivalida xalqaro tanqidchilar tanlagan eng yaxshi yettita spektakl qatorida."
+        },
+        {
+          "title_ru": "Золотая медаль",
+          "title_en": "Gold medal",
+          "title_uz": "Oltin medal",
+          "lede_ru": "Индия",
+          "lede_en": "India",
+          "lede_uz": "Hindiston",
+          "description_ru": "Международная театральная олимпиада.",
+          "description_en": "International Theatre Olympics.",
+          "description_uz": "Xalqaro teatr olimpiadasi."
+        },
+        {
+          "title_ru": "Гран-при",
+          "title_en": "Grand Prix",
+          "title_uz": "Gran-pri",
+          "lede_ru": "Анкара · Турция",
+          "lede_en": "Ankara · Türkiye",
+          "lede_uz": "Anqara · Turkiya",
+          "description_ru": "Международный театральный фестиваль.",
+          "description_en": "International Theater Festival.",
+          "description_uz": "Xalqaro teatr festivali."
+        },
+        {
+          "title_ru": "Гран-при",
+          "title_en": "Grand Prix",
+          "title_uz": "Gran-pri",
+          "lede_ru": "Всесоюзный кубок юмора",
+          "lede_en": "All-Union Humor Cup",
+          "lede_uz": "Butunittifoq hazil kubogi",
+          "description_ru": "Всесоюзный кубок юмора.",
+          "description_en": "All-Union Humor Cup.",
+          "description_uz": "Butunittifoq hazil kubogi."
+        },
+        {
+          "title_ru": "«Калейдоскоп»",
+          "title_en": "Kaleidoscope",
+          "title_uz": "«Kaleydoskop»",
+          "lede_ru": "Венеция · Италия",
+          "lede_en": "Venice · Italy",
+          "lede_uz": "Venetsiya · Italiya",
+          "description_ru": "Театрально-музыкальный перформанс.",
+          "description_en": "A theatrical and musical performance.",
+          "description_uz": "Teatr va musiqa performansi."
+        }
+      ],
+      "approach_block": {
+        "title_ru": "Театр — это здесь, сейчас и больше никогда!",
+        "title_en": "Theater is here, now, and never again!",
+        "title_uz": "Teatr — shu yerda, hozir va boshqa hech qachon!",
+        "lede_ru": "Его взгляд на театр",
+        "lede_en": "His view of theater",
+        "lede_uz": "Uning teatrga nigohi",
+        "description_ru": "В интервью 2016 года Михаил вспоминал, как в 2006-м поставил свой первый интерактивный детский спектакль: дети сидели на подушках и участвовали в действии. Контакт со зрителем — часть его режиссёрского языка уже много лет.",
+        "description_en": "In a 2016 interview, Mikhail recalled staging his first interactive children’s production in 2006: children sat on cushions and took part in the action. Direct contact with the audience has been part of his approach for years.",
+        "description_uz": "2016-yildagi intervyusida Mixail ilk interaktiv bolalar spektaklini 2006-yilda sahnalashtirganini eslaydi: bolalar yostiqchalarda o‘tirib, voqealarda ishtirok etishgan. Tomoshabin bilan bevosita aloqa ko‘p yillardan beri uning rejissyorlik uslubining bir qismidir."
+      },
+      "interview_button": {
+        "label_ru": "Читать интервью · Театрон, 2016",
+        "label_en": "Read the interview · Teatron, 2016 · Russian",
+        "label_uz": "Intervyuni o‘qish · Teatron, 2016 · Rus tilida",
+        "url": "https://teatron-journal.ru/2016/05/31/interview-doloko-kuraz/"
+      },
+      "collection_block": {
+        "title_ru": "За каждой маской —\nгоды поисков",
+        "title_en": "Behind every mask,\nyears of searching",
+        "title_uz": "Har bir niqob ortida —\nyillab izlanish",
+        "lede_ru": "Личная коллекция Михаила Долóко",
+        "lede_en": "Mikhail Doloko’s personal collection",
+        "lede_uz": "Mixail Dolokoning shaxsiy kolleksiyasi",
+        "description_ru": "Девяносто театральных масок, собранных за двадцать лет. Личная коллекция Михаила Долóко стала основой музея масок в Театр+.",
+        "description_en": "Ninety theatrical masks collected over twenty years. Mikhail Doloko’s personal collection became the foundation of the mask museum at Theater+.",
+        "description_uz": "Yigirma yil davomida to‘plangan to‘qson teatr niqobi. Mixail Dolokoning shaxsiy kolleksiyasi Teatr+dagi niqoblar muzeyiga asos bo‘ldi."
+      },
+      "figures": [
+        {
+          "title_ru": "90",
+          "title_en": "90",
+          "title_uz": "90",
+          "description_ru": "масок в коллекции",
+          "description_en": "masks in the collection",
+          "description_uz": "kolleksiyadagi niqoblar"
+        },
+        {
+          "title_ru": "20",
+          "title_en": "20",
+          "title_uz": "20",
+          "description_ru": "лет собирательства",
+          "description_en": "years of collecting",
+          "description_uz": "yillik kolleksiya"
+        },
+        {
+          "title_ru": "$20 000+",
+          "title_en": "$20 000+",
+          "title_uz": "$20 000+",
+          "description_ru": "стоимость коллекции",
+          "description_en": "collection value",
+          "description_uz": "kolleksiya qiymati"
+        }
+      ],
+      "masks": ["@mask:004", "@mask:007", "@mask:011"],
+      "collection_note_ru": "Посмотреть коллекцию можно бесплатно. Экскурсия с Михаилом Долóко — отдельный платный спектакль: возможность познакомиться с масками вместе с их владельцем.",
+      "collection_note_en": "Viewing the collection is free. A tour with Mikhail Doloko is a separate, paid performance: a chance to discover the masks with their owner.",
+      "collection_note_uz": "Kolleksiyani tomosha qilish bepul. Mixail Doloko bilan ekskursiya — alohida pullik tomosha: niqoblar bilan ularning egasi hamrohligida tanishish imkoniyati.",
+      "museum_button": {
+        "label_ru": "В музей масок",
+        "label_en": "Explore the mask museum",
+        "label_uz": "Niqoblar muzeyiga",
+        "url": "https://theaterplus.uz/museum/"
+      }
+    }
+  ],
+  "t_page_courses": [
+    {
+      "seo": {
+        "title_ru": "Креативный цех",
+        "title_en": "Creative Workshop",
+        "title_uz": "Ijodiy ustaxona",
+        "description_ru": "Курсы Театр+ в Ташкенте: актёрское мастерство, анимация, ораторское искусство и поэзия. Программы, преподаватели и информация о наборе.",
+        "description_en": "Theater+ courses in Tashkent: acting, animation, public speaking and poetry. Explore programmes, teachers and enrollment information.",
+        "description_uz": "Toshkentdagi Teatr+ kurslari: aktyorlik mahorati, animatsiya, notiqlik va she’riyat. Dasturlar, o‘qituvchilar va qabul haqida ma’lumot."
+      },
+      "intro_block": {
+        "title_ru": "Креативный цех",
+        "title_en": "Creative Workshop",
+        "title_uz": "Ijodiy ustaxona",
+        "lede_ru": "Театр+ · Ташкент",
+        "lede_en": "Theater+ · Tashkent",
+        "lede_uz": "Teatr+ · Toshkent",
+        "description_ru": "Говорить, создавать, чувствовать. Практические курсы для тех, кто хочет попробовать себя в искусстве — и взять этот опыт в повседневную жизнь.",
+        "description_en": "Speak, create, feel. Practical courses for anyone who wants to explore the arts — and bring that experience into everyday life.",
+        "description_uz": "Gapirish, yaratish, his qilish. San’atda o‘zini sinab ko‘rish va bu tajribani kundalik hayotga olib kirishni istaganlar uchun amaliy kurslar."
+      },
+      "help_block": {
+        "title_ru": "С чего начать?",
+        "title_en": "Where to begin?",
+        "title_uz": "Nimadan boshlash kerak?",
+        "description_ru": "Расскажите, что вам интересно. Поможем выбрать курс, уточним возрастную группу, расписание и стоимость.",
+        "description_en": "Tell us what interests you. We will help you choose a course and explain age groups, schedules and fees.",
+        "description_uz": "Qiziqishlaringizni ayting. Kurs tanlashga yordam beramiz, yosh guruhlari, jadval va narx haqida ma’lumot beramiz."
+      },
+      "help_button": {
+        "label_ru": "Позвонить в театр",
+        "label_en": "Call the theater",
+        "label_uz": "Teatrga qo‘ng‘iroq",
+        "url": "tel:+998712321552"
+      }
+    }
+  ],
+  "t_page_contacts": [
+    {
+      "intro_block": {
+        "title_ru": "Свяжитесь с нами",
+        "title_en": "Get in touch",
+        "title_uz": "Biz bilan bog‘laning",
+        "lede_ru": "Театр+ · Ташкент",
+        "lede_en": "Theater+ · Tashkent",
+        "lede_uz": "Teatr+ · Toshkent",
+        "description_ru": "Театр+ — пространство, где театр становится живым, близким и понятным каждому.",
+        "description_en": "Theater+ is a place where theater feels alive, personal, and accessible to everyone.",
+        "description_uz": "Teatr+ — teatr har bir inson uchun jonli, yaqin va tushunarli bo‘ladigan makon."
+      }
+    }
+  ],
+  "t_page_sponsors": [
+    {
+      "seo": {
+        "title_ru": "Спонсорам",
+        "title_en": "Sponsors",
+        "title_uz": "Homiylar",
+        "description_ru": "Ваш бренд — в центре семейных впечатлений Ташкента. Спектакли, фестивали и специальные события с Театр+: узнаваемость, живой контакт и партнёрство под задачи бизнеса.",
+        "description_en": "Put your brand at the heart of family experiences in Tashkent. Theater+ sponsorship connects your business with audiences through performances, festivals and bespoke events.",
+        "description_uz": "Brendingiz Toshkentdagi oilaviy taassurotlar markazida. Teatr+ bilan spektakllar, festivallar va maxsus tadbirlar orqali taniling va mijozlar bilan yaqindan tanishing."
+      },
+      "hero_block": {
+        "title_ru": "Ваш бренд.",
+        "title_en": "Your brand.",
+        "title_uz": "Sizning brendingiz.",
+        "description_ru": "Станьте частью семейного дня, о котором будут говорить. Театр+ соединяет ваш бренд с родителями, которые выбирают качественный досуг и вкладывают в развитие своих детей.",
+        "description_en": "Be part of the family day they talk about afterwards. Theater+ brings your brand closer to parents who choose quality experiences and invest in their children’s development.",
+        "description_uz": "Oilalar zavq bilan eslaydigan kunning bir qismiga aylaning. Teatr+ brendingizni sifatli hordiqni tanlaydigan va farzandlari rivojiga sarmoya kiritadigan ota-onalar bilan uchrashtiradi.",
+        "lede_ru": "Театр+ Ваш бренд · Ташкент",
+        "lede_en": "Theater+ Your brand · Tashkent",
+        "lede_uz": "Teatr+ Sizning brendingiz · Toshkent"
+      },
+      "hero_accent_ru": "Их яркие\nвоспоминания.",
+      "hero_accent_en": "Their favourite\nmemories.",
+      "hero_accent_uz": "Ularning yorqin\nxotiralari.",
+      "hero_note_ru": "Спектакли · Фестивали · События для вашего бренда",
+      "hero_note_en": "Performances · Festivals · Events for your brand",
+      "hero_note_uz": "Spektakllar · Festivallar · Brendingiz uchun tadbirlar",
+      "primary_button": {
+        "label_ru": "Обсудить партнёрство",
+        "label_en": "Let’s talk sponsorship",
+        "label_uz": "Hamkorlikni boshlash",
+        "url": "https://theaterplus.uz/sponsors/#sponsor-contact"
+      },
+      "secondary_button": {
+        "label_ru": "Выбрать формат",
+        "label_en": "Explore the formats",
+        "label_uz": "Hamkorlik shakllari",
+        "url": "https://theaterplus.uz/sponsors/#sponsor-formats"
+      },
+      "image": "@asset:tour-1.jpg",
+      "image_alt_ru": "Михаил Долоко показывает театральную маску гостям музея Театр+",
+      "image_alt_en": "Mikhail Doloko shows a theatrical mask to visitors at the Theater+ museum",
+      "image_alt_uz": "Mixail Doloko Teatr+ muzeyi mehmonlariga teatr niqobini ko‘rsatmoqda",
+      "image_caption_ru": "Живые встречи. Настоящие впечатления.",
+      "image_caption_en": "Real encounters. Lasting impressions.",
+      "image_caption_uz": "Jonli uchrashuvlar. Unutilmas taassurotlar.",
+      "audience_block": {
+        "title_ru": "Дети увлечены.\nРодители рядом.",
+        "title_en": "Children captivated.\nParents engaged.",
+        "title_uz": "Bolalar maroqli tomoshada.\nOta-onalar yoningizda.",
+        "lede_ru": "Аудитория, с которой стоит познакомиться",
+        "lede_en": "An audience worth meeting",
+        "lede_uz": "Tanishishga arziydigan auditoriya",
+        "description_ru": "Ваши будущие клиенты уже здесь: семьи, для которых важны образование, впечатления и качество жизни. Пока дети открывают театр, у вашего бренда есть повод начать разговор со взрослыми, которые принимают решения о покупках.",
+        "description_en": "Meet families who value education, experiences and quality of life. While children discover the theatre, your brand can start a conversation with the adults who make purchasing decisions.",
+        "description_uz": "Ta’lim, taassurotlar va turmush sifatini qadrlaydigan oilalar bilan tanishing. Bolalar teatrni kashf etayotgan paytda brendingiz xarid qarorini qabul qiladigan kattalar bilan suhbat boshlashi mumkin."
+      },
+      "visibility_block": {
+        "title_ru": "До встречи.\nВ моменте. После.",
+        "title_en": "Before.\nDuring. After.",
+        "title_uz": "Tadbirdan oldin.\nTadbirda. Undan keyin.",
+        "lede_ru": "Как работает ваше присутствие",
+        "lede_en": "Your brand’s presence, planned",
+        "lede_uz": "Brendingiz qanday namoyon bo‘ladi",
+        "description_ru": "Соберём последовательную кампанию вокруг события: от первого анонса до впечатлений, которыми делятся.",
+        "description_en": "Build a connected campaign around an event, from the first announcement to the memories people share.",
+        "description_uz": "Dastlabki e’londan tortib odamlar ulashadigan xotiralargacha — tadbir atrofida izchil kampaniya tuzamiz."
+      },
+      "formats_block": {
+        "title_ru": "Одна премьера.\nЦелый сезон. Ваше событие.",
+        "title_en": "One premiere.\nA whole season. Your own event.",
+        "title_uz": "Bir premyera.\nButun mavsum. O‘z tadbiringiz.",
+        "lede_ru": "Масштаб выбираете вы",
+        "lede_en": "Choose your scale",
+        "lede_uz": "Ko‘lamni siz tanlaysiz",
+        "description_ru": "Начнём с задачи вашего бизнеса. Подберём площадку, механику знакомства с аудиторией и объём присутствия.",
+        "description_en": "Start with your business goal. Together, we’ll choose the setting, the audience experience and the scope of your presence.",
+        "description_uz": "Biznesingiz maqsadidan boshlaymiz. Maydonni, auditoriya bilan tanishish usulini va brendingiz ishtiroki ko‘lamini birga tanlaymiz."
+      },
+      "process_block": {
+        "title_ru": "Вы знаете,\nза что платите.",
+        "title_en": "Know what\nyou’re paying for.",
+        "title_uz": "Nima uchun to‘layotganingiz\naniq bo‘ladi.",
+        "lede_ru": "Партнёрство с понятным результатом",
+        "lede_en": "A partnership with clear deliverables",
+        "lede_uz": "Natijasi aniq hamkorlik"
+      },
+      "contact_block": {
+        "title_ru": "Давайте познакомим\nТашкент с вашим брендом.",
+        "title_en": "Let’s introduce Tashkent\nto your brand.",
+        "title_uz": "Toshkentni brendingiz\nbilan tanishtiraylik.",
+        "lede_ru": "Следующий выход — вместе",
+        "lede_en": "Our next appearance, together",
+        "lede_uz": "Keyingi chiqish — birgalikda",
+        "description_ru": "Расскажите о компании и о том, кого хотите привлечь. Мы обсудим подходящие события, форматы присутствия и бюджет.",
+        "description_en": "Tell us about your company and who you want to reach. We’ll discuss relevant events, brand opportunities and budget.",
+        "description_uz": "Kompaniyangiz va kimlarni jalb etmoqchi ekaningiz haqida ayting. Mos tadbirlar, brend ishtiroki shakllari va budjetni muhokama qilamiz."
+      },
+      "benefits": [
+        {
+          "title_ru": "Внимание в нужный момент",
+          "title_en": "Attention at the right moment",
+          "title_uz": "Ayni kerakli paytdagi e’tibor",
+          "description_ru": "Знакомство с брендом становится частью приятного семейного опыта: в фойе, на фестивале или на специальном событии.",
+          "description_en": "An encounter with your brand becomes part of a good family day: in the foyer, at a festival or during a special event.",
+          "description_uz": "Brendingiz bilan tanishuv oilaviy dam olishning yoqimli qismiga aylanadi: foyeda, festivalda yoki maxsus tadbirda."
+        },
+        {
+          "title_ru": "Повод выбрать вас",
+          "title_en": "A reason to choose you",
+          "title_uz": "Sizni tanlash uchun sabab",
+          "description_ru": "Демонстрация продукта, подарок или полезная активность дают родителям возможность познакомиться с вашим предложением лично.",
+          "description_en": "A product demonstration, thoughtful gift or useful activity lets parents discover what you offer in person.",
+          "description_uz": "Mahsulot namoyishi, sovg‘a yoki foydali mashg‘ulot ota-onalarga taklifingiz bilan shaxsan tanishish imkonini beradi."
+        },
+        {
+          "title_ru": "Отношения с продолжением",
+          "title_en": "Relationships that continue",
+          "title_uz": "Davom etadigan munosabatlar",
+          "description_ru": "Приглашайте клиентов и их семьи на спектакли. Создавайте встречи, после которых хочется вернуться — и к театру, и к вашему бренду.",
+          "description_en": "Invite clients and their families to a performance. Create an experience that gives them a reason to return — to the theatre and to your brand.",
+          "description_uz": "Mijozlaringizni oilalari bilan spektaklga taklif qiling. Ularni teatrga ham, brendingizga ham qaytishga undaydigan taassurot yarating."
+        }
+      ],
+      "touchpoints": [
+        {
+          "copy": {
+            "title_ru": "Вас замечают",
+            "title_en": "Get noticed",
+            "title_uz": "Sizni payqashadi",
+            "lede_ru": "До события",
+            "lede_en": "Before the event",
+            "lede_uz": "Tadbirdan oldin",
+            "description_ru": "Логотип и упоминание бренда на согласованных афишах, страницах театра и в анонсах в социальных сетях.",
+            "description_en": "Your logo and brand mentions on agreed posters, theatre web pages and social media announcements.",
+            "description_uz": "Kelishilgan afishalar, teatr sayti sahifalari va ijtimoiy tarmoqlardagi e’lonlarda logotipingiz hamda brendingiz nomi."
+          },
+          "examples_ru": "Афиши / Сайт / Анонсы",
+          "examples_en": "Posters / Website / Announcements",
+          "examples_uz": "Afishalar / Sayt / E’lonlar"
+        },
+        {
+          "copy": {
+            "title_ru": "С вами знакомятся",
+            "title_en": "Make a connection",
+            "title_uz": "Siz bilan tanishishadi",
+            "lede_ru": "На площадке",
+            "lede_en": "At the venue",
+            "lede_uz": "Tadbir maydonida",
+            "description_ru": "Бренд-зона, фотозона, знакомство с продуктом или семейный мастер-класс. Интеграция, которая уместна в программе и интересна гостям.",
+            "description_en": "A brand space, photo opportunity, product introduction or family workshop. An experience that fits the programme and interests our guests.",
+            "description_uz": "Brend hududi, fotozona, mahsulot bilan tanishuv yoki oilaviy mahorat darsi. Dasturga mos, mehmonlarga qiziqarli ishtirok."
+          },
+          "examples_ru": "Фойе / Фестиваль / Спецпроект",
+          "examples_en": "Foyer / Festival / Special project",
+          "examples_uz": "Foye / Festival / Maxsus loyiha"
+        },
+        {
+          "copy": {
+            "title_ru": "О вас вспоминают",
+            "title_en": "Stay in the picture",
+            "title_uz": "Sizni eslashadi",
+            "lede_ru": "После события",
+            "lede_en": "After the event",
+            "lede_uz": "Tadbirdan keyin",
+            "description_ru": "Упоминания в итоговых публикациях, фото и видеоматериалы для согласованного использования. Продолжение истории в каналах вашего бренда.",
+            "description_en": "Mentions in event recaps, with photography and video for agreed uses. Carry the story into your own brand’s channels.",
+            "description_uz": "Yakuniy nashrlarda brend eslatilishi, kelishilgan maqsadlarda foydalanish uchun foto va videolar. Hikoyani brendingiz kanallarida davom ettiring."
+          },
+          "examples_ru": "Публикации / Фото / Видео",
+          "examples_en": "Recaps / Photography / Video",
+          "examples_uz": "Nashrlar / Foto / Video"
+        }
+      ],
+      "festival_block": {
+        "title_ru": "Ваш бренд выходит в город.",
+        "title_en": "Take your brand into the city.",
+        "title_uz": "Brendingiz shahar bilan uchrashadi.",
+        "lede_ru": "За пределами театра",
+        "lede_en": "Beyond the theatre",
+        "lede_uz": "Teatr devorlaridan tashqarida",
+        "description_ru": "Фестивали и выездные проекты расширяют пространство встречи с аудиторией. Включим ваш бренд в присутствие Театр+ на согласованных событиях — с понятными площадками, датами и форматами размещения.",
+        "description_en": "Festivals and off-site projects create more opportunities to meet audiences. Include your brand in Theater+ appearances at agreed events, with clearly defined venues, dates and placements.",
+        "description_uz": "Festivallar va sayyor loyihalar auditoriya bilan uchrashuv imkoniyatlarini kengaytiradi. Brendingizni Teatr+ ishtirokidagi kelishilgan tadbirlarga olib chiqamiz: maydonlar, sanalar va joylashtirish shakllari aniq belgilanadi."
+      },
+      "formats": [
+        {
+          "copy": {
+            "title_ru": "Партнёр события",
+            "title_en": "Event partner",
+            "title_uz": "Tadbir hamkori",
+            "lede_ru": "Для яркого знакомства",
+            "lede_en": "Make a memorable entrance",
+            "lede_uz": "Yorqin tanishuv uchun",
+            "description_ru": "Сфокусируйте внимание на вашем бренде вокруг премьеры, фестиваля или специального проекта.",
+            "description_en": "Focus attention on your brand around a premiere, festival or special project.",
+            "description_uz": "Premyera, festival yoki maxsus loyiha orqali brendingizga e’tibor qarating."
+          },
+          "items_ru": "Присутствие в рекламной кампании события\nИнтеграция на согласованной площадке\nПриглашения для ваших гостей",
+          "items_en": "Presence in the event’s promotional campaign\nAn integration at an agreed venue\nInvitations for your guests",
+          "items_uz": "Tadbir reklama kampaniyasida ishtirok\nKelishilgan maydonda brend taqdimoti\nMehmonlaringiz uchun taklifnomalar",
+          "button": {
+            "label_ru": "Обсудить событие",
+            "label_en": "Discuss an event",
+            "label_uz": "Tadbirni muhokama qilish",
+            "url": "https://theaterplus.uz/sponsors/#sponsor-contact"
+          }
+        },
+        {
+          "copy": {
+            "title_ru": "Партнёр сезона",
+            "title_en": "Season partner",
+            "title_uz": "Mavsum hamkori",
+            "lede_ru": "Для устойчивой узнаваемости",
+            "lede_en": "Build lasting recognition",
+            "lede_uz": "Doimiy tanilish uchun",
+            "description_ru": "Выстраивайте знакомство с семьями через серию встреч. Ваш бренд — рядом с театром на протяжении сезона.",
+            "description_en": "Build familiarity with families over a series of encounters. Keep your brand alongside the theatre throughout the season.",
+            "description_uz": "Oilalar bilan bir qator uchrashuvlar orqali yaqinlashib boring. Brendingiz mavsum davomida teatr bilan birga bo‘ladi."
+          },
+          "items_ru": "Присутствие в течение согласованного периода\nСпектакли и выбранные фестивальные проекты\nСовместный календарь публикаций и активаций",
+          "items_en": "Presence over an agreed period\nPerformances and selected festival projects\nA shared schedule of content and brand activities",
+          "items_uz": "Kelishilgan davr davomida brend ishtiroki\nSpektakllar va tanlangan festival loyihalari\nNashrlar va brend tadbirlarining qo‘shma taqvimi",
+          "button": {
+            "label_ru": "Обсудить сезон",
+            "label_en": "Discuss a season",
+            "label_uz": "Mavsumni muhokama qilish",
+            "url": "https://theaterplus.uz/sponsors/#sponsor-contact"
+          }
+        },
+        {
+          "copy": {
+            "title_ru": "Событие для бренда",
+            "title_en": "Your brand’s event",
+            "title_uz": "Brendingiz tadbiri",
+            "lede_ru": "Для отношений с клиентами",
+            "lede_en": "Bring your clients closer",
+            "lede_uz": "Mijozlar bilan yaqinlik uchun",
+            "description_ru": "Пригласите клиентов, партнёров или сотрудников вместе с детьми. Создайте семейный день с характером вашей компании.",
+            "description_en": "Invite clients, partners or employees with their children. Create a family day with your company’s character.",
+            "description_uz": "Mijozlar, hamkorlar yoki xodimlarni farzandlari bilan taklif qiling. Kompaniyangiz ruhidagi oilaviy kunni yarating."
+          },
+          "items_ru": "Специальный показ или программа по договорённости\nБрендированная встреча и активности для гостей\nФотоистория для коммуникаций вашей компании",
+          "items_en": "A dedicated performance or tailored programme by agreement\nA branded welcome and guest activities\nA photo story for your company’s communications",
+          "items_uz": "Kelishuv asosida maxsus tomosha yoki dastur\nBrend uslubidagi kutib olish va mehmonlar uchun mashg‘ulotlar\nKompaniyangiz nashrlari uchun fotohikoya",
+          "button": {
+            "label_ru": "Обсудить свою идею",
+            "label_en": "Discuss your idea",
+            "label_uz": "G‘oyangizni muhokama qilish",
+            "url": "https://theaterplus.uz/sponsors/#sponsor-contact"
+          }
+        }
+      ],
+      "steps": [
+        {
+          "title_ru": "Определяем цель",
+          "title_en": "Define the goal",
+          "title_uz": "Maqsadni belgilaymiz",
+          "description_ru": "Узнаваемость, знакомство с продуктом или отношения с клиентами. Обсуждаем аудиторию, сроки и бюджет.",
+          "description_en": "Brand awareness, product discovery or client relationships. We discuss your audience, timeline and budget.",
+          "description_uz": "Brend tanilishi, mahsulot bilan tanishuv yoki mijozlar bilan munosabatlar. Auditoriya, muddat va budjetni muhokama qilamiz."
+        },
+        {
+          "title_ru": "Фиксируем предложение",
+          "title_en": "Agree the proposal",
+          "title_uz": "Taklifni kelishamiz",
+          "description_ru": "События, места размещения, количество публикаций, приглашения и ответственность сторон — до старта проекта.",
+          "description_en": "Events, placements, publication counts, invitations and responsibilities are defined before the project begins.",
+          "description_uz": "Tadbirlar, joylashtirish maydonlari, nashrlar soni, taklifnomalar va tomonlar mas’uliyati loyiha boshlanishidan oldin belgilanadi."
+        },
+        {
+          "title_ru": "Сверяем результат",
+          "title_en": "Review the results",
+          "title_uz": "Natijalarni ko‘rib chiqamiz",
+          "description_ru": "Согласуем отчётность: подтверждения размещений, материалы с площадки, доступную статистику публикаций. Для подходящих активаций — QR-переходы или промокоды.",
+          "description_en": "Agree reporting upfront: placement evidence, event materials and available publication statistics. Where suitable, add tracked QR links or promo codes.",
+          "description_uz": "Hisobotni oldindan kelishamiz: joylashtirish tasdiqlari, tadbir materiallari va mavjud nashr statistikasi. Mos tadbirlarda QR-havolalar orqali o‘tishlar yoki promokodlarni ham kuzatamiz."
+        }
+      ],
+      "faq_block": {
+        "title_ru": "Перед первым разговором",
+        "title_en": "Before we talk",
+        "title_uz": "Birinchi suhbatdan oldin"
+      },
+      "faq": [
+        {
+          "title_ru": "Какой бюджет нужен для старта?",
+          "title_en": "What budget do we need to start?",
+          "title_uz": "Boshlash uchun qanday budjet kerak?",
+          "description_ru": "Он зависит от события, срока партнёрства и интеграции. Назовите комфортный диапазон и вашу задачу — предложим подходящий масштаб: от одного события до сезона.",
+          "description_en": "That depends on the event, partnership length and integration. Share a comfortable range and your goal. We’ll suggest a suitable scale, from a single event to a season.",
+          "description_uz": "Bu tadbir, hamkorlik muddati va brend ishtiroki shakliga bog‘liq. Sizga qulay budjet oralig‘i va maqsadingizni ayting — bitta tadbirdan butun mavsumgacha mos ko‘lamni taklif qilamiz."
+        },
+        {
+          "title_ru": "Подойдёт ли это моему бизнесу?",
+          "title_en": "Is this right for my business?",
+          "title_uz": "Bu mening biznesimga mosmi?",
+          "description_ru": "Если ваши клиенты — родители и семьи, у нас есть общая аудитория. Образование, семейные сервисы, банки, автомобили, товары для дома и досуга — повод обсудить подходящую интеграцию. Начнём с вашего продукта и цели.",
+          "description_en": "If your customers are parents and families, we share an audience. Education, family services, banking, automotive, home and leisure brands are all starting points for a conversation. We’ll begin with your product and objective.",
+          "description_uz": "Mijozlaringiz ota-onalar va oilalar bo‘lsa, auditoriyamiz umumiy. Ta’lim, oilaviy xizmatlar, banklar, avtomobillar, uy va hordiq mahsulotlari — hamkorlikni muhokama qilish uchun yaxshi yo‘nalishlar. Mahsulotingiz va maqsadingizdan boshlaymiz."
+        },
+        {
+          "title_ru": "Можно ли стать единственным партнёром в своей категории?",
+          "title_en": "Can we be the only partner in our category?",
+          "title_uz": "O‘z sohamizda yagona hamkor bo‘la olamizmi?",
+          "description_ru": "Обсудим категорийную эксклюзивность для выбранного проекта или периода. Проверим действующие договорённости и зафиксируем доступные условия в предложении.",
+          "description_en": "We can discuss category exclusivity for a specific project or period. We’ll check existing commitments and include available terms in the proposal.",
+          "description_uz": "Tanlangan loyiha yoki davr uchun soha bo‘yicha eksklyuzivlikni muhokama qilamiz. Mavjud kelishuvlarni tekshirib, mumkin bo‘lgan shartlarni taklifga kiritamiz."
+        },
+        {
+          "title_ru": "На каких фестивалях будет представлен бренд?",
+          "title_en": "Which festivals would feature our brand?",
+          "title_uz": "Brend qaysi festivallarda namoyish etiladi?",
+          "description_ru": "Подберём события из актуальных планов театра. Список фестивалей, даты, доступные размещения и согласования с организаторами включим в предложение до заключения договора.",
+          "description_en": "We’ll select events from the theatre’s current plans. The proposal will specify festivals, dates, available placements and organiser approvals before we sign an agreement.",
+          "description_uz": "Tadbirlarni teatrning joriy rejalaridan tanlaymiz. Shartnoma imzolanishidan oldin festivallar, sanalar, mavjud joylashtirish imkoniyatlari va tashkilotchilar bilan kelishuvlarni taklifga kiritamiz."
+        }
+      ],
+      "contact_button": {
+        "label_ru": "Позвонить и обсудить",
+        "label_en": "Call to discuss",
+        "label_uz": "Qo‘ng‘iroq qilib gaplashish",
+        "url": "tel:+998920456336"
+      },
+      "formats_note_ru": "Состав, бюджет, приглашения и площадки фиксируем в индивидуальном предложении. Фестивальные интеграции согласуем с организаторами.",
+      "formats_note_en": "Deliverables, budget, invitations and venues are defined in your individual proposal. Festival integrations are subject to agreement with the organisers.",
+      "formats_note_uz": "Tarkib, budjet, taklifnomalar va maydonlar individual taklifda belgilanadi. Festivaldagi brend ishtiroki tashkilotchilar bilan kelishiladi.",
+      "contact_label_ru": "Администрация Театр+",
+      "contact_label_en": "Theater+ administration",
+      "contact_label_uz": "Teatr+ ma’muriyati",
+      "contact_note_ru": "Начать можно с идеи. Готовый бриф не нужен.",
+      "contact_note_en": "An idea is enough to start. No finished brief required.",
+      "contact_note_uz": "Boshlash uchun g‘oya kifoya. Tayyor brif shart emas.",
+      "contact_prompt_ru": "Для первого разговора: ваш бренд, задача и желаемые сроки.",
+      "contact_prompt_en": "For our first conversation: your brand, your goal and your timing.",
+      "contact_prompt_uz": "Birinchi suhbat uchun: brendingiz, maqsadingiz va rejalashtirilgan muddatlar."
+    }
+  ],
+  "t_page_festivals": [
+    {
+      "intro_block": {
+        "title_ru": "Фестивали",
+        "title_en": "Festivals",
+        "title_uz": "Festivallar",
+        "lede_ru": "Театр+ · На других сценах",
+        "lede_en": "Theater+ · On other stages",
+        "lede_uz": "Teatr+ · Boshqa sahnalarda",
+        "description_ru": "Меняем города, встречаем зрителей, привозим истории. Фестивальная жизнь Театра+ — от первого анонса до последнего поклона.",
+        "description_en": "New cities, new audiences, stories to share. Follow Theater+ at festivals, from the first announcement to the final bow.",
+        "description_uz": "Yangi shaharlar, yangi tomoshabinlar, yangi hikoyalar. Teatr+ning festivallardagi hayoti — ilk e’londan so‘nggi ta’zimgacha."
+      },
+      "archive_block": {
+        "title_ru": "Уже сыграно.\nОсталось с нами.",
+        "title_en": "The curtain falls.\nThe story stays.",
+        "title_uz": "Spektakl tugaydi.\nXotiralar qoladi.",
+        "lede_ru": "Дневник встреч",
+        "lede_en": "A journal of encounters",
+        "lede_uz": "Uchrashuvlar kundaligi",
+        "description_ru": "Спектакль заканчивается, а знакомство продолжается. Здесь сохраняем истории наших поездок.",
+        "description_en": "A performance ends. A connection continues. Here we keep the stories of our journeys.",
+        "description_uz": "Spektakl tugaydi, tanishuv esa davom etadi. Safarlarimiz hikoyalarini shu yerda saqlaymiz."
+      },
+      "empty_block": {
+        "title_ru": "Новые сцены.\nНовые встречи.",
+        "title_en": "New stages.\nNew encounters.",
+        "title_uz": "Yangi sahnalar.\nYangi uchrashuvlar.",
+        "description_ru": "Театр начинается со встречи. С другим зрителем, новым городом, неожиданным взглядом на знакомую историю.",
+        "description_en": "Theatre begins with an encounter. A new audience, another city, a different way of seeing a familiar story.",
+        "description_uz": "Teatr uchrashuvdan boshlanadi. Yangi tomoshabin, boshqa shahar, tanish hikoyaga yangicha nigoh."
+      },
+      "empty_kicker_ru": "Театр+ · За пределами нашей сцены",
+      "empty_kicker_en": "Theater+ · Beyond our stage",
+      "empty_kicker_uz": "Teatr+ · Sahnamizdan tashqarida",
+      "empty_preparation_ru": "Мы готовимся к участию в международных театральных фестивалях. Впереди — конкурсные показы, специальные программы, гастрольные проекты и разговоры с коллегами и зрителями.",
+      "empty_preparation_en": "We are preparing to take part in international theatre festivals. Ahead lie competition performances, special programmes, touring projects and conversations with fellow artists and audiences.",
+      "empty_preparation_uz": "Biz xalqaro teatr festivallarida ishtirok etishga tayyorlanyapmiz. Oldinda tanlov namoyishlari, maxsus dasturlar, gastrollar hamda hamkasblar va tomoshabinlar bilan suhbatlar bor.",
+      "empty_status_ru": "Первые фестивальные проекты — впереди",
+      "empty_status_en": "Our first festival projects are ahead",
+      "empty_status_uz": "Ilk festival loyihalarimiz hali oldinda",
+      "empty_caption_ru": "Из Ташкента — к новым зрителям",
+      "empty_caption_en": "From Tashkent to new audiences",
+      "empty_caption_uz": "Toshkentdan — yangi tomoshabinlar sari",
+      "empty_mask": "@mask:022",
+      "repertoire_button": {
+        "label_ru": "Познакомиться со спектаклями",
+        "label_en": "Discover our productions",
+        "label_uz": "Spektakllar bilan tanishish",
+        "url": "https://theaterplus.uz/repertoire/"
+      },
+      "invitation_block": {
+        "title_ru": "Пригласите Театр+\nна ваш фестиваль",
+        "title_en": "Invite Theater+\nto your festival",
+        "title_uz": "Teatr+ni festivalingizga\ntaklif qiling",
+        "description_ru": "Открыты к новым площадкам, совместным программам и профессиональному диалогу. Давайте обсудим встречу.",
+        "description_en": "We welcome new venues, shared programmes and conversations with fellow theatre makers. Let’s discuss a visit.",
+        "description_uz": "Yangi sahnalar, qo‘shma dasturlar va professional muloqot uchun ochiqmiz. Keling, uchrashuvni muhokama qilaylik."
+      },
+      "contact_button": {
+        "label_ru": "Связаться с театром",
+        "label_en": "Contact the theatre",
+        "label_uz": "Teatr bilan bog‘lanish",
+        "url": "https://theaterplus.uz/contact/"
+      }
+    }
+  ],
+  "t_festival": [
+    {
+      "published": false,
+      "slug": "stage-dialogue",
+      "starts_at": "2026-10-15T19:00:00Z",
+      "ends_at": "2026-10-18T18:59:59Z",
+      "intro_block": {
+        "title_ru": "Диалог сцен",
+        "title_en": "Stage Dialogue",
+        "title_uz": "Sahnalar muloqoti",
+        "lede_ru": "Международный фестиваль камерного театра",
+        "lede_en": "International festival of intimate theatre",
+        "lede_uz": "Xalqaro kamer teatr festivali",
+        "description_ru": "Три дня камерного театра, новых знакомств и разговора о зрителе как соавторе спектакля.",
+        "description_en": "Three days of intimate theatre, new connections and conversations about the audience as co-creators.",
+        "description_uz": "Uch kunlik kamer teatr, yangi tanishuvlar va tomoshabinning hammuallif sifatidagi o‘rni haqida suhbatlar."
+      },
+      "play": "@play:Краски",
+      "image": "@asset:dyes.jpg",
+      "booking_button": {
+        "label_ru": "Спектакли в Ташкенте",
+        "label_en": "Performances in Tashkent",
+        "label_uz": "Toshkentdagi spektakllar",
+        "url": "https://theaterplus.uz/repertoire/"
+      },
+      "location_ru": "Алматы, Казахстан",
+      "location_en": "Almaty, Kazakhstan",
+      "location_uz": "Olmaota, Qozog‘iston",
+      "format_ru": "Гостевая программа",
+      "format_en": "Guest programme",
+      "format_uz": "Mehmon dasturi",
+      "story_ru": "«Диалог сцен» — вымышленный фестиваль, объединяющий небольшие театры и близкие зрителю сценические формы. В этом примере Театр+ приглашён в гостевую, внеконкурсную программу.\n\nВезём «Краски» и разговор о театре, в котором зритель становится участником. После показа встречаемся с публикой, а на следующий день обмениваемся практиками с коллегами.",
+      "story_en": "Stage Dialogue is a fictional festival bringing together small theatre companies and intimate performance formats. In this example, Theater+ is invited to the guest programme, outside the competition.\n\nWe bring Paints and a conversation about theatre in which the audience takes part. After the performance, we meet the audience; the following day, we share our practice with fellow artists.",
+      "story_uz": "«Sahnalar muloqoti» — kichik teatrlar va tomoshabinga yaqin sahna shakllarini birlashtiruvchi xayoliy festival. Bu namunada Teatr+ tanlovdan tashqari mehmon dasturiga taklif etilgan.\n\n«Bo‘yoqlar» spektakli va tomoshabin ishtirokchiga aylanadigan teatr haqida suhbat bilan boramiz. Namoyishdan so‘ng tomoshabinlar bilan uchrashamiz, ertasi kuni esa hamkasblar bilan tajriba almashamiz.",
+      "venue_ru": "Камерная сцена фестивального центра, Алматы (пример площадки)",
+      "venue_en": "Festival centre studio theatre, Almaty (example venue)",
+      "venue_uz": "Festival markazining kamer sahnasi, Olmaota (namuna)",
+      "language_ru": "Показ на русском; обсуждение на русском и казахском (пример)",
+      "language_en": "Performance in Russian; discussion in Russian and Kazakh (example)",
+      "language_uz": "Namoyish rus tilida; muhokama rus va qozoq tillarida (namuna)",
+      "access_ru": "Условия безбарьерного доступа уточняются у площадки.",
+      "access_en": "Step-free access arrangements to be confirmed with the venue.",
+      "access_uz": "To‘siqsiz kirish sharoitlari sahna ma’muriyati bilan aniqlashtiriladi.",
+      "outcome_ru": "После фестиваля здесь появятся дневник поездки, фотографии и итоги участия.",
+      "outcome_en": "After the festival, this page will hold a travel journal, photographs and participation highlights.",
+      "outcome_uz": "Festivaldan so‘ng bu yerda safar kundaligi, fotosuratlar va ishtirok natijalari paydo bo‘ladi.",
+      "programme_note_ru": "Время указано по месту проведения. Расписание приведено для примера.",
+      "programme_note_en": "All times are local to the venue. This is an illustrative schedule.",
+      "programme_note_uz": "Vaqt tadbir o‘tkaziladigan joyning mahalliy vaqti bilan ko‘rsatilgan. Jadval namuna sifatida berilgan.",
+      "booking_note_ru": "Это пример события, билеты на него не продаются.",
+      "booking_note_en": "This is a sample event. No tickets are on sale.",
+      "booking_note_uz": "Bu namunaviy tadbir. Unga chiptalar sotilmaydi.",
+      "image_caption_ru": "Изображение спектакля из материалов сайта. Это иллюстрация, а не фотография с фестиваля.",
+      "image_caption_en": "A production image from the website’s materials. An illustration, not a photograph from the festival.",
+      "image_caption_uz": "Sayt materiallaridan olingan spektakl tasviri. Bu festival fotosurati emas, mavzuga oid tasvir.",
+      "image_alt_ru": "Изображение спектакля «Мастерская игрушек»",
+      "image_alt_en": "Production image for Toy Workshop",
+      "image_alt_uz": "«O‘yinchoqlar ustaxonasi» spektakli tasviri",
+      "programme": [
+        {
+          "starts_at": "2026-10-17T14:00:00Z",
+          "copy": {
+            "title_ru": "Краски",
+            "title_en": "Paints",
+            "title_uz": "Bo‘yoqlar",
+            "description_ru": "Гостевой показ Театра+ в основной вечерней программе.",
+            "description_en": "Theater+ guest performance in the evening programme.",
+            "description_uz": "Kechki dasturda Teatr+ning mehmon namoyishi."
+          }
+        },
+        {
+          "starts_at": "2026-10-17T15:30:00Z",
+          "copy": {
+            "title_ru": "После поклона",
+            "title_en": "After the bow",
+            "title_uz": "Ta’zimdan keyin",
+            "description_ru": "Открытый разговор со зрителями о спектакле и участии в нём.",
+            "description_en": "An open conversation with the audience about the show and taking part.",
+            "description_uz": "Tomoshabinlar bilan spektakl va undagi ishtirok haqida ochiq suhbat."
+          }
+        },
+        {
+          "starts_at": "2026-10-18T07:00:00Z",
+          "copy": {
+            "title_ru": "Зритель как соавтор",
+            "title_en": "The audience as co-creators",
+            "title_uz": "Tomoshabin — hammuallif",
+            "description_ru": "Профессиональная встреча с командой театра.",
+            "description_en": "A professional exchange with the theatre team.",
+            "description_uz": "Teatr jamoasi bilan professional uchrashuv."
+          }
+        }
+      ]
+    },
+    {
+      "published": false,
+      "slug": "play-territory",
+      "starts_at": "2026-05-21T19:00:00Z",
+      "ends_at": "2026-05-24T18:59:59Z",
+      "intro_block": {
+        "title_ru": "Территория игры",
+        "title_en": "A Place to Play",
+        "title_uz": "O‘yin hududi",
+        "lede_ru": "Фестиваль театра для всей семьи",
+        "lede_en": "A theatre festival for the whole family",
+        "lede_uz": "Butun oila uchun teatr festivali",
+        "description_ru": "История о том, как совместная игра знакомит детей и взрослых с театром.",
+        "description_en": "A story of children and adults discovering theatre through shared play.",
+        "description_uz": "Bolalar va kattalar birgalikdagi o‘yin orqali teatr bilan tanishishi haqidagi hikoya."
+      },
+      "play": "@play:Мастерская игрушек",
+      "image": "@asset:toy-workshop.jpg",
+      "booking_button": {
+        "label_ru": "Спектакли в Ташкенте",
+        "label_en": "Performances in Tashkent",
+        "label_uz": "Toshkentdagi spektakllar",
+        "url": "https://theaterplus.uz/repertoire/"
+      },
+      "location_ru": "Самарканд, Узбекистан",
+      "location_en": "Samarkand, Uzbekistan",
+      "location_uz": "Samarqand, O‘zbekiston",
+      "format_ru": "Внеконкурсная программа",
+      "format_en": "Non-competitive programme",
+      "format_uz": "Tanlovdan tashqari dastur",
+      "story_ru": "Вымышленная поездка Театра+ на семейный фестиваль «Территория игры». Этот пример показывает, как страница анонса превращается в историю после завершения события.\n\nВ центре программы — «Мастерская игрушек» и встреча с командой. В такой записи сохраняются спектакль, место, даты и разговор, который возник после показа.",
+      "story_en": "A fictional Theater+ visit to the family festival A Place to Play. This example shows how an announcement becomes a lasting story once an event is over.\n\nToy Workshop and a conversation with the company are at the heart of the programme. This record keeps the production, venue, dates and the conversation that followed the performance together.",
+      "story_uz": "Teatr+ning «O‘yin hududi» oilaviy festivaliga xayoliy safari. Bu namuna tadbir tugagach, e’lon sahifasi qanday qilib xotira hikoyasiga aylanishini ko‘rsatadi.\n\nDastur markazida — «O‘yinchoqlar ustaxonasi» va jamoa bilan uchrashuv. Bunday yozuvda spektakl, joy, sanalar va namoyishdan keyingi suhbat saqlanadi.",
+      "venue_ru": "Малая сцена фестивального центра, Самарканд (пример площадки)",
+      "venue_en": "Festival centre small stage, Samarkand (example venue)",
+      "venue_uz": "Festival markazining kichik sahnasi, Samarqand (namuna)",
+      "language_ru": "Показ и встреча на русском (пример)",
+      "language_en": "Performance and conversation in Russian (example)",
+      "language_uz": "Namoyish va uchrashuv rus tilida (namuna)",
+      "access_ru": "Событие завершено. Новые показы театра — в репертуаре.",
+      "access_en": "This event has ended. Find new performances in our repertoire.",
+      "access_uz": "Tadbir yakunlangan. Teatrning yangi namoyishlari repertuarda.",
+      "outcome_ru": "В этом примере театр участвовал во внеконкурсной программе: показал спектакль и провёл встречу с семьями. Награды не присуждались.",
+      "outcome_en": "In this example, the theatre joined a non-competitive programme with a performance and a family conversation. No awards were presented.",
+      "outcome_uz": "Bu namunada teatr tanlovdan tashqari dasturda spektakl namoyish etdi va oilalar bilan uchrashuv o‘tkazdi. Mukofotlar berilmadi.",
+      "programme_note_ru": "Время указано по месту проведения. Расписание приведено для примера.",
+      "programme_note_en": "All times are local to the venue. This is an illustrative schedule.",
+      "programme_note_uz": "Vaqt tadbir o‘tkaziladigan joyning mahalliy vaqti bilan ko‘rsatilgan. Jadval namuna sifatida berilgan.",
+      "booking_note_ru": "Это пример события, билеты на него не продаются.",
+      "booking_note_en": "This is a sample event. No tickets are on sale.",
+      "booking_note_uz": "Bu namunaviy tadbir. Unga chiptalar sotilmaydi.",
+      "image_caption_ru": "Изображение спектакля из материалов сайта. Это иллюстрация, а не фотография с фестиваля.",
+      "image_caption_en": "A production image from the website’s materials. An illustration, not a photograph from the festival.",
+      "image_caption_uz": "Sayt materiallaridan olingan spektakl tasviri. Bu festival fotosurati emas, mavzuga oid tasvir.",
+      "image_alt_ru": "Изображение спектакля «Мастерская игрушек»",
+      "image_alt_en": "Production image for Toy Workshop",
+      "image_alt_uz": "«O‘yinchoqlar ustaxonasi» spektakli tasviri",
+      "programme": [
+        {
+          "starts_at": "2026-05-23T07:00:00Z",
+          "copy": {
+            "title_ru": "Мастерская игрушек",
+            "title_en": "Toy Workshop",
+            "title_uz": "O‘yinchoqlar ustaxonasi",
+            "description_ru": "Семейный показ в гостевой программе.",
+            "description_en": "A family performance in the guest programme.",
+            "description_uz": "Mehmon dasturidagi oilaviy namoyish."
+          }
+        },
+        {
+          "starts_at": "2026-05-23T08:30:00Z",
+          "copy": {
+            "title_ru": "Знакомство за кулисами",
+            "title_en": "Meet us backstage",
+            "title_uz": "Sahna ortida tanishuv",
+            "description_ru": "Встреча детей и родителей с командой спектакля.",
+            "description_en": "Children and parents meet the team behind the show.",
+            "description_uz": "Bolalar va ota-onalarning spektakl jamoasi bilan uchrashuvi."
+          }
+        }
+      ]
+    }
+  ],
+  "t_page_team": [
+    {
+      "intro_block": {
+        "title_ru": "Люди театра",
+        "title_en": "People of the theater",
+        "title_uz": "Teatr odamlari",
+        "description_ru": "На сцене и за кулисами. Люди, которые создают Theater+.",
+        "description_en": "On stage and behind the scenes. The people who make Theater+.",
+        "description_uz": "Sahnada va sahna ortida. Theater+ni yaratayotgan insonlar."
+      },
+      "meta_description_ru": "Актёры, постановочная команда и администрация Theater+. Истории людей, их роли и спектакли.",
+      "meta_description_en": "Meet the actors, creative team and administration of Theater+. Their stories, roles and productions.",
+      "meta_description_uz": "Theater+ aktyorlari, ijodiy jamoasi va ma’muriyati. Ularning hikoyalari, rollari va spektakllari."
+    }
+  ],
+  "t_page_news": [
+    {
+      "intro_block": {
+        "title_ru": "Жизнь театра",
+        "title_en": "Life at the theater",
+        "title_uz": "Teatr hayoti",
+        "lede_ru": "Театр+ · Ташкент",
+        "lede_en": "Theater+ · Tashkent",
+        "lede_uz": "Teatr+ · Toshkent",
+        "description_ru": "На сцене, за кулисами и в городе. Истории, которыми хочется поделиться.",
+        "description_en": "On stage, behind the scenes and around the city. Stories worth sharing.",
+        "description_uz": "Sahnada, sahna ortida va shaharda. Siz bilan baham ko‘rishni istagan hikoyalar."
+      }
+    }
+  ],
+  "t_page_repertoire": [
+    {
+      "intro_block": {
+        "title_ru": "Репертуар",
+        "title_en": "Repertoire",
+        "title_uz": "Repertuar"
+      },
+      "meta_description_ru": "Репертуар Театр+ в Ташкенте: расписание иммерсивных спектаклей, даты, время и билеты.",
+      "meta_description_en": "Theater+ repertoire in Tashkent: immersive performances, dates, times, and tickets.",
+      "meta_description_uz": "Toshkentdagi Teatr+ repertuari: immersiv spektakllar jadvali, sanalar, vaqt va chiptalar."
+    }
+  ],
+  "t_site_settings": [
+    {
+      "identity_block": {
+        "title_ru": "Театр+",
+        "title_en": "Theater+",
+        "title_uz": "Teatr+",
+        "description_ru": "Официальный сайт иммерсивного, современного театра «Театр+» в Ташкенте. Худрук Михаил Долóко. Афиша, билеты, репертуар.",
+        "description_en": "Official website of Theater+, an immersive contemporary theater in Tashkent. Artistic director Mikhail Doloko. Schedule, tickets, repertoire.",
+        "description_uz": "Toshkentdagi «Teatr+» immersiv zamonaviy teatrining rasmiy sayti. Bosh rejissyor Mixail Doloko. Afisha, chiptalar, repertuar."
+      },
+      "seo": {
+        "title_ru": "Театр+ — Иммерсивный театр нового поколения · Ташкент",
+        "title_en": "Theater+ — A New Generation Immersive Theater · Tashkent",
+        "title_uz": "Teatr+ — Yangi avlod immersiv teatri · Toshkent",
+        "description_ru": "Официальный сайт иммерсивного, современного театра «Театр+» в Ташкенте. Худрук Михаил Долóко. Афиша, билеты, репертуар.",
+        "description_en": "Official website of Theater+, an immersive contemporary theater in Tashkent. Artistic director Mikhail Doloko. Schedule, tickets, repertoire.",
+        "description_uz": "Toshkentdagi «Teatr+» immersiv zamonaviy teatrining rasmiy sayti. Bosh rejissyor Mixail Doloko. Afisha, chiptalar, repertuar."
+      },
+      "announcement_ru": "Внимание! В театре проходит реновация с 1 августа по 1 сентября",
+      "announcement_en": "Attention! The theater is undergoing renovation from August 1 to September 1",
+      "announcement_uz": "Diqqat! Teatrda 1 avgustdan 1 sentyabrgacha renovatsiya olib borilmoqda",
+      "announcement_button": {
+        "label_ru": "Подробнее →",
+        "label_en": "Learn more →",
+        "label_uz": "Batafsil →",
+        "url": "https://theaterplus.uz/news/"
+      },
+      "copyright_ru": "© 2026 Театр+ · Ташкент, Узбекистан",
+      "copyright_en": "© 2026 Theater+ · Tashkent, Uzbekistan",
+      "copyright_uz": "© 2026 Teatr+ · Toshkent, O‘zbekiston",
+      "ticket_button": {
+        "label_ru": "Купить билеты",
+        "label_en": "Buy tickets",
+        "label_uz": "Chipta sotib olish",
+        "url": "https://iticket.uz/ru/venues/theatre-form-zarafshan-ch"
+      }
+    }
+  ],
+  "t_contact": [
+    {
+      "box_office_phones": [
+        {
+          "number": "+998 71 232-15-52"
+        }
+      ],
+      "administration_phones": [
+        {
+          "number": "+998 92 045-63-36"
+        },
+        {
+          "number": "+998 92 045-36-63"
+        }
+      ],
+      "contact_email": "info@teatrplus.uz",
+      "address_ru": "г. Ташкент, ул. Матбуотчилар, 17",
+      "address_en": "17 Matbuotchilar St., Tashkent",
+      "address_uz": "Toshkent sh., Matbuotchilar ko‘chasi, 17",
+      "map_alt_ru": "Театр+ на карте: Ташкент, улица Матбуотчилар, 17",
+      "map_alt_en": "Map showing Theater+ at 17 Matbuotchilar Street, Tashkent",
+      "map_alt_uz": "Toshkent shahri, Matbuotchilar ko‘chasi, 17-uydagi Theater+ xaritada",
+      "google_maps_url": "https://maps.app.goo.gl/NrgfWVvoQZDmrJn58",
+      "yandex_maps_url": "https://yandex.uz/maps/-/CTdnrYOS",
+      "map_light": "@asset:theaterplus-light.png",
+      "map_dark": "@asset:theaterplus-dark.png",
+      "latitude": 41.312716,
+      "longitude": 69.273436,
+      "telegram_url": "https://t.me/teatrplusss"
+    }
+  ]
+}
