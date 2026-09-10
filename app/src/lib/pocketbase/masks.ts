@@ -3,35 +3,30 @@ import { pb } from './client'
 
 export const contentLocales = ['ru', 'en', 'uz'] as const
 export const maskFields = ['name', 'description'] as const
-export const museumFields = [
-  'title',
-  'lede',
-  'description',
-  'kicker',
-  'hall_title',
-  'back_label',
-  'museum_title',
-  'museum_description',
-  'museum_button_label',
-  'excursion_kicker',
-  'excursion_title',
-  'excursion_description',
-  'excursion_button_label',
-  'excursion_photo_alt',
-  'excursion_gallery_label',
-  'previous_photo_label',
-  'next_photo_label',
-  'mask_image_alt',
-  'meta_title',
-  'meta_description',
-  'mask_meta_title',
-  'mask_meta_description',
-] as const
+const museumCopyFields: Record<string, [string, string]> = {
+  title: ['intro_block', 'title'],
+  lede: ['intro_block', 'lede'],
+  description: ['intro_block', 'description'],
+  museum_title: ['visit_block', 'title'],
+  museum_description: ['visit_block', 'description'],
+  excursion_title: ['excursion_block', 'title'],
+  excursion_kicker: ['excursion_block', 'lede'],
+  excursion_description: ['excursion_block', 'description'],
+  museum_button_label: ['visit_button', 'label'],
+  excursion_button_label: ['excursion_button', 'label'],
+}
+export const museumFields = Object.keys(museumCopyFields)
+const museumExpand = 'intro_block,visit_block,visit_button,excursion_block,excursion_button'
+const museumRevision = (record: RecordModel) =>
+  [record, ...Object.values(record.expand ?? {})]
+    .map((item) => item.id + ':' + item.updated)
+    .sort()
+    .join('|')
 
 export async function getMuseumContent() {
   const [masks, pages] = await Promise.all([
     pb.collection('t_mask').getFullList({ sort: 'sort_order,slug' }),
-    pb.collection('t_page_masks').getFullList(),
+    pb.collection('t_page_masks').getFullList({ expand: museumExpand }),
   ])
   if (pages.length !== 1) throw new Error('Expected one museum page')
   return { masks, page: pages[0]! }
@@ -39,11 +34,19 @@ export async function getMuseumContent() {
 
 export function museumDraft(record: RecordModel | undefined, page: boolean): Record<string, string> {
   const draft: Record<string, string> = {}
-  for (const field of page ? museumFields : maskFields) {
-    for (const locale of contentLocales) draft[`${field}_${locale}`] = String(record?.[`${field}_${locale}`] ?? '')
-  }
-  for (const field of page ? ['museum_button_url', 'excursion_button_url'] : ['slug', 'sort_order']) {
-    draft[field] = String(record?.[field] ?? (field === 'sort_order' ? '0' : ''))
+  if (page) {
+    for (const [field, [relation, source]] of Object.entries(museumCopyFields)) {
+      const related = record?.expand?.[relation]
+      if (!related) throw new Error(`Missing museum relation: ${relation}`)
+      for (const locale of contentLocales) draft[`${field}_${locale}`] = String(related[`${source}_${locale}`] ?? '')
+    }
+    draft.museum_button_url = String(record?.expand?.visit_button?.url ?? '')
+    draft.excursion_button_url = String(record?.expand?.excursion_button?.url ?? '')
+  } else {
+    for (const field of maskFields)
+      for (const locale of contentLocales) draft[`${field}_${locale}`] = String(record?.[`${field}_${locale}`] ?? '')
+    draft.slug = String(record?.slug ?? '')
+    draft.sort_order = String(record?.sort_order ?? '0')
   }
   return draft
 }
@@ -55,11 +58,25 @@ export async function saveMuseumContent(
   files: (File | string)[],
 ) {
   const form = new FormData()
+  if (page) {
+    if (!record) throw new Error('Missing museum page')
+    const photos: (string | number)[] = []
+    let uploadIndex = 0
+    for (const file of files) {
+      if (typeof file === 'string') photos.push(file)
+      else {
+        photos.push(uploadIndex++)
+        form.append('excursion_photos', file)
+      }
+    }
+    form.set('content', JSON.stringify({ revision: museumRevision(record), draft, photos }))
+    return pb.send<RecordModel>('/api/theater/museum-page', { method: 'POST', body: form })
+  }
   for (const [key, value] of Object.entries(draft)) form.set(key, String(value).trim())
-  const field = page ? 'excursion_photos' : 'image'
+  const field = 'image'
   if (files.length) for (const file of files) form.append(field, file)
   else form.set(field, '')
-  const collection = pb.collection(page ? 't_page_masks' : 't_mask')
+  const collection = pb.collection('t_mask')
   return record ? collection.update(record.id, form) : collection.create(form)
 }
 
@@ -68,9 +85,6 @@ export const museumFieldLabels: Record<string, [string, string]> = {
   description: ['Description', 'Описание'],
   title: ['Title', 'Заголовок'],
   lede: ['Introduction', 'Вступление'],
-  kicker: ['Eyebrow', 'Надзаголовок'],
-  hall_title: ['Collection heading', 'Заголовок коллекции'],
-  back_label: ['Back link', 'Ссылка назад'],
   museum_title: ['Visit heading', 'Заголовок посещения'],
   museum_description: ['Visit description', 'Описание посещения'],
   museum_button_label: ['Directions button', 'Кнопка маршрута'],
@@ -78,15 +92,6 @@ export const museumFieldLabels: Record<string, [string, string]> = {
   excursion_title: ['Tour title', 'Заголовок экскурсии'],
   excursion_description: ['Tour description', 'Описание экскурсии'],
   excursion_button_label: ['Tour button', 'Кнопка экскурсии'],
-  excursion_photo_alt: ['Tour photo description', 'Описание фото экскурсии'],
-  excursion_gallery_label: ['Gallery label', 'Название галереи'],
-  previous_photo_label: ['Previous photo button', 'Кнопка предыдущего фото'],
-  next_photo_label: ['Next photo button', 'Кнопка следующего фото'],
-  mask_image_alt: ['Mask image description template', 'Шаблон описания изображения маски'],
-  meta_title: ['Page SEO title', 'SEO-заголовок страницы'],
-  meta_description: ['Page SEO description', 'SEO-описание страницы'],
-  mask_meta_title: ['Mask SEO title template', 'Шаблон SEO-заголовка маски'],
-  mask_meta_description: ['Mask SEO description template', 'Шаблон SEO-описания маски'],
   museum_button_url: ['Directions URL', 'Ссылка на маршрут'],
   excursion_button_url: ['Tour tickets URL', 'Ссылка на билеты экскурсии'],
 }

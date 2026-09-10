@@ -87,7 +87,7 @@
         )
       if (isPage) {
         for (const key of ['museum_button_url', 'excursion_button_url']) {
-          const url = new URL(draft[key]!.replaceAll('{locale}', 'ru'))
+          const url = new URL(draft[key]!)
           if (!['https:', 'http:'].includes(url.protocol))
             throw new Error(tr('Links must use HTTP(S).', 'Ссылки должны использовать HTTP(S).'))
         }
@@ -117,7 +117,9 @@
         'success',
       )
     } catch (cause) {
-      error = cause instanceof Error ? cause.message : localeCtx.t.common.error
+      error =
+        (cause as { response?: { message?: string } })?.response?.message ||
+        (cause instanceof Error ? cause.message : localeCtx.t.common.error)
       const details = (cause as { response?: { data?: Record<string, { message?: string }> } })?.response?.data
       if (details) for (const [key, value] of Object.entries(details)) fieldErrors[key] = value.message ?? error
     } finally {
@@ -239,8 +241,8 @@
               {/each}
               <p class="theater_masks_panel-hint">
                 {tr(
-                  'Templates support {id} and {name}; the ticket URL supports {locale}.',
-                  'Шаблоны поддерживают {id} и {name}; ссылка на билеты — {locale}.',
+                  'Use a full URL. iTicket links follow the visitor’s language automatically.',
+                  'Укажите полную ссылку. Язык ссылок iTicket выбирается автоматически.',
                 )}
               </p>
             {/if}
