@@ -1,4 +1,7 @@
 <script lang="ts">
+  import PageActions from '@/components/PageActions/PageActions.svelte'
+  import InstagramIcon from '~icons/mdi/instagram'
+  import PageHeader from '@/components/PageHeader/PageHeader.svelte'
   import { createMutation, createQuery, useQueryClient } from '@tanstack/svelte-query'
   import Button from '@/components/Button/Button.svelte'
   import StatusBanner from '@/components/StatusBanner/StatusBanner.svelte'
@@ -99,17 +102,22 @@
 </script>
 
 <section class="theater_social_panel">
-  <header class="theater_social_panel-toolbar">
-    <div class="l_container">
-      <div class="theater_social_panel-heading">
-        <p class="theater_social_panel-eyebrow">{localeCtx.t.nav.sections.theater}</p>
-        <h1 class="theater_social_panel-title">{localeCtx.t.theater_social_panel.title}</h1>
-      </div>
-    </div>
-  </header>
+  <PageHeader
+    title={localeCtx.t.theater_social_panel.title}
+    eyebrow={localeCtx.t.nav.sections.theater}
+    description={localeCtx.t.workspace.socialDescription}
+  />
 
-  <div class="l_container">
+  <PageActions label={localeCtx.t.theater_social_panel.title}>
+    <Button type="button" isLoading={startMutation.isPending || isRunning} onclick={() => startMutation.mutate()}>
+      {localeCtx.t.theater_social_panel.refresh}
+    </Button>
+  </PageActions>
+
+  <div class="l_stack" data-gap="6">
     <div class="theater_social_panel-body">
+      <span class="theater_social_panel-icon" aria-hidden="true"><InstagramIcon width="24" height="24" /></span>
+      <h2 class="theater_social_panel-section_title">Instagram</h2>
       <p class="theater_social_panel-copy">{localeCtx.t.theater_social_panel.body}</p>
 
       {#if statusQuery.isError}
@@ -132,10 +140,6 @@
           </StatusBanner>
         </div>
       {/if}
-
-      <Button type="button" isLoading={startMutation.isPending || isRunning} onclick={() => startMutation.mutate()}>
-        {localeCtx.t.theater_social_panel.refresh}
-      </Button>
     </div>
   </div>
 </section>

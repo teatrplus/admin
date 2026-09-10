@@ -1,63 +1,41 @@
 .theater_social_panel {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-6);
+  display: grid;
+  min-width: 0;
+  max-width: 62rem;
 }
-
-.admin_shell-content:has(.theater_social_panel) {
-  padding-top: 0;
-}
-
-.theater_social_panel-toolbar {
-  position: sticky;
-  top: 0;
-  z-index: var(--z-pinned);
-  margin-inline: calc(var(--admin-gutter) * -1);
-  margin-block-start: calc(var(--admin-gutter) * -1);
-  padding: var(--space-4) var(--admin-gutter);
-  border-bottom: 1px solid var(--border-base);
-  background: color-mix(in srgb, var(--bg-page), transparent 60%);
-  backdrop-filter: blur(var(--blur-base));
-}
-
-.theater_social_panel-eyebrow {
-  margin-bottom: var(--space-1);
-  font-size: var(--text-xs);
-  font-weight: var(--weight-medium);
-  color: var(--ink-muted);
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-}
-
-.theater_social_panel-title {
-  margin: 0;
-  font-family: var(--font-heading);
-  font-size: var(--text-2xl);
-  font-weight: var(--weight-semibold);
-  line-height: var(--leading-tight);
-}
-
 .theater_social_panel-body {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
+  display: grid;
+  justify-items: start;
   gap: var(--space-6);
-  padding-block: var(--space-10);
+  padding: var(--space-8);
+  border: 1px solid var(--border-base);
+  border-radius: var(--radius-lg);
+  background: var(--bg-surface);
+  box-shadow: var(--shadow-close);
 }
-
+.theater_social_panel-icon {
+  display: grid;
+  place-items: center;
+  width: 3rem;
+  height: 3rem;
+  border: 1px solid var(--border-base);
+  border-radius: var(--radius-lg);
+  background: var(--bg-selected);
+  color: var(--action-primary);
+}
+.theater_social_panel-section_title {
+  font-size: var(--text-lg);
+  font-weight: var(--weight-medium);
+}
 .theater_social_panel-copy {
-  margin: 0;
-  max-width: 36rem;
-  font-size: var(--text-base);
-  line-height: var(--leading-relaxed);
+  max-width: 60ch;
   color: var(--ink-muted);
+  font-size: var(--text-sm);
+  line-height: var(--leading-relaxed);
 }
-
 .theater_social_panel-banner {
-  max-width: 36rem;
   width: 100%;
 }
-
 .theater_social_panel-status {
   display: inline-flex;
   align-items: center;

@@ -1,6 +1,6 @@
 import type { AppRoute } from './router'
 
-export type NavItemIcon = 'landing' | 'requests' | 'staff' | 'account' | 'social'
+export type NavItemIcon = 'landing' | 'requests' | 'staff' | 'account' | 'social' | 'homepage' | 'masks' | 'inquiries'
 
 export type NavItem = {
   route: AppRoute

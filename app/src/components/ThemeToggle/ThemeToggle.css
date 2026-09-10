@@ -22,19 +22,7 @@
 }
 
 .theme_toggle-icon {
-  position: absolute;
-  display: flex;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  opacity: 0;
-  transition: opacity var(--duration-fast) var(--ease-standard);
-  pointer-events: none;
-}
-
-:root[data-theme='dark'] .theme_toggle-icon[data-theme-icon='light'] {
-  opacity: 1;
-}
-
-:root:not([data-theme='dark']) .theme_toggle-icon[data-theme-icon='dark'] {
-  opacity: 1;
 }

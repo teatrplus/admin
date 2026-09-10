@@ -1,25 +1,24 @@
 .status_banner {
-  padding: var(--space-3) var(--space-4);
-  border-radius: var(--radius-md);
+  padding: var(--space-4);
   border: 1px solid var(--border-base);
-  background: var(--bg-surface);
+  border-radius: var(--radius-md);
+  background: var(--bg-sunken);
+  color: var(--ink-muted);
   font-size: var(--text-sm);
+  line-height: var(--leading-relaxed);
 }
-
 .status_banner[data-tone='success'] {
-  border-color: var(--intent-success-base);
+  border-color: color-mix(in srgb, var(--intent-success-base) 30%, transparent);
   background: var(--intent-success-subtle);
   color: var(--intent-success-strong);
 }
-
 .status_banner[data-tone='warning'] {
-  border-color: var(--intent-warning-base);
+  border-color: color-mix(in srgb, var(--intent-warning-base) 30%, transparent);
   background: var(--intent-warning-subtle);
   color: var(--intent-warning-strong);
 }
-
 .status_banner[data-tone='error'] {
-  border-color: var(--intent-critical-base);
+  border-color: color-mix(in srgb, var(--intent-critical-base) 30%, transparent);
   background: var(--intent-critical-subtle);
   color: var(--intent-critical-strong);
 }

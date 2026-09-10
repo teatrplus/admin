@@ -133,10 +133,10 @@ export const navSectionsForUser = (): NavSection[] => {
   }
 
   const theaterItems: NavSection['items'] = []
-  if (canAccessLanding('theater')) theaterItems.push({ route: '/theater/home', labelKey: 'homepage', icon: 'landing' })
-  if (isAdmin()) theaterItems.push({ route: '/theater/masks', labelKey: 'masks', icon: 'landing' })
+  if (canAccessLanding('theater')) theaterItems.push({ route: '/theater/home', labelKey: 'homepage', icon: 'homepage' })
+  if (isAdmin()) theaterItems.push({ route: '/theater/masks', labelKey: 'masks', icon: 'masks' })
   if (canAccessRequests('theater'))
-    theaterItems.push({ route: '/theater/inquiries', labelKey: 'inquiries', icon: 'requests' })
+    theaterItems.push({ route: '/theater/inquiries', labelKey: 'inquiries', icon: 'inquiries' })
   if (canAccessSocial()) theaterItems.push({ route: '/theater/social', labelKey: 'social', icon: 'social' })
   if (theaterItems.length) sections.push({ id: 'theater', labelKey: 'theater', items: theaterItems })
 

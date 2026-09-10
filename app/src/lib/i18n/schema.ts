@@ -1,4 +1,28 @@
 export type TranslationSchema = {
+  workspace: {
+    label: string
+    overview: string
+    homeDescription: string
+    masksDescription: string
+    inquiriesDescription: string
+    staffDescription: string
+    accountDescription: string
+    landingDescription: string
+    requestsDescription: string
+    socialDescription: string
+    loginTitle: string
+    loginBody: string
+    loginCaption: string
+    loginStory: string
+    loginFooter: string
+    profile: string
+    security: string
+    access: string
+    securityHint: string
+    shortcuts: string
+    open: string
+    museumContent: string
+  }
   inquiries: {
     title: string
     name: string

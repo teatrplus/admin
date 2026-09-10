@@ -77,7 +77,8 @@
       {id}
       class="select-trigger"
       aria-label={ariaLabel ?? label}
-      data-invalid={error ? 'true' : 'false'}
+      aria-invalid={error ? 'true' : undefined}
+      aria-describedby={error ? `${id}-error` : undefined}
     >
       {#if leadingIcon}
         <span class="select-leading" aria-hidden="true">{@render leadingIcon()}</span>
@@ -115,6 +116,6 @@
   </SelectPrimitive.Root>
 
   {#if error}
-    <p class="select-error">{error}</p>
+    <p class="select-error" id={`${id}-error`}>{error}</p>
   {/if}
 </div>

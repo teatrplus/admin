@@ -1,4 +1,9 @@
 <script lang="ts">
+  import PageActions from '@/components/PageActions/PageActions.svelte'
+  import EditorNavigation from '@/components/EditorNavigation/EditorNavigation.svelte'
+  import PageHeader from '@/components/PageHeader/PageHeader.svelte'
+  import ContentLocaleTabs from '@/components/ContentLocaleTabs/ContentLocaleTabs.svelte'
+  import RefreshIcon from '~icons/material-symbols/refresh'
   import { onMount } from 'svelte'
   import type { RecordModel } from 'pocketbase'
   import Button from '@/components/Button/Button.svelte'
@@ -53,6 +58,7 @@
     ...masks.map((mask) => ({ value: mask.id, label: mask[`name_${language}`] || mask.name_ru })),
   ])
   const sectionLabels: Record<string, [string, string]> = {
+    featured_plays: ['Featured plays', 'Спектакли на главной'],
     about_block: ['About the theater', 'О театре'],
     instagram_block: ['Instagram', 'Instagram'],
     cta_block: ['Ticket invitation', 'Приглашение в театр'],
@@ -63,7 +69,7 @@
     cta_block: 'cta_button',
     bottom_block: 'bottom_button',
   }
-  const sectionPairs = [['featured_plays', 'about_block'], ['instagram_block', 'cta_block'], ['bottom_block']]
+  const sectionKeys = ['featured_plays', 'about_block', 'instagram_block', 'cta_block', 'bottom_block']
   const playLabel = (id: string) => plays.find((play) => play.id === id)?.[`title_${language}`] || id
   const label = (field: string, section: string) => {
     if (section === 'bottom_block')
@@ -156,205 +162,206 @@
 />
 
 <section class="theater_home_editor">
-  <header>
-    <p class="theater_home_editor-hint">{localeCtx.t.nav.sections.theater}</p>
-    <h1 class="theater_home_editor-title">{localeCtx.t.nav.homepage}</h1>
-    <p class="theater_home_editor-hint">
-      {tr(
-        'Edit the homepage in one place. Save, then rebuild the website to publish.',
-        'Редактируйте главную страницу в одном месте. Сохраните и пересоберите сайт для публикации.',
-      )}
-    </p>
-  </header>
+  <PageHeader
+    title={localeCtx.t.nav.homepage}
+    eyebrow={localeCtx.t.nav.sections.theater}
+    description={localeCtx.t.workspace.homeDescription}
+  />
   {#if error}<StatusBanner tone="error">{error}</StatusBanner>{/if}
   {#if loading}<p role="status">{tr('Loading…', 'Загрузка…')}</p>
   {:else if !draft}<Button onclick={load}>{tr('Retry', 'Повторить')}</Button>
   {:else}
-    <form class="theater_home_editor-form" onsubmit={save}>
-      <div class="theater_home_editor-actions">
-        {#each homeLocales as code}<Button
-            variant={language === code ? 'solid' : 'outline'}
-            aria-pressed={language === code}
-            onclick={() => (language = code)}>{code.toUpperCase()}</Button
-          >{/each}
-        <Button type="submit" isLoading={saving} disabled={!dirty}
-          >{tr('Save all changes', 'Сохранить все изменения')}</Button
-        >
-        <Button variant="outline" disabled={saving} onclick={reset}>{tr('Reload', 'Загрузить заново')}</Button>
-        {#if dirty}<span class="theater_home_editor-hint" role="status"
-            >{tr('Unsaved changes', 'Есть несохранённые изменения')}</span
-          >{/if}
-      </div>
-      <fieldset class="theater_home_editor-fields" disabled={saving}>
-        {#each sectionPairs as pair}
-          <div class="theater_home_editor-pair">
-            {#each pair as section}
-              {#if section === 'featured_plays'}
-                <section class="theater_home_editor-section">
-                  <h2 class="theater_home_editor-heading">{tr('Featured plays', 'Спектакли на главной')}</h2>
-                  <p class="theater_home_editor-hint">
-                    {tr('Up to 10 plays, shown in this order.', 'До 10 спектаклей, в указанном порядке.')}
-                  </p>
-                  <SortableList
-                    items={draft.featured_plays}
-                    label={tr('Featured plays', 'Спектакли на главной')}
-                    itemLabel={playLabel}
+    <PageActions label={localeCtx.t.nav.homepage}>
+      {#snippet leading()}<ContentLocaleTabs bind:value={language} disabled={saving} />{/snippet}
+      <Button
+        variant="ghost"
+        color="neutral"
+        shape="square"
+        disabled={saving}
+        onclick={reset}
+        aria-label={tr('Reload', 'Загрузить заново')}
+        title={tr('Reload', 'Загрузить заново')}><RefreshIcon /></Button
+      >
+      <Button type="submit" form="theater-home-form" isLoading={saving} disabled={!dirty}
+        >{localeCtx.t.common.save}</Button
+      >
+      {#if dirty}<span class="theater_home_editor-hint" role="status"
+          >{tr('Unsaved changes', 'Есть несохранённые изменения')}</span
+        >{/if}
+    </PageActions>
+    <div class="theater_home_editor-layout">
+      <EditorNavigation
+        label={localeCtx.t.nav.homepage}
+        items={sectionKeys.map((key) => ({
+          id: `home-${key}`,
+          label: sectionLabels[key]![localeCtx.locale === 'ru' ? 1 : 0],
+        }))}
+      />
+      <form id="theater-home-form" class="theater_home_editor-form" onsubmit={save}>
+        <fieldset class="theater_home_editor-fields" disabled={saving}>
+          {#each sectionKeys as section}
+            {#if section === 'featured_plays'}
+              <section class="theater_home_editor-section" id={`home-${section}`}>
+                <h2 class="theater_home_editor-heading">{tr('Featured plays', 'Спектакли на главной')}</h2>
+                <p class="theater_home_editor-hint">
+                  {tr('Up to 10 plays, shown in this order.', 'До 10 спектаклей, в указанном порядке.')}
+                </p>
+                <SortableList
+                  items={draft.featured_plays}
+                  label={tr('Featured plays', 'Спектакли на главной')}
+                  itemLabel={playLabel}
+                  disabled={saving}
+                  onReorder={(items) => (draft!.featured_plays = items)}
+                >
+                  {#snippet children(id)}
+                    <div class="theater_home_editor-row">
+                      <span>{playLabel(id)}</span>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onclick={() => (draft!.featured_plays = draft!.featured_plays.filter((value) => value !== id))}
+                        >{tr('Remove', 'Убрать')}</Button
+                      >
+                    </div>
+                  {/snippet}
+                </SortableList>
+                <Select
+                  label={tr('Add a play', 'Добавить спектакль')}
+                  name="featured-play"
+                  options={playOptions}
+                  bind:value={selectedPlay}
+                  disabled={saving || draft.featured_plays.length >= 10}
+                />
+                <Button
+                  variant="outline"
+                  disabled={saving || !selectedPlay || draft.featured_plays.length >= 10}
+                  onclick={() => {
+                    draft!.featured_plays = [...draft!.featured_plays, selectedPlay]
+                    selectedPlay = ''
+                  }}>{tr('Add play', 'Добавить спектакль')}</Button
+                >
+              </section>
+            {:else}
+              <section class="theater_home_editor-section" id={`home-${section}`}>
+                <h2 class="theater_home_editor-heading">
+                  {sectionLabels[section]![localeCtx.locale === 'ru' ? 1 : 0]}
+                </h2>
+                {#each ['title', 'lede', 'description'] as field}
+                  <FormField
+                    label={label(field, section)}
+                    name={`${section}-${field}-${language}`}
+                    bind:value={draft.copies[section]![`${field}_${language}`]}
+                    multiline={field !== 'title'}
+                  />
+                {/each}
+                {#if section === 'about_block'}
+                  <Select
+                    label={tr('About mask', 'Маска в разделе «О театре»')}
+                    name="about-mask"
+                    options={maskOptions}
+                    bind:value={draft.about_mask}
                     disabled={saving}
-                    onReorder={(items) => (draft!.featured_plays = items)}
+                  />
+                  <h3 class="theater_home_editor-subheading">{tr('Statistics', 'Статистика')}</h3>
+                  <SortableList
+                    items={draft.stats}
+                    layout="grid"
+                    label={tr('Statistics', 'Статистика')}
+                    itemLabel={(stat, index) =>
+                      `${tr('Statistic', 'Показатель')} ${index + 1}: ${stat[`title_${language}`] || ''}`}
+                    disabled={saving}
+                    onReorder={(items) => (draft!.stats = items)}
                   >
-                    {#snippet children(id)}
-                      <div class="theater_home_editor-row">
-                        <span>{playLabel(id)}</span>
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onclick={() =>
-                            (draft!.featured_plays = draft!.featured_plays.filter((value) => value !== id))}
-                          >{tr('Remove', 'Убрать')}</Button
-                        >
+                    {#snippet children(stat, index)}
+                      <div class="theater_home_editor-stat">
+                        <div class="theater_home_editor-actions">
+                          <span>{tr('Statistic', 'Показатель')} {index + 1}</span>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onclick={() => (draft!.stats = draft!.stats.filter((_, i) => i !== index))}
+                            >{tr('Remove', 'Убрать')}</Button
+                          >
+                        </div>
+                        <FormField
+                          label={tr('Value', 'Значение')}
+                          name={`stat-${index}-title-${language}`}
+                          bind:value={stat[`title_${language}`]}
+                        />
+                        <FormField
+                          label={tr('Short label', 'Краткая подпись')}
+                          name={`stat-${index}-lede-${language}`}
+                          bind:value={stat[`lede_${language}`]}
+                        />
+                        <FormField
+                          label={tr('Description', 'Описание')}
+                          name={`stat-${index}-description-${language}`}
+                          bind:value={stat[`description_${language}`]}
+                        />
                       </div>
                     {/snippet}
                   </SortableList>
-                  <Select
-                    label={tr('Add a play', 'Добавить спектакль')}
-                    name="featured-play"
-                    options={playOptions}
-                    bind:value={selectedPlay}
-                    disabled={saving || draft.featured_plays.length >= 10}
-                  />
                   <Button
                     variant="outline"
-                    disabled={saving || !selectedPlay || draft.featured_plays.length >= 10}
-                    onclick={() => {
-                      draft!.featured_plays = [...draft!.featured_plays, selectedPlay]
-                      selectedPlay = ''
-                    }}>{tr('Add play', 'Добавить спектакль')}</Button
+                    disabled={draft.stats.length >= 10}
+                    onclick={() => (draft!.stats = [...draft!.stats, blankCopy()])}
+                    >{tr('Add statistic', 'Добавить показатель')}</Button
                   >
-                </section>
-              {:else}
-                <section class="theater_home_editor-section">
-                  <h2 class="theater_home_editor-heading">
-                    {sectionLabels[section]![localeCtx.locale === 'ru' ? 1 : 0]}
-                  </h2>
-                  {#each ['title', 'lede', 'description'] as field}
+                {/if}
+                {#if buttonFor[section]}
+                  <FormField
+                    label={tr('Button label', 'Текст кнопки')}
+                    name={`${section}-button-${language}`}
+                    bind:value={draft.buttons[buttonFor[section]!]![`label_${language}`]}
+                  />
+                  {#if section === 'instagram_block'}
                     <FormField
-                      label={label(field, section)}
-                      name={`${section}-${field}-${language}`}
-                      bind:value={draft.copies[section]![`${field}_${language}`]}
-                      multiline={field !== 'title'}
+                      label={tr('Instagram profile URL', 'Ссылка на профиль Instagram')}
+                      name="instagram-url"
+                      type="url"
+                      bind:value={draft.instagram_url}
+                      required
+                      hint={tr(
+                        'Used for the profile name, button and post refresh.',
+                        'Используется для имени профиля, кнопки и обновления публикаций.',
+                      )}
                     />
-                  {/each}
-                  {#if section === 'about_block'}
-                    <Select
-                      label={tr('About mask', 'Маска в разделе «О театре»')}
-                      name="about-mask"
-                      options={maskOptions}
-                      bind:value={draft.about_mask}
-                      disabled={saving}
-                    />
-                    <h3>{tr('Statistics', 'Статистика')}</h3>
-                    <SortableList
-                      items={draft.stats}
-                      label={tr('Statistics', 'Статистика')}
-                      itemLabel={(stat, index) =>
-                        `${tr('Statistic', 'Показатель')} ${index + 1}: ${stat[`title_${language}`] || ''}`}
-                      disabled={saving}
-                      onReorder={(items) => (draft!.stats = items)}
-                    >
-                      {#snippet children(stat, index)}
-                        <div class="theater_home_editor-stat">
-                          <div class="theater_home_editor-actions">
-                            <span>{tr('Statistic', 'Показатель')} {index + 1}</span>
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              onclick={() => (draft!.stats = draft!.stats.filter((_, i) => i !== index))}
-                              >{tr('Remove', 'Убрать')}</Button
-                            >
-                          </div>
-                          <FormField
-                            label={tr('Value', 'Значение')}
-                            name={`stat-${index}-title-${language}`}
-                            bind:value={stat[`title_${language}`]}
-                          />
-                          <FormField
-                            label={tr('Short label', 'Краткая подпись')}
-                            name={`stat-${index}-lede-${language}`}
-                            bind:value={stat[`lede_${language}`]}
-                          />
-                          <FormField
-                            label={tr('Description', 'Описание')}
-                            name={`stat-${index}-description-${language}`}
-                            bind:value={stat[`description_${language}`]}
-                          />
-                        </div>
-                      {/snippet}
-                    </SortableList>
-                    <Button
-                      variant="outline"
-                      disabled={draft.stats.length >= 10}
-                      onclick={() => (draft!.stats = [...draft!.stats, blankCopy()])}
-                      >{tr('Add statistic', 'Добавить показатель')}</Button
-                    >
-                  {/if}
-                  {#if buttonFor[section]}
+                  {:else}
                     <FormField
-                      label={tr('Button label', 'Текст кнопки')}
-                      name={`${section}-button-${language}`}
-                      bind:value={draft.buttons[buttonFor[section]!]![`label_${language}`]}
+                      label={tr('Button URL', 'Ссылка кнопки')}
+                      name={`${section}-button-url`}
+                      type="url"
+                      bind:value={draft.buttons[buttonFor[section]!]!.url}
                     />
-                    {#if section === 'instagram_block'}
-                      <FormField
-                        label={tr('Instagram profile URL', 'Ссылка на профиль Instagram')}
-                        name="instagram-url"
-                        type="url"
-                        bind:value={draft.instagram_url}
-                        required
-                        hint={tr(
-                          'Used for the profile name, button and post refresh.',
-                          'Используется для имени профиля, кнопки и обновления публикаций.',
-                        )}
-                      />
-                    {:else}
-                      <FormField
-                        label={tr('Button URL', 'Ссылка кнопки')}
-                        name={`${section}-button-url`}
-                        type="url"
-                        bind:value={draft.buttons[buttonFor[section]!]!.url}
-                      />
-                    {/if}
                   {/if}
-                  {#if section === 'instagram_block' || section === 'bottom_block'}
-                    {@const field = section === 'instagram_block' ? 'instagram_avatar' : 'bottom_image'}
-                    {#if previews[field]}<img
-                        class="theater_home_editor-preview"
-                        src={previews[field]}
-                        alt={tr('Current image', 'Текущее изображение')}
-                      />{/if}
-                    <MediaDropzone
-                      label={section === 'instagram_block'
-                        ? tr('Choose avatar', 'Выбрать аватар')
-                        : tr('Choose portrait', 'Выбрать портрет')}
-                      hint={tr('PNG, JPEG or WebP, up to 10 MB.', 'PNG, JPEG или WebP, до 10 МБ.')}
-                      accept="image/png,image/jpeg,image/webp"
-                      disabled={saving}
-                      onFiles={(files) => {
-                        if (files[0]) images[field] = files[0]
-                      }}
-                    />
-                    {#if images[field]}<Button variant="outline" onclick={() => (images[field] = null)}
-                        >{tr('Remove image', 'Удалить изображение')}</Button
-                      >{/if}
-                  {/if}
-                </section>
-              {/if}
-            {/each}
-          </div>
-        {/each}
-      </fieldset>
-      <Button type="submit" isLoading={saving} disabled={!dirty}
-        >{tr('Save all changes', 'Сохранить все изменения')}</Button
-      >
-    </form>
+                {/if}
+                {#if section === 'instagram_block' || section === 'bottom_block'}
+                  {@const field = section === 'instagram_block' ? 'instagram_avatar' : 'bottom_image'}
+                  {#if previews[field]}<img
+                      class="theater_home_editor-preview"
+                      src={previews[field]}
+                      alt={tr('Current image', 'Текущее изображение')}
+                    />{/if}
+                  <MediaDropzone
+                    label={section === 'instagram_block'
+                      ? tr('Choose avatar', 'Выбрать аватар')
+                      : tr('Choose portrait', 'Выбрать портрет')}
+                    hint={tr('PNG, JPEG or WebP, up to 10 MB.', 'PNG, JPEG или WebP, до 10 МБ.')}
+                    accept="image/png,image/jpeg,image/webp"
+                    disabled={saving}
+                    onFiles={(files) => {
+                      if (files[0]) images[field] = files[0]
+                    }}
+                  />
+                  {#if images[field]}<Button variant="outline" onclick={() => (images[field] = null)}
+                      >{tr('Remove image', 'Удалить изображение')}</Button
+                    >{/if}
+                {/if}
+              </section>
+            {/if}
+          {/each}
+        </fieldset>
+      </form>
+    </div>
   {/if}
 </section>

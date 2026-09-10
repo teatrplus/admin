@@ -1,4 +1,8 @@
 <script lang="ts">
+  import GalleryImage from '@/components/GalleryImage/GalleryImage.svelte'
+  import PageActions from '@/components/PageActions/PageActions.svelte'
+  import PageHeader from '@/components/PageHeader/PageHeader.svelte'
+  import ContentLocaleTabs from '@/components/ContentLocaleTabs/ContentLocaleTabs.svelte'
   import { createQuery, useQueryClient } from '@tanstack/svelte-query'
   import Button from '@/components/Button/Button.svelte'
   import FormField from '@/components/FormField/FormField.svelte'
@@ -15,6 +19,7 @@
     museumDraft,
     museumFieldLabels,
     saveMuseumContent,
+    saveMaskOrder,
   } from '@/lib/pocketbase/masks'
   import { pushToast } from '@/stores/toastStore.svelte'
   import './TheaterMasksPanel.css'
@@ -25,6 +30,20 @@
   const label = (field: string) => museumFieldLabels[field]?.[localeCtx.locale === 'ru' ? 1 : 0] ?? field
   const query = createQuery(() => ({ queryKey: ['museum-content'], queryFn: getMuseumContent }))
   let selected = $state('')
+  let orderIds = $state<string[] | null>(null)
+  const orderedMasks = $derived(
+    orderIds
+      ? [
+          ...orderIds
+            .map((id) => query.data?.masks.find((mask) => mask.id === id))
+            .filter((mask) => mask !== undefined),
+          ...(query.data?.masks.filter((mask) => !orderIds!.includes(mask.id)) ?? []),
+        ]
+      : (query.data?.masks ?? []),
+  )
+  const orderDirty = $derived(
+    orderIds !== null && orderIds.join('|') !== query.data?.masks.map((mask) => mask.id).join('|'),
+  )
   let language = $state<(typeof contentLocales)[number]>('ru')
   let draft = $state<Record<string, string>>({})
   let files = $state<(File | string)[]>([])
@@ -44,6 +63,10 @@
   let previews = $state<{ file: File | string; url: string }[]>([])
 
   $effect(() => {
+    if (query.data && !selected) select('page')
+  })
+
+  $effect(() => {
     const urls = files.map((file) => ({
       file,
       url: typeof file === 'string' ? (record ? pb.files.getURL(record, file) : '') : URL.createObjectURL(file),
@@ -61,6 +84,8 @@
     const page = id === 'page'
     const item = page ? query.data?.page : query.data?.masks.find((mask) => mask.id === id)
     draft = museumDraft(item, page)
+    if (!page && !item)
+      draft.sort_order = String(Math.max(-1, ...(query.data?.masks.map((mask) => Number(mask.sort_order)) ?? [])) + 1)
     files = page ? [...(item?.excursion_photos ?? [])] : item?.image ? [item.image] : []
     baseline = JSON.stringify(draft)
     error = ''
@@ -69,50 +94,62 @@
 
   async function save(event: SubmitEvent) {
     event.preventDefault()
-    if (saving) return
+    if (saving || (!dirty && !orderDirty)) return
     saving = true
     error = ''
     fieldErrors = {}
     try {
-      if (!isPage && !files.length) throw new Error(tr('Select a mask image.', 'Выберите изображение маски.'))
-      for (const [field, value] of Object.entries(draft)) {
-        if (field === 'slug') continue
-        if (!String(value).trim()) fieldErrors[field] = tr('Required', 'Обязательное поле')
-      }
-      if (Object.keys(fieldErrors).length)
-        throw new Error(
-          tr(
-            'Complete the required fields in all three languages.',
-            'Заполните обязательные поля на всех трёх языках.',
-          ),
-        )
-      if (isPage) {
-        for (const key of ['museum_button_url', 'excursion_button_url']) {
-          const url = new URL(draft[key]!)
-          if (!['https:', 'http:'].includes(url.protocol))
-            throw new Error(tr('Links must use HTTP(S).', 'Ссылки должны использовать HTTP(S).'))
+      if (dirty) {
+        if (!isPage && !files.length) throw new Error(tr('Select a mask image.', 'Выберите изображение маски.'))
+        for (const [field, value] of Object.entries(draft)) {
+          if (field === 'slug') continue
+          if (!String(value).trim()) fieldErrors[field] = tr('Required', 'Обязательное поле')
         }
+        if (Object.keys(fieldErrors).length)
+          throw new Error(
+            tr(
+              'Complete the required fields in all three languages.',
+              'Заполните обязательные поля на всех трёх языках.',
+            ),
+          )
+        if (isPage) {
+          for (const key of ['museum_button_url', 'excursion_button_url']) {
+            const url = new URL(draft[key]!)
+            if (!['https:', 'http:'].includes(url.protocol))
+              throw new Error(tr('Links must use HTTP(S).', 'Ссылки должны использовать HTTP(S).'))
+          }
+        }
+        const saved = await saveMuseumContent(record, isPage, draft, files)
+        // Keep the saved result even if a subsequent refresh fails.
+        queryClient.setQueryData(
+          ['museum-content'],
+          (previous: Awaited<ReturnType<typeof getMuseumContent>> | undefined) => {
+            if (!previous) return previous
+            return isPage
+              ? { ...previous, page: saved }
+              : {
+                  ...previous,
+                  masks: [...previous.masks.filter((mask) => mask.id !== saved.id), saved].sort(
+                    (a, b) => a.sort_order - b.sort_order || a.slug.localeCompare(b.slug),
+                  ),
+                }
+          },
+        )
+        selected = isPage ? 'page' : saved.id
+        draft = museumDraft(saved, isPage)
+        files = isPage ? [...(saved.excursion_photos ?? [])] : [saved.image]
+        baseline = JSON.stringify(draft)
       }
-      const saved = await saveMuseumContent(record, isPage, draft, files)
-      // Keep the saved result even if a subsequent refresh fails.
-      queryClient.setQueryData(
-        ['museum-content'],
-        (previous: Awaited<ReturnType<typeof getMuseumContent>> | undefined) => {
-          if (!previous) return previous
-          return isPage
-            ? { ...previous, page: saved }
-            : {
-                ...previous,
-                masks: [...previous.masks.filter((mask) => mask.id !== saved.id), saved].sort(
-                  (a, b) => a.sort_order - b.sort_order || a.slug.localeCompare(b.slug),
-                ),
-              }
-        },
-      )
-      selected = isPage ? 'page' : saved.id
-      draft = museumDraft(saved, isPage)
-      files = isPage ? [...(saved.excursion_photos ?? [])] : [saved.image]
-      baseline = JSON.stringify(draft)
+      if (orderDirty) {
+        const current = queryClient.getQueryData<Awaited<ReturnType<typeof getMuseumContent>>>(['museum-content'])!
+        const ids = [
+          ...orderIds!.filter((id) => current.masks.some((mask) => mask.id === id)),
+          ...current.masks.filter((mask) => !orderIds!.includes(mask.id)).map((mask) => mask.id),
+        ]
+        const masks = await saveMaskOrder(ids, current.masks)
+        queryClient.setQueryData(['museum-content'], { ...current, masks })
+        orderIds = null
+      }
       pushToast(
         tr('Saved. Rebuild the website to publish changes.', 'Сохранено. Пересоберите сайт для публикации изменений.'),
         'success',
@@ -131,7 +168,7 @@
 
 <svelte:window
   onbeforeunload={(event) => {
-    if (dirty) {
+    if (dirty || orderDirty) {
       event.preventDefault()
       event.returnValue = ''
     }
@@ -139,10 +176,11 @@
 />
 
 <section class="theater_masks_panel">
-  <header class="theater_masks_panel-header">
-    <p class="theater_masks_panel-eyebrow">{localeCtx.t.nav.sections.theater}</p>
-    <h1 class="theater_masks_panel-title">{localeCtx.t.nav.masks}</h1>
-  </header>
+  <PageHeader
+    title={localeCtx.t.nav.masks}
+    eyebrow={localeCtx.t.nav.sections.theater}
+    description={localeCtx.t.workspace.masksDescription}
+  />
   {#if query.isPending}
     <p role="status">{tr('Loading…', 'Загрузка…')}</p>
   {:else if query.isError}
@@ -151,44 +189,59 @@
     >
     <Button onclick={() => query.refetch()}>{tr('Retry', 'Повторить')}</Button>
   {:else}
+    <PageActions label={localeCtx.t.nav.masks}>
+      {#snippet leading()}<ContentLocaleTabs bind:value={language} disabled={saving} />{/snippet}
+      <Button variant="outline" disabled={saving} onclick={() => select('new')}
+        >{tr('Add mask', 'Добавить маску')}</Button
+      >
+      <Button
+        type="submit"
+        form="museum-content-form"
+        formnovalidate={!dirty}
+        isLoading={saving}
+        disabled={!dirty && !orderDirty}>{tr('Save', 'Сохранить')}</Button
+      >
+    </PageActions>
+    {#if error}<StatusBanner tone="error">{error}</StatusBanner>{/if}
     <div class="theater_masks_panel-layout">
       <nav class="theater_masks_panel-list" aria-label={tr('Museum content', 'Содержимое музея')}>
+        <h2 class="theater_masks_panel-list_heading">{localeCtx.t.workspace.museumContent}</h2>
+        <p class="theater_masks_panel-hint">
+          {tr('Drag masks to reorder, then save.', 'Перетащите маски в нужном порядке и сохраните.')}
+        </p>
         <Button variant={isPage ? 'solid' : 'outline'} disabled={saving} onclick={() => select('page')}
           >{tr('Museum page', 'Страница музея')}</Button
         >
-        {#each query.data?.masks ?? [] as mask (mask.id)}
-          <button
-            class="theater_masks_panel-mask u_reset_button"
-            type="button"
-            aria-current={selected === mask.id ? 'true' : undefined}
-            disabled={saving}
-            onclick={() => select(mask.id)}
-          >
-            <img
-              class="theater_masks_panel-thumbnail"
-              src={pb.files.getURL(mask, mask.image, { thumb: '460x0' })}
-              alt=""
-            />
-            <span>{mask[`name_${localeCtx.locale}`]}</span>
-          </button>
-        {/each}
-        <Button variant="outline" disabled={saving} onclick={() => select('new')}
-          >{tr('Add mask', 'Добавить маску')}</Button
+        <SortableList
+          items={orderedMasks}
+          label={tr('Mask order', 'Порядок масок')}
+          itemLabel={(mask) => mask[`name_${localeCtx.locale}`] || mask.name_ru}
+          disabled={saving}
+          density="compact"
+          onReorder={(items) => {
+            orderIds = items.map((mask) => mask.id)
+          }}
         >
+          {#snippet children(mask)}
+            <button
+              class="theater_masks_panel-mask u_reset_button"
+              type="button"
+              aria-current={selected === mask.id ? 'true' : undefined}
+              disabled={saving}
+              onclick={() => select(mask.id)}
+            >
+              <img
+                class="theater_masks_panel-thumbnail"
+                src={pb.files.getURL(mask, mask.image, { thumb: '460x0' })}
+                alt=""
+              />
+              <span>{mask[`name_${localeCtx.locale}`]}</span>
+            </button>
+          {/snippet}
+        </SortableList>
       </nav>
       {#if selected}
-        <form class="theater_masks_panel-editor" onsubmit={save}>
-          <div class="theater_masks_panel-actions">
-            {#each contentLocales as code}
-              <Button
-                variant={language === code ? 'solid' : 'outline'}
-                aria-pressed={language === code}
-                onclick={() => (language = code)}>{code.toUpperCase()}</Button
-              >
-            {/each}
-            <Button type="submit" isLoading={saving}>{tr('Save', 'Сохранить')}</Button>
-          </div>
-          {#if error}<StatusBanner tone="error">{error}</StatusBanner>{/if}
+        <form id="museum-content-form" class="theater_masks_panel-editor" onsubmit={save}>
           <fieldset class="theater_masks_panel-fields" disabled={saving}>
             <legend class="theater_masks_panel-legend"
               >{isPage ? tr('Museum page', 'Страница музея') : tr('Mask', 'Маска')}</legend
@@ -204,14 +257,6 @@
                 )}
                 disabled={Boolean(record)}
                 error={fieldErrors.slug}
-              />
-              <FormField
-                label={tr('Display order', 'Порядок показа')}
-                name="mask-order"
-                type="number"
-                bind:value={draft.sort_order}
-                required
-                error={fieldErrors.sort_order}
               />
             {/if}
             {#each isPage ? museumFields : maskFields as field}
@@ -242,28 +287,24 @@
               </p>
             {/if}
             {#if isPage}
+              <h3 class="theater_masks_panel-gallery_heading">{tr('Tour photos', 'Фото экскурсии')}</h3>
               <SortableList
                 items={files}
                 label={tr('Tour photos', 'Фото экскурсии')}
                 itemLabel={(file) => (typeof file === 'string' ? file : file.name)}
-                layout="grid"
+                layout="gallery"
                 disabled={saving}
                 onReorder={(items) => (files = items)}
               >
                 {#snippet children(file, index)}
-                  <div class="theater_masks_panel-photo">
-                    <img
-                      class="theater_masks_panel-preview"
-                      src={previews.find((preview) => preview.file === file)?.url}
-                      alt={typeof file === 'string' ? file : file.name}
-                    />
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      disabled={saving}
-                      onclick={() => (files = files.filter((_, i) => i !== index))}>{tr('Remove', 'Убрать')}</Button
-                    >
-                  </div>
+                  <GalleryImage
+                    src={previews.find((preview) => preview.file === file)?.url}
+                    alt={typeof file === 'string' ? file : file.name}
+                    disabled={saving}
+                    accept="image/png,image/jpeg,image/webp"
+                    onDelete={() => (files = files.filter((_, i) => i !== index))}
+                    onReplace={(replacement) => (files = files.map((item, i) => (i === index ? replacement : item)))}
+                  />
                 {/snippet}
               </SortableList>
             {:else}
@@ -293,7 +334,7 @@
           </fieldset>
         </form>
       {:else}
-        <p>
+        <p class="theater_masks_panel-empty">
           {tr('Select a mask or the museum page to edit.', 'Выберите маску или страницу музея для редактирования.')}
         </p>
       {/if}

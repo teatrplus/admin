@@ -1,0 +1,40 @@
+.content_locale_tabs {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: var(--space-1);
+  border: 1px solid var(--border-base);
+  border-radius: var(--radius-md);
+  background: var(--bg-sunken);
+}
+.content_locale_tabs-option {
+  min-width: 2.5rem;
+  height: 2rem;
+  padding-inline: var(--space-3);
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--ink-muted);
+  font-size: var(--text-xs);
+  font-weight: var(--weight-medium);
+  cursor: pointer;
+  transition:
+    background var(--duration-fast) var(--ease-standard),
+    color var(--duration-fast) var(--ease-standard);
+}
+.content_locale_tabs-option:hover {
+  color: var(--ink-main);
+}
+.content_locale_tabs-option[aria-pressed='true'] {
+  background: var(--bg-surface);
+  color: var(--action-primary);
+  box-shadow: var(--shadow-close);
+}
+.content_locale_tabs-option:focus-visible {
+  outline: 2px solid var(--border-focus);
+  outline-offset: 2px;
+}
+.content_locale_tabs-option:disabled {
+  opacity: var(--opacity-disabled);
+  cursor: not-allowed;
+}

@@ -1,9 +1,7 @@
 <script lang="ts">
+  import RequestActions from './RequestActions.svelte'
+  import './RequestsTable.css'
   import { createMutation, createQuery, useQueryClient } from '@tanstack/svelte-query'
-  import { DropdownMenu } from 'bits-ui'
-  import ArchiveIcon from '~icons/material-symbols/archive-outline'
-  import MoreVertIcon from '~icons/material-symbols/more-vert'
-  import UnarchiveIcon from '~icons/material-symbols/unarchive-outline'
   import Select from '@/components/Select/Select.svelte'
   import type { SiteScope } from '@/lib/cms/scopes'
   import { toDateInputValue } from '@/lib/format'
@@ -232,53 +230,20 @@
 
 {#snippet rowMenu(row: SpaceRequestRecord, mode: 'archive' | 'unarchive')}
   {@const stage = normalizeStage(row.stage) as RequestStage}
-  <DropdownMenu.Root>
-    <DropdownMenu.Trigger class="requests_board-menu_trigger" aria-label={localeCtx.t.requests.actions}>
-      <MoreVertIcon width="18" height="18" />
-    </DropdownMenu.Trigger>
-    <DropdownMenu.Portal>
-      <DropdownMenu.Content class="requests_board-menu_content" sideOffset={6} align="end">
-        {#if mode === 'archive'}
-          <DropdownMenu.Item
-            class="requests_board-menu_item"
-            textValue={localeCtx.t.requests.archive}
-            data-disabled={!canArchive(stage) ? 'true' : undefined}
-            aria-disabled={!canArchive(stage) ? 'true' : undefined}
-            onSelect={() => onArchive(row)}
-          >
-            <span class="requests_board-menu_item_icon" aria-hidden="true">
-              <ArchiveIcon width="16" height="16" />
-            </span>
-            <span class="requests_board-menu_item_label">
-              {localeCtx.t.requests.archive}
-            </span>
-          </DropdownMenu.Item>
-        {:else}
-          <DropdownMenu.Item
-            class="requests_board-menu_item"
-            textValue={localeCtx.t.requests.unarchive}
-            onSelect={() => onUnarchive(row)}
-          >
-            <span class="requests_board-menu_item_icon" aria-hidden="true">
-              <UnarchiveIcon width="16" height="16" />
-            </span>
-            <span class="requests_board-menu_item_label">
-              {localeCtx.t.requests.unarchive}
-            </span>
-          </DropdownMenu.Item>
-        {/if}
-      </DropdownMenu.Content>
-    </DropdownMenu.Portal>
-  </DropdownMenu.Root>
+  <RequestActions
+    archived={mode === 'unarchive'}
+    blocked={mode === 'archive' && !canArchive(stage)}
+    onSelect={() => (mode === 'archive' ? onArchive(row) : onUnarchive(row))}
+  />
 {/snippet}
 
 {#snippet rowControls(row: SpaceRequestRecord, mode: 'archive' | 'unarchive')}
   {@const stage = normalizeStage(row.stage) as RequestStage}
   {@const assigned = row.expand?.manager || (row.manager ? findManager(String(row.manager)) : null)}
-  <td>{row.client_name || '—'}</td>
-  <td>{row.client_phone_number || '—'}</td>
+  <td class="requests_table-cell">{row.client_name || '—'}</td>
+  <td class="requests_table-cell">{row.client_phone_number || '—'}</td>
   {#if canEdit}
-    <td>
+    <td class="requests_table-cell">
       <input
         class="requests_table-date"
         type="date"
@@ -287,7 +252,7 @@
         onchange={(event) => onDateChange(row, event.currentTarget.value)}
       />
     </td>
-    <td>
+    <td class="requests_table-cell">
       <Select
         class="requests_table-field"
         size="sm"
@@ -298,7 +263,7 @@
         onValueChange={(next) => onManagerChange(row, next)}
       />
     </td>
-    <td>
+    <td class="requests_table-cell">
       <Select
         class="requests_table-field"
         size="sm"
@@ -308,38 +273,38 @@
         onValueChange={(next) => onStageChange(row, next)}
       />
     </td>
-    <td class="requests_table-actions_cell">
+    <td class="requests_table-cell requests_table-actions_cell">
       {@render rowMenu(row, mode)}
     </td>
   {:else}
-    <td>{toDateInputValue(row.date_requested) || '—'}</td>
-    <td>{managerLabel(assigned)}</td>
-    <td>{localeCtx.t.requests.stages[stage] ?? stage}</td>
+    <td class="requests_table-cell">{toDateInputValue(row.date_requested) || '—'}</td>
+    <td class="requests_table-cell">{managerLabel(assigned)}</td>
+    <td class="requests_table-cell">{localeCtx.t.requests.stages[stage] ?? stage}</td>
   {/if}
 {/snippet}
 
 <div class="requests_table">
   <section class="requests_table-section">
     {#if activeQuery.isPending}
-      <p class="requests_board-status">{localeCtx.t.common.loading}</p>
+      <p class="requests_table-status">{localeCtx.t.common.loading}</p>
     {:else if activeQuery.isError}
-      <p class="requests_board-status" data-tone="error">
+      <p class="requests_table-status" data-tone="error">
         {activeQuery.error instanceof Error ? activeQuery.error.message : localeCtx.t.common.error}
       </p>
     {:else if !activeQuery.data?.items.length}
-      <p class="requests_board-status">{localeCtx.t.requests.empty}</p>
+      <p class="requests_table-status">{localeCtx.t.requests.empty}</p>
     {:else}
       <div class="requests_table-scroll">
         <table class="requests_table-table">
           <thead>
             <tr>
-              <th>{localeCtx.t.requests.clientName}</th>
-              <th>{localeCtx.t.requests.clientPhone}</th>
-              <th>{localeCtx.t.requests.dateRequested}</th>
-              <th>{localeCtx.t.requests.manager}</th>
-              <th>{localeCtx.t.requests.stage}</th>
+              <th class="requests_table-heading" scope="col">{localeCtx.t.requests.clientName}</th>
+              <th class="requests_table-heading" scope="col">{localeCtx.t.requests.clientPhone}</th>
+              <th class="requests_table-heading" scope="col">{localeCtx.t.requests.dateRequested}</th>
+              <th class="requests_table-heading" scope="col">{localeCtx.t.requests.manager}</th>
+              <th class="requests_table-heading" scope="col">{localeCtx.t.requests.stage}</th>
               {#if canEdit}
-                <th>
+                <th class="requests_table-heading" scope="col">
                   <span class="u_sr_only">{localeCtx.t.requests.actions}</span>
                 </th>
               {/if}
@@ -371,25 +336,25 @@
     <h2 class="requests_table-section_title">{localeCtx.t.requests.archivedSection}</h2>
 
     {#if archivedQuery.isPending}
-      <p class="requests_board-status">{localeCtx.t.common.loading}</p>
+      <p class="requests_table-status">{localeCtx.t.common.loading}</p>
     {:else if archivedQuery.isError}
-      <p class="requests_board-status" data-tone="error">
+      <p class="requests_table-status" data-tone="error">
         {archivedQuery.error instanceof Error ? archivedQuery.error.message : localeCtx.t.common.error}
       </p>
     {:else if !archivedQuery.data?.items.length}
-      <p class="requests_board-status">{localeCtx.t.requests.emptyArchived}</p>
+      <p class="requests_table-status">{localeCtx.t.requests.emptyArchived}</p>
     {:else}
       <div class="requests_table-scroll">
         <table class="requests_table-table">
           <thead>
             <tr>
-              <th>{localeCtx.t.requests.clientName}</th>
-              <th>{localeCtx.t.requests.clientPhone}</th>
-              <th>{localeCtx.t.requests.dateRequested}</th>
-              <th>{localeCtx.t.requests.manager}</th>
-              <th>{localeCtx.t.requests.stage}</th>
+              <th class="requests_table-heading" scope="col">{localeCtx.t.requests.clientName}</th>
+              <th class="requests_table-heading" scope="col">{localeCtx.t.requests.clientPhone}</th>
+              <th class="requests_table-heading" scope="col">{localeCtx.t.requests.dateRequested}</th>
+              <th class="requests_table-heading" scope="col">{localeCtx.t.requests.manager}</th>
+              <th class="requests_table-heading" scope="col">{localeCtx.t.requests.stage}</th>
               {#if canEdit}
-                <th>
+                <th class="requests_table-heading" scope="col">
                   <span class="u_sr_only">{localeCtx.t.requests.actions}</span>
                 </th>
               {/if}

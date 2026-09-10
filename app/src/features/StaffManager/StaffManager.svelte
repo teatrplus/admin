@@ -1,4 +1,6 @@
 <script lang="ts">
+  import PageActions from '@/components/PageActions/PageActions.svelte'
+  import PageHeader from '@/components/PageHeader/PageHeader.svelte'
   import { createMutation, createQuery, useQueryClient } from '@tanstack/svelte-query'
   import * as v from 'valibot'
   import EditIcon from '~icons/material-symbols/edit-outline'
@@ -196,16 +198,13 @@
 </script>
 
 <section class="staff_manager">
-  <header class="staff_manager-toolbar">
-    <div class="l_container">
-      <div class="staff_manager-heading">
-        <p class="staff_manager-eyebrow">{localeCtx.t.nav.sections.global}</p>
-        <h1 class="staff_manager-title">{localeCtx.t.staff.title}</h1>
-      </div>
-    </div>
-  </header>
+  <PageHeader
+    title={localeCtx.t.staff.title}
+    eyebrow={localeCtx.t.nav.sections.global}
+    description={localeCtx.t.workspace.staffDescription}
+  />
 
-  <div class="l_container">
+  <div class="l_stack" data-gap="6">
     {#if staffQuery.isPending}
       <p class="staff_manager-status">{localeCtx.t.common.loading}</p>
     {:else if staffQuery.isError}
@@ -215,21 +214,21 @@
     {:else}
       <div class="staff_manager-body">
         <section class="staff_manager-section">
-          <form class="staff_manager-form" autocomplete="off" onsubmit={submit}>
+          <PageActions label={isEditing ? localeCtx.t.staff.edit : localeCtx.t.staff.create}>
+            {#if isEditing}
+              <Button type="button" variant="ghost" color="neutral" onclick={resetToCreate}>
+                {localeCtx.t.common.cancel}
+              </Button>
+            {/if}
+            <Button type="submit" form="staff-manager-form" isLoading={saveMutation.isPending}>
+              {isEditing ? localeCtx.t.common.save : localeCtx.t.staff.create}
+            </Button>
+          </PageActions>
+          <form id="staff-manager-form" class="staff_manager-form" autocomplete="off" onsubmit={submit}>
             <div class="staff_manager-form_header">
               <h2 class="staff_manager-section_title">
                 {isEditing ? localeCtx.t.staff.edit : localeCtx.t.staff.create}
               </h2>
-              <div class="staff_manager-form_actions">
-                {#if isEditing}
-                  <Button type="button" variant="ghost" color="neutral" onclick={resetToCreate}>
-                    {localeCtx.t.common.cancel}
-                  </Button>
-                {/if}
-                <Button type="submit" isLoading={saveMutation.isPending}>
-                  {isEditing ? localeCtx.t.common.save : localeCtx.t.staff.create}
-                </Button>
-              </div>
             </div>
 
             <FormField label={localeCtx.t.staff.name} name="name" bind:value={form.values.name} />
@@ -279,14 +278,14 @@
             <fieldset class="staff_manager-scope_list">
               <legend class="u_sr_only">{localeCtx.t.staff.scope}</legend>
               <p class="staff_manager-scope_label">
-                {localeCtx.t.staff.scope}<span class="form_field-required" aria-hidden="true">*</span>
+                {localeCtx.t.staff.scope}<span class="staff_manager-required" aria-hidden="true">*</span>
               </p>
               <div class="staff_manager-scope_options">
                 <Checkbox bind:checked={form.values.scopeTheater} label={localeCtx.t.staff.scopes.theater} />
                 <Checkbox bind:checked={form.values.scopeSpace} label={localeCtx.t.staff.scopes.space} />
               </div>
               {#if form.errors.scopeSpace}
-                <p class="form_field-error">{form.errors.scopeSpace}</p>
+                <p class="staff_manager-error">{form.errors.scopeSpace}</p>
               {/if}
             </fieldset>
           </form>
@@ -298,21 +297,23 @@
             <table class="staff_manager-table">
               <thead>
                 <tr>
-                  <th>{localeCtx.t.staff.name}</th>
-                  <th>{localeCtx.t.staff.email}</th>
-                  <th>{localeCtx.t.staff.role}</th>
-                  <th>{localeCtx.t.staff.scope}</th>
-                  <th></th>
+                  <th class="staff_manager-table_heading" scope="col">{localeCtx.t.staff.name}</th>
+                  <th class="staff_manager-table_heading" scope="col">{localeCtx.t.staff.email}</th>
+                  <th class="staff_manager-table_heading" scope="col">{localeCtx.t.staff.role}</th>
+                  <th class="staff_manager-table_heading" scope="col">{localeCtx.t.staff.scope}</th>
+                  <th class="staff_manager-table_heading" scope="col"></th>
                 </tr>
               </thead>
               <tbody>
                 {#each staff as member (member.id)}
-                  <tr data-active={editingId === member.id ? 'true' : undefined}>
-                    <td>{member.name || '—'}</td>
-                    <td>{member.email}</td>
-                    <td>{localeCtx.t.staff.roles[normalizeRole(member.role) ?? 'manager']}</td>
-                    <td>{formatScopes(member.scope)}</td>
-                    <td class="staff_manager-table_actions">
+                  <tr class="staff_manager-table_row" data-active={editingId === member.id ? 'true' : undefined}>
+                    <td class="staff_manager-table_cell">{member.name || '—'}</td>
+                    <td class="staff_manager-table_cell">{member.email}</td>
+                    <td class="staff_manager-table_cell"
+                      >{localeCtx.t.staff.roles[normalizeRole(member.role) ?? 'manager']}</td
+                    >
+                    <td class="staff_manager-table_cell">{formatScopes(member.scope)}</td>
+                    <td class="staff_manager-table_cell">
                       <Button
                         variant="ghost"
                         color="neutral"

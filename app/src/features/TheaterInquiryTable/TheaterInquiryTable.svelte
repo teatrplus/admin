@@ -1,4 +1,8 @@
 <script lang="ts">
+  import PageActions from '@/components/PageActions/PageActions.svelte'
+  import PageHeader from '@/components/PageHeader/PageHeader.svelte'
+  import Select from '@/components/Select/Select.svelte'
+  import StatusBanner from '@/components/StatusBanner/StatusBanner.svelte'
   import { createQuery, createMutation, useQueryClient } from '@tanstack/svelte-query'
   import type { RecordModel } from 'pocketbase'
   import { pb } from '@/lib/pocketbase/client'
@@ -41,27 +45,32 @@
 </script>
 
 <section class="theater_inquiry_table">
-  <h1 class="theater_inquiry_table-title">{t.title}</h1>
-  <div class="theater_inquiry_table-toolbar">
-    <label class="theater_inquiry_table-filter"
-      >{t.status}
-      <select
-        class="theater_inquiry_table-select"
-        bind:value={status}
-        onchange={() => {
-          page = 1
-        }}
-      >
-        <option value="to-do">{t.todo}</option><option value="done">{t.done}</option><option value="all">{t.all}</option
-        >
-      </select>
-    </label>
+  <PageHeader
+    title={t.title}
+    eyebrow={locale.t.nav.sections.theater}
+    description={locale.t.workspace.inquiriesDescription}
+  />
+  <PageActions label={t.title}>
+    {#snippet leading()}
+      <div class="theater_inquiry_table-filter">
+        <Select
+          aria-label={t.status}
+          bind:value={status}
+          options={[
+            { value: 'to-do', label: t.todo },
+            { value: 'done', label: t.done },
+            { value: 'all', label: t.all },
+          ]}
+          onValueChange={() => (page = 1)}
+        />
+      </div>
+    {/snippet}
     <Button variant="outline" onclick={() => inquiries.refetch()} disabled={inquiries.isFetching}>{t.refresh}</Button>
-  </div>
-  {#if update.isError}<p role="alert">{t.saveError}</p>{/if}
-  {#if inquiries.isPending}<p role="status">{t.loading}</p>
-  {:else if inquiries.isError}<p role="alert">{t.error}</p>
-  {:else if !inquiries.data?.items.length}<p>{t.empty}</p>
+  </PageActions>
+  {#if update.isError}<StatusBanner tone="error">{t.saveError}</StatusBanner>{/if}
+  {#if inquiries.isPending}<p class="theater_inquiry_table-empty" role="status">{t.loading}</p>
+  {:else if inquiries.isError}<StatusBanner tone="error">{t.error}</StatusBanner>
+  {:else if !inquiries.data?.items.length}<p class="theater_inquiry_table-empty">{t.empty}</p>
   {:else}
     <!-- svelte-ignore a11y_no_noninteractive_tabindex (Keyboard users must be able to scroll the table.) -->
     <div class="theater_inquiry_table-scroll" role="region" aria-label={t.title} tabindex="0">
@@ -81,10 +90,14 @@
               <td class="theater_inquiry_table-cell">{new Date(inquiry.created).toLocaleString(locale.locale)}</td>
               <td class="theater_inquiry_table-cell">{inquiry.name}</td>
               <td class="theater_inquiry_table-cell"
-                >{#if inquiry.email}<a href={`mailto:${inquiry.email}`}>{inquiry.email}</a>{:else}—{/if}</td
+                >{#if inquiry.email}<a class="theater_inquiry_table-contact" href={`mailto:${inquiry.email}`}
+                    >{inquiry.email}</a
+                  >{:else}—{/if}</td
               >
               <td class="theater_inquiry_table-cell"
-                >{#if inquiry.phone}<a href={`tel:${inquiry.phone.replace(/[^+0-9]/g, '')}`}>{inquiry.phone}</a
+                >{#if inquiry.phone}<a
+                    class="theater_inquiry_table-contact"
+                    href={`tel:${inquiry.phone.replace(/[^+0-9]/g, '')}`}>{inquiry.phone}</a
                   >{:else}—{/if}</td
               >
               <td class="theater_inquiry_table-cell" data-content="message">{inquiry.message || '—'}</td>

@@ -1,4 +1,5 @@
 <script lang="ts">
+  import './RequestsPagination.css'
   import Button from '@/components/Button/Button.svelte'
   import { useLocale } from '@/lib/i18n/context.svelte'
 

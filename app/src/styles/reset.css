@@ -19,8 +19,8 @@
 
 /* Accessible line-height and default app font */
 body {
-  line-height: var(--leading-base);
-  font-family: var(--font-body);
+  line-height: inherit;
+  font-family: inherit;
 }
 
 /* Improve media defaults */
@@ -50,9 +50,4 @@ h4,
 h5,
 h6 {
   overflow-wrap: break-word;
-}
-
-/* Create a root stacking context */
-.root_layout {
-  isolation: isolate;
 }

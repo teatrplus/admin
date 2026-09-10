@@ -1,91 +1,138 @@
 .theater_masks_panel {
   display: grid;
-  gap: var(--space-6);
-}
-.theater_masks_panel-eyebrow {
-  color: var(--ink-muted);
-  font-size: var(--text-sm);
-}
-.theater_masks_panel-title {
-  font-family: var(--font-heading);
-  font-size: var(--text-2xl);
+  gap: var(--space-5);
+  min-width: 0;
 }
 .theater_masks_panel-layout {
   display: grid;
   align-items: start;
   gap: var(--space-6);
-}
-.theater_masks_panel-list,
-.theater_masks_panel-editor,
-.theater_masks_panel-fields {
-  display: grid;
-  gap: var(--space-4);
   min-width: 0;
 }
-.theater_masks_panel-fields {
-  border: 0;
-  padding: 0;
+.theater_masks_panel-list {
+  display: grid;
+  gap: var(--space-2);
+  min-width: 0;
+  max-height: 18rem;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  padding: var(--space-3);
+  border: 1px solid var(--border-base);
+  border-radius: var(--radius-lg);
+  background: var(--bg-surface);
+  box-shadow: var(--shadow-close);
 }
-.theater_masks_panel-legend {
-  padding-block: var(--space-4);
-  font-size: var(--text-lg);
+.theater_masks_panel-list_heading {
+  padding: var(--space-2) var(--space-3);
+  color: var(--ink-muted);
+  font-size: var(--text-2xs);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  font-weight: var(--weight-medium);
 }
 .theater_masks_panel-mask {
+  width: 100%;
+  min-width: 0;
   display: flex;
   align-items: center;
-  gap: var(--space-3);
-  padding: var(--space-3);
-  text-align: start;
-  border: 1px solid var(--border-base);
+  gap: var(--space-2);
+  padding: var(--space-1);
+  border: 1px solid transparent;
   border-radius: var(--radius-md);
-  background: var(--bg-surface);
-  color: var(--ink-main);
+  background: transparent;
+  color: var(--ink-muted);
+  text-align: start;
+  font-size: var(--text-xs);
   cursor: pointer;
+  transition:
+    background var(--duration-fast) var(--ease-standard),
+    color var(--duration-fast) var(--ease-standard);
+}
+.theater_masks_panel-mask:hover {
+  background: var(--bg-surface-hover);
+  color: var(--ink-main);
 }
 .theater_masks_panel-mask[aria-current='true'] {
+  background: var(--bg-selected);
+  color: var(--action-primary);
   border-color: var(--border-focus);
 }
 .theater_masks_panel-mask:focus-visible {
   outline: 2px solid var(--border-focus);
+  outline-offset: 2px;
+}
+.theater_masks_panel-mask:disabled {
+  opacity: var(--opacity-disabled);
+  cursor: not-allowed;
 }
 .theater_masks_panel-thumbnail {
-  width: 3rem;
-  height: 4rem;
+  width: 2.5rem;
+  height: 3rem;
   object-fit: contain;
+  flex-shrink: 0;
 }
-.theater_masks_panel-actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-2);
-}
-.theater_masks_panel-photo {
+.theater_masks_panel-editor {
   display: grid;
-  gap: var(--space-2);
+  gap: var(--space-5);
+  min-width: 0;
+  padding: var(--space-6);
+  border: 1px solid var(--border-base);
+  border-radius: var(--radius-lg);
+  background: var(--bg-surface);
+  box-shadow: var(--shadow-close);
+}
+.theater_masks_panel-fields {
+  display: grid;
+  gap: var(--space-5);
+  min-width: 0;
+  border: 0;
+  padding: var(--space-0);
+  margin: var(--space-0);
+}
+.theater_masks_panel-legend {
+  padding-bottom: var(--space-5);
+  color: var(--ink-main);
+  font-size: var(--text-base);
+  font-weight: var(--weight-medium);
+}
+.theater_masks_panel-gallery_heading {
+  color: var(--ink-main);
+  font-size: var(--text-base);
+  font-weight: var(--weight-medium);
 }
 .theater_masks_panel-preview {
   width: 12rem;
   max-width: 100%;
   height: 12rem;
   object-fit: contain;
-  background: var(--bg-surface);
+  border-radius: var(--radius-md);
+  background: var(--bg-sunken);
 }
 .theater_masks_panel-hint {
   color: var(--ink-muted);
+  font-size: var(--text-xs);
+  line-height: var(--leading-relaxed);
+}
+.theater_masks_panel-empty {
+  padding: var(--space-12) var(--space-6);
+  border: 1px dashed var(--border-strong);
+  border-radius: var(--radius-lg);
+  color: var(--ink-muted);
+  text-align: center;
   font-size: var(--text-sm);
 }
-@media (min-width: 48rem) {
+@media (min-width: 64rem) {
   .theater_masks_panel-layout {
-    grid-template-columns: 16rem minmax(0, 1fr);
+    grid-template-columns: 19rem minmax(0, 1fr);
   }
   .theater_masks_panel-list {
     position: sticky;
-    top: 1rem;
-    max-height: calc(100dvh - 8rem);
-    overflow-y: auto;
-    scrollbar-gutter: stable;
+    top: 0;
+    max-height: calc(100dvh - 13rem);
   }
   .theater_masks_panel-editor {
     position: sticky;
-    top: 1rem;
+    top: 0;
+    padding: var(--space-8);
   }
 }

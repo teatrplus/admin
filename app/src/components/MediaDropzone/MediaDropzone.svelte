@@ -45,7 +45,7 @@
 <button
   class="media_dropzone"
   type="button"
-  data-dragging={dragging ? 'true' : 'false'}
+  data-dragging={dragging ? 'true' : undefined}
   {disabled}
   onclick={() => inputEl?.click()}
   ondragenter={(event) => {

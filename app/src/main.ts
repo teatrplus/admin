@@ -1,3 +1,5 @@
+import '@fontsource-variable/geologica/wght.css'
+import '@fontsource/geist-mono/latin-400.css'
 import { mount } from 'svelte'
 import App from './App.svelte'
 

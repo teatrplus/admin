@@ -6,6 +6,9 @@
   import StaffIcon from '~icons/material-symbols/group-outline'
   import AccountIcon from '~icons/material-symbols/person-outline'
   import SocialIcon from '~icons/material-symbols/share-outline'
+  import HomeIcon from '~icons/material-symbols/home-outline'
+  import MasksIcon from '~icons/material-symbols/theater-comedy-outline'
+  import InboxIcon from '~icons/material-symbols/inbox-outline'
   import CollapseIcon from '~icons/material-symbols/left-panel-close-outline'
   import ExpandIcon from '~icons/material-symbols/left-panel-open-outline'
   import MenuIcon from '~icons/material-symbols/menu'
@@ -20,6 +23,9 @@
     staff: StaffIcon,
     account: AccountIcon,
     social: SocialIcon,
+    homepage: HomeIcon,
+    masks: MasksIcon,
+    inquiries: InboxIcon,
   }
 
   let {

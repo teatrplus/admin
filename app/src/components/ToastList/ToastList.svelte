@@ -62,17 +62,15 @@
 </script>
 
 <div class="toast_list" role="region" aria-label={localeCtx.t.common.notifications}>
-  <div class="l_container">
-    <div class="toast_list-stack">
-      {#each toastState.items as toast (toast.id)}
-        <div
-          class="toast_list-item"
-          data-exiting={toast.exiting ? 'true' : undefined}
-          style:--c-toast-item-offset-top={(offsets[toast.id] ?? 0) + 'px'}
-        >
-          <ToastAlert {toast} onHeight={setHeight} />
-        </div>
-      {/each}
-    </div>
+  <div class="toast_list-stack">
+    {#each toastState.items as toast (toast.id)}
+      <div
+        class="toast_list-item"
+        data-exiting={toast.exiting ? 'true' : undefined}
+        style:--c-toast-item-offset-top={(offsets[toast.id] ?? 0) + 'px'}
+      >
+        <ToastAlert {toast} onHeight={setHeight} />
+      </div>
+    {/each}
   </div>
 </div>

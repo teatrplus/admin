@@ -1,5 +1,7 @@
 <script lang="ts">
   import type { Snippet } from 'svelte'
+  import { createWorkspace } from '@/lib/workspace/context.svelte'
+  import { MediaQuery } from 'svelte/reactivity'
   import BrandTitle from '@/components/BrandTitle/BrandTitle.svelte'
   import Button from '@/components/Button/Button.svelte'
   import NavIcon from '@/components/NavIcon/NavIcon.svelte'
@@ -20,13 +22,19 @@
 
   let { children }: { children: Snippet } = $props()
 
+  const workspace = createWorkspace()
   const localeCtx = useLocale()
   const user = $derived(getCurrentUser())
   const navSections = $derived(navSectionsForUser())
   const currentRoute = $derived(getRoute())
+  const currentSection = $derived(
+    navSections.find((section) => section.items.some((item) => item.route === currentRoute)),
+  )
+  const currentItem = $derived(currentSection?.items.find((item) => item.route === currentRoute))
   const localeOptions = $derived(LOCALES.map((locale) => ({ value: locale, label: LOCALE_LABELS[locale] })))
 
-  const isDesktopViewport = () => window.matchMedia('(min-width: 48rem)').matches
+  const desktop = new MediaQuery('(min-width: 48rem)')
+  const isDesktopViewport = () => desktop.current
 
   const readCollapsed = () => {
     try {
@@ -69,7 +77,13 @@
   }
 </script>
 
-<div class="admin_shell" data-sidebar-collapsed={collapsed ? 'true' : 'false'}>
+<svelte:window
+  onkeydown={(event) => {
+    if (event.key === 'Escape') closeSidebarOnMobile()
+  }}
+/>
+
+<div class="admin_shell" data-collapsed={collapsed ? 'true' : undefined}>
   <button
     type="button"
     class="admin_shell-backdrop"
@@ -78,62 +92,60 @@
     tabindex={collapsed ? -1 : 0}
     onclick={toggleSidebar}
   ></button>
-
-  <aside id="admin-shell-sidebar" class="admin_shell-sidebar">
+  <aside id="admin-shell-sidebar" class="admin_shell-sidebar" inert={!desktop.current && collapsed}>
     <a
       class="admin_shell-brand"
       href="/"
       onclick={(event) => {
+        if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return
         event.preventDefault()
-        navigate('/')
+        go('/')
       }}
     >
-      <RawSvg class="admin_shell-brand_mark raw_svg" content={iconSvg} width="36" height="36" aria-hidden="true" />
-      <span class="admin_shell-brand_text"><BrandTitle /></span>
+      <RawSvg class="admin_shell-brand_mark raw_svg" content={iconSvg} width="32" height="32" aria-hidden="true" />
+      <div class="admin_shell-brand_text">
+        <BrandTitle />
+        <span class="admin_shell-brand_caption">{localeCtx.t.workspace.label}</span>
+      </div>
     </a>
-
     <nav class="admin_shell-nav" aria-label="CMS">
       {#each navSections as section}
         <section class="admin_shell-section">
           <p class="admin_shell-section_label">{sectionLabel(section.labelKey)}</p>
-          <div class="admin_shell-section_rule" aria-hidden="true"></div>
           {#each section.items as item}
-            <Button
-              variant="unstyled"
+            <a
               class="admin_shell-nav_link"
-              data-active={currentRoute === item.route ? 'true' : 'false'}
+              href={item.route}
+              aria-current={currentRoute === item.route ? 'page' : undefined}
               title={itemLabel(item.labelKey)}
-              aria-label={itemLabel(item.labelKey)}
-              onclick={() => go(item.route)}
+              onclick={(event) => {
+                if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return
+                event.preventDefault()
+                go(item.route)
+              }}
             >
-              <NavIcon name={item.icon} label={itemLabel(item.labelKey)} />
+              <NavIcon name={item.icon} />
               <span class="admin_shell-nav_label">{itemLabel(item.labelKey)}</span>
-            </Button>
+            </a>
           {/each}
         </section>
       {/each}
     </nav>
-
     <div class="admin_shell-sidebar_footer">
       <Button
         variant="unstyled"
         class="admin_shell-collapse_button"
         onclick={toggleSidebar}
         aria-expanded={!collapsed}
+        aria-label={collapsed ? localeCtx.t.nav.expand : localeCtx.t.nav.collapse}
         title={collapsed ? localeCtx.t.nav.expand : localeCtx.t.nav.collapse}
       >
-        <NavIcon
-          name={collapsed ? 'expand' : 'collapse'}
-          label={collapsed ? localeCtx.t.nav.expand : localeCtx.t.nav.collapse}
-        />
-        <span class="admin_shell-collapse_label">
-          {collapsed ? localeCtx.t.nav.expand : localeCtx.t.nav.collapse}
-        </span>
+        <NavIcon name={collapsed ? 'expand' : 'collapse'} />
+        <span class="admin_shell-collapse_label">{localeCtx.t.nav.collapse}</span>
       </Button>
     </div>
   </aside>
-
-  <div class="l_stack admin_shell-main" data-gap="0">
+  <div class="admin_shell-main">
     <header class="admin_shell-header">
       <div class="admin_shell-header_start">
         <Button
@@ -141,40 +153,65 @@
           class="admin_shell-menu_button"
           aria-controls="admin-shell-sidebar"
           aria-expanded={!collapsed}
-          title={collapsed ? localeCtx.t.nav.expand : localeCtx.t.nav.collapse}
+          aria-label={collapsed ? localeCtx.t.nav.expand : localeCtx.t.nav.collapse}
           onclick={toggleSidebar}
         >
-          <NavIcon
-            name={collapsed ? 'menu' : 'close'}
-            label={collapsed ? localeCtx.t.nav.expand : localeCtx.t.nav.collapse}
-          />
+          <NavIcon name={collapsed ? 'menu' : 'close'} />
         </Button>
-        <div class="admin_shell-user">{user?.name || user?.email}</div>
+        <div class="admin_shell-breadcrumb">
+          <span class="admin_shell-breadcrumb_section"
+            >{currentSection ? sectionLabel(currentSection.labelKey) : localeCtx.t.workspace.label}</span
+          >
+          <span class="admin_shell-breadcrumb_separator" aria-hidden="true">/</span>
+          <span class="admin_shell-breadcrumb_current"
+            >{currentItem ? itemLabel(currentItem.labelKey) : localeCtx.t.workspace.overview}</span
+          >
+        </div>
       </div>
       <div class="admin_shell-header_actions">
         <ThemeToggle />
-        <Select
-          class="admin_shell-locale_select"
-          aria-label={localeCtx.t.common.language}
-          size="sm"
-          value={localeCtx.locale}
-          options={localeOptions}
-          onValueChange={(next) => localeCtx.setLocale(next as Locale)}
+        <div class="admin_shell-locale">
+          <Select
+            aria-label={localeCtx.t.common.language}
+            size="sm"
+            value={localeCtx.locale}
+            options={localeOptions}
+            onValueChange={(next) => localeCtx.setLocale(next as Locale)}
+          />
+        </div>
+        <a
+          class="admin_shell-user"
+          href="/account"
+          title={localeCtx.t.nav.account}
+          onclick={(event) => {
+            if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return
+            event.preventDefault()
+            go('/account')
+          }}
         >
-          {#snippet leadingIcon()}
-            <NavIcon name="language" label={localeCtx.t.common.language} size={20} />
-          {/snippet}
-        </Select>
-        <Button variant="outline" color="neutral" size="sm" title={localeCtx.t.common.logout} onclick={signOut}>
-          {#snippet leftIcon()}
-            <NavIcon name="logout" label={localeCtx.t.common.logout} size={18} />
-          {/snippet}
-          {localeCtx.t.common.logout}
+          <span class="admin_shell-avatar" aria-hidden="true"
+            >{(user?.name || user?.email || '?').slice(0, 2).toUpperCase()}</span
+          >
+          <span class="admin_shell-user_name">{user?.name || user?.email}</span>
+        </a>
+        <Button
+          variant="ghost"
+          color="neutral"
+          shape="square"
+          size="sm"
+          aria-label={localeCtx.t.common.logout}
+          title={localeCtx.t.common.logout}
+          onclick={signOut}
+        >
+          <NavIcon name="logout" />
         </Button>
       </div>
     </header>
-    <main class="admin_shell-content">
-      {@render children()}
+    {#if workspace.state.actions}
+      <div class="admin_shell-actions">{@render workspace.state.actions()}</div>
+    {/if}
+    <main class="admin_shell-content" bind:this={workspace.state.content}>
+      <div class="admin_shell-page">{@render children()}</div>
     </main>
   </div>
 </div>

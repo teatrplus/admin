@@ -1,5 +1,11 @@
 <script lang="ts">
-  import type { ToastModel, ToastType } from '@/stores/toastStore.svelte'
+  import SuccessIcon from '~icons/material-symbols/check-circle-outline'
+  import ErrorIcon from '~icons/material-symbols/error-outline'
+  import WarningIcon from '~icons/material-symbols/warning-outline'
+  import InfoIcon from '~icons/material-symbols/info-outline'
+  import './ToastAlert.css'
+
+  import type { ToastModel } from '@/stores/toastStore.svelte'
 
   let {
     toast,
@@ -9,12 +15,8 @@
     onHeight: (id: number, height: number) => void
   } = $props()
 
-  const TOAST_EMOJI: Record<ToastType, string> = {
-    success: '✅',
-    error: '❌',
-    warning: '⚠️',
-    info: 'ℹ️',
-  }
+  const icons = { success: SuccessIcon, error: ErrorIcon, warning: WarningIcon, info: InfoIcon }
+  const Icon = $derived(icons[toast.type])
 
   const role = $derived(toast.type === 'error' ? 'alert' : 'status')
 
@@ -33,9 +35,13 @@
   })
 </script>
 
-<div class="toast_list-alert" data-type={toast.type} {role} bind:this={alertEl}>
-  <div class="l_cluster" data-gap="3" data-nowrap>
-    <span class="toast_list-icon" aria-hidden="true">{TOAST_EMOJI[toast.type]}</span>
-    <p class="toast_list-message">{toast.message}</p>
-  </div>
+<div
+  class="toast_alert"
+  data-type={toast.type}
+  data-exiting={toast.exiting ? 'true' : undefined}
+  {role}
+  bind:this={alertEl}
+>
+  <span class="toast_alert-icon" aria-hidden="true"><Icon width="20" height="20" /></span>
+  <p class="toast_alert-message">{toast.message}</p>
 </div>

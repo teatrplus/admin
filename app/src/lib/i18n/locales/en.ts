@@ -1,6 +1,30 @@
 import type { TranslationSchema } from '../schema'
 
 export const en: TranslationSchema = {
+  workspace: {
+    label: 'Content workspace',
+    overview: 'Overview',
+    homeDescription: 'Manage the stories, performances, and details on your homepage.',
+    masksDescription: 'Curate the collection and the museum visitor experience.',
+    inquiriesDescription: 'Keep track of messages from your visitors.',
+    staffDescription: 'Manage your team and their access to the workspace.',
+    accountDescription: 'Your personal details, security, and workspace access.',
+    landingDescription: 'Shape your venue page, from the first impression to the final detail.',
+    requestsDescription: 'Follow every booking from first inquiry to the event.',
+    socialDescription: 'Keep your website connected to the latest from Instagram.',
+    loginTitle: 'Welcome back.',
+    loginBody: 'Sign in to your Theater+ workspace.',
+    loginCaption: 'Behind every great performance.',
+    loginStory: 'One place for your content, your team, and the details that bring it all together.',
+    loginFooter: 'Theater+ · Administration',
+    profile: 'Personal information',
+    security: 'Password & security',
+    access: 'Workspace access',
+    securityHint: 'Leave these fields empty to keep your current password.',
+    shortcuts: 'Your workspace',
+    open: 'Open',
+    museumContent: 'Museum content',
+  },
   inquiries: {
     title: 'Inquiries',
     name: 'Name',
@@ -190,10 +214,10 @@ export const en: TranslationSchema = {
   },
   theater_social_panel: {
     title: 'Social',
-    body: 'Starts a Bright Data job for the 9 latest Instagram posts. That can take several minutes — this page updates when it finishes.',
+    body: 'Refresh the nine latest Instagram posts. This can take a few minutes; the page updates automatically when they are ready.',
     refresh: 'Refresh Instagram posts',
     started: 'Refresh started. You can leave this page; it will keep running on the server.',
-    running: 'Waiting for Bright Data… started {time}',
+    running: 'Refreshing posts… started {time}',
     success: 'Updated {count} Instagram posts.',
     successAt: 'Last refresh: {time} ({count} posts)',
     failed: 'Refresh failed: {error}',

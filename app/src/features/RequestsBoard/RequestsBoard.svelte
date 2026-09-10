@@ -1,12 +1,13 @@
 <script lang="ts">
+  import PageActions from '@/components/PageActions/PageActions.svelte'
+  import RequestActions from './RequestActions.svelte'
+  import PageHeader from '@/components/PageHeader/PageHeader.svelte'
   import { createMutation, createQuery, useQueryClient } from '@tanstack/svelte-query'
   import { flip } from 'svelte/animate'
   import { dndzone, type DndEvent } from 'svelte-dnd-action'
-  import { DropdownMenu, Select as SelectPrimitive } from 'bits-ui'
-  import ArchiveIcon from '~icons/material-symbols/archive-outline'
+  import { Select as SelectPrimitive } from 'bits-ui'
   import CheckIcon from '~icons/material-symbols/check'
   import ExpandIcon from '~icons/material-symbols/expand-more'
-  import MoreVertIcon from '~icons/material-symbols/more-vert'
   import type { SiteScope } from '@/lib/cms/scopes'
   import { toDateInputValue } from '@/lib/format'
   import { useLocale } from '@/lib/i18n/context.svelte'
@@ -295,43 +296,37 @@
 </script>
 
 <section class="requests_board">
-  <header class="requests_board-toolbar">
-    <div class="l_container">
-      <div class="requests_board-toolbar_row">
-        <div class="requests_board-heading">
-          <p class="requests_board-eyebrow">{localeCtx.t.scopes[scope]}</p>
-          <h1 class="requests_board-title">{localeCtx.t.requests.title}</h1>
-        </div>
-
-        <div class="requests_board-view_switch" role="group" aria-label={localeCtx.t.requests.title}>
-          <button
-            type="button"
-            class="requests_board-view_btn"
-            data-active={view === 'board' ? 'true' : undefined}
-            aria-pressed={view === 'board'}
-            onclick={() => {
-              view = 'board'
-            }}
-          >
-            {localeCtx.t.requests.viewBoard}
-          </button>
-          <button
-            type="button"
-            class="requests_board-view_btn"
-            data-active={view === 'table' ? 'true' : undefined}
-            aria-pressed={view === 'table'}
-            onclick={() => {
-              view = 'table'
-            }}
-          >
-            {localeCtx.t.requests.viewTable}
-          </button>
-        </div>
-      </div>
+  <PageHeader
+    title={localeCtx.t.requests.title}
+    eyebrow={localeCtx.t.scopes[scope]}
+    description={localeCtx.t.workspace.requestsDescription}
+  />
+  <PageActions label={localeCtx.t.requests.title}>
+    <div class="requests_board-view_switch" role="group" aria-label={localeCtx.t.requests.title}>
+      <button
+        type="button"
+        class="requests_board-view_btn"
+        aria-pressed={view === 'board'}
+        onclick={() => {
+          view = 'board'
+        }}
+      >
+        {localeCtx.t.requests.viewBoard}
+      </button>
+      <button
+        type="button"
+        class="requests_board-view_btn"
+        aria-pressed={view === 'table'}
+        onclick={() => {
+          view = 'table'
+        }}
+      >
+        {localeCtx.t.requests.viewTable}
+      </button>
     </div>
-  </header>
+  </PageActions>
 
-  <div class="l_container" data-size="fluid">
+  <div class="l_stack" data-gap="6">
     {#if view === 'table'}
       <RequestsTable {scope} />
     {:else if requestsQuery.isPending}
@@ -343,7 +338,7 @@
     {:else}
       <div class="requests_board-board">
         {#each REQUEST_STAGES as stage}
-          <section class="requests_board-column">
+          <section class="requests_board-column" data-stage={stage}>
             <div class="requests_board-column_header">
               <h2 class="requests_board-column_title">{stageLabel(stage)}</h2>
               <span class="requests_board-column_count">{columns[stage].length}</span>
@@ -377,44 +372,19 @@
                         onmousedown={stopCardDrag}
                         ontouchstart={stopCardDrag}
                       >
-                        <DropdownMenu.Root>
-                          <DropdownMenu.Trigger
-                            class="requests_board-menu_trigger"
-                            aria-label={localeCtx.t.requests.actions}
-                          >
-                            <MoreVertIcon width="18" height="18" />
-                          </DropdownMenu.Trigger>
-                          <DropdownMenu.Portal>
-                            <DropdownMenu.Content class="requests_board-menu_content" sideOffset={6} align="end">
-                              <DropdownMenu.Item
-                                class="requests_board-menu_item"
-                                textValue={localeCtx.t.requests.archive}
-                                data-disabled={!canArchive(stage) ? 'true' : undefined}
-                                aria-disabled={!canArchive(stage) ? 'true' : undefined}
-                                onSelect={() => archiveCard(card, stage)}
-                              >
-                                <span class="requests_board-menu_item_icon" aria-hidden="true">
-                                  <ArchiveIcon width="16" height="16" />
-                                </span>
-                                <span class="requests_board-menu_item_label">
-                                  {localeCtx.t.requests.archive}
-                                </span>
-                              </DropdownMenu.Item>
-                            </DropdownMenu.Content>
-                          </DropdownMenu.Portal>
-                        </DropdownMenu.Root>
+                        <RequestActions blocked={!canArchive(stage)} onSelect={() => archiveCard(card, stage)} />
                       </div>
                     {/if}
                   </div>
 
                   <dl class="requests_board-card_meta">
-                    <div>
-                      <dt>{localeCtx.t.requests.clientPhone}</dt>
-                      <dd>{card.client_phone_number || '—'}</dd>
+                    <div class="requests_board-meta_item">
+                      <dt class="requests_board-meta_label">{localeCtx.t.requests.clientPhone}</dt>
+                      <dd class="requests_board-meta_value">{card.client_phone_number || '—'}</dd>
                     </div>
-                    <div>
-                      <dt>{localeCtx.t.requests.dateRequested}</dt>
-                      <dd>
+                    <div class="requests_board-meta_item">
+                      <dt class="requests_board-meta_label">{localeCtx.t.requests.dateRequested}</dt>
+                      <dd class="requests_board-meta_value">
                         {#if canEdit}
                           <!-- svelte-ignore a11y_no_static_element_interactions a11y_no_noninteractive_element_interactions -->
                           <div

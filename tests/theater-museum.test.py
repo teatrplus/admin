@@ -43,6 +43,8 @@ migrate((app) => {
         shutil.copy(ROOT / "pb_hooks/lib/theater_slug.js", hooks / "lib")
         shutil.copy(ROOT / "pb_hooks/museum_page.pb.js", hooks)
         shutil.copy(ROOT / "pb_hooks/lib/museum_page.js", hooks / "lib")
+        shutil.copy(ROOT / "pb_hooks/mask_order.pb.js", hooks)
+        shutil.copy(ROOT / "pb_hooks/lib/mask_order.js", hooks / "lib")
         (migrations / "museum-assets").symlink_to(ROOT / "pb_migrations/museum-assets", target_is_directory=True)
         args = [str(ROOT / "pocketbase"), "--dir", str(base / "pb_data"), "--migrationsDir", str(migrations), "--hooksDir", str(hooks)]
         migration = subprocess.run(args + ["migrate", "up"], check=True, capture_output=True, text=True)
@@ -121,6 +123,23 @@ migrate((app) => {
             masks = result["items"]
             assert [mask["legacy_slug"] for mask in masks] == ["004", "007", "011", "012", "013", "022", "023"]
             assert [mask["slug"] for mask in masks] == ["trick", "vesna", "crown-beast", "still", "bad-weather", "tease", "gracious-lady"]
+            order_endpoint = '/api/theater/mask-order'
+            def order_revision(items):
+                return '|'.join(sorted(f"{item['id']}:{item['sort_order']}" for item in items))
+            reorder = {'ids': [mask['id'] for mask in reversed(masks)], 'revision': order_revision(masks)}
+            for token in [None, tokens['moderator'], tokens['manager'], tokens['viewer']]:
+                assert request('POST', order_endpoint, reorder, token)[0] in [401, 403]
+            code, reordered = request('POST', order_endpoint, reorder, tokens['admin'])
+            assert code == 200, reordered
+            assert [mask['id'] for mask in reordered] == reorder['ids']
+            assert [mask['sort_order'] for mask in reordered] == list(range(7))
+            assert request('POST', order_endpoint, reorder, tokens['admin'])[0] == 409
+            invalid = {'ids': [masks[0]['id']] * 7, 'revision': order_revision(reordered)}
+            assert request('POST', order_endpoint, invalid, tokens['admin'])[0] == 400
+            persisted = request('GET', mask_path + '?sort=sort_order,slug')[1]['items']
+            assert [mask['id'] for mask in persisted] == reorder['ids']
+            restore_order = {'ids': [mask['id'] for mask in masks], 'revision': order_revision(reordered)}
+            assert request('POST', order_endpoint, restore_order, tokens['admin'])[0] == 200
             code, result = request("GET", page_path)
             assert code == 200 and len(result["items"]) == 1, result
             page = result["items"][0]

@@ -15,6 +15,7 @@
     children,
     disabled = false,
     layout = 'list',
+    density = 'comfortable',
   }: {
     items: T[]
     label: string
@@ -22,7 +23,8 @@
     onReorder: (items: T[]) => void
     children: Snippet<[T, number]>
     disabled?: boolean
-    layout?: 'list' | 'grid'
+    layout?: 'list' | 'grid' | 'gallery'
+    density?: 'compact' | 'comfortable'
   } = $props()
 
   const localeCtx = useLocale()
@@ -58,12 +60,14 @@
 <div
   class="sortable_list"
   data-layout={layout}
+  data-density={density}
   aria-label={label}
   use:dragHandleZone={{
     items: sortableItems,
     type: zoneId,
     flipDurationMs,
     dragDisabled: disabled,
+    morphDisabled: layout === 'gallery',
     dropFromOthersDisabled: true,
     dropTargetStyle: { outline: '2px dashed var(--border-focus)', outlineOffset: '2px' },
   }}
@@ -73,6 +77,8 @@
   {#each sortableItems as item, index (item.id)}
     <div
       class="sortable_list-item"
+      data-layout={layout}
+      data-density={density}
       aria-label={itemLabel(item.value, index)}
       animate:flip={{ duration: flipDurationMs }}
     >

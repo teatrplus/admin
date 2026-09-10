@@ -1,55 +1,72 @@
-.theater_home_editor,
+.theater_home_editor {
+  display: grid;
+  min-width: 0;
+}
+.theater_home_editor-layout {
+  display: grid;
+  align-items: start;
+  gap: var(--space-6);
+  min-width: 0;
+}
 .theater_home_editor-form,
 .theater_home_editor-fields,
-.theater_home_editor-pair,
 .theater_home_editor-section,
 .theater_home_editor-stat {
   display: grid;
-  gap: var(--space-4);
+  gap: var(--space-5);
   min-width: 0;
-}
-.theater_home_editor-title {
-  font-family: var(--font-heading);
-  font-size: var(--text-2xl);
-}
-.theater_home_editor-heading {
-  font-size: var(--text-lg);
-}
-.theater_home_editor-hint {
-  color: var(--ink-muted);
-  font-size: var(--text-sm);
 }
 .theater_home_editor-fields {
   border: 0;
-  padding: 0;
-  margin: 0;
+  padding: var(--space-0);
+  margin: var(--space-0);
 }
 .theater_home_editor-section {
-  padding: var(--space-5);
+  padding: var(--space-6);
   border: 1px solid var(--border-base);
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-lg);
   background: var(--bg-surface);
+  box-shadow: var(--shadow-close);
   align-content: start;
+}
+.theater_home_editor-heading {
+  color: var(--ink-main);
+  font-size: var(--text-base);
+  font-weight: var(--weight-medium);
+}
+.theater_home_editor-hint {
+  color: var(--ink-muted);
+  font-size: var(--text-xs);
+  line-height: var(--leading-relaxed);
 }
 .theater_home_editor-actions,
 .theater_home_editor-row {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   flex-wrap: wrap;
   gap: var(--space-2);
+  font-size: var(--text-sm);
 }
 .theater_home_editor-preview {
   width: 12rem;
   height: 12rem;
   object-fit: contain;
+  border: 1px solid var(--border-base);
+  border-radius: var(--radius-md);
+  background: var(--bg-sunken);
+}
+.theater_home_editor-subheading {
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--border-base);
 }
 @media (min-width: 64rem) {
-  .theater_home_editor-pair {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    align-items: start;
+  .theater_home_editor-layout {
+    grid-template-columns: 12rem minmax(0, 1fr);
   }
   .theater_home_editor-section {
-    position: sticky;
-    top: 1rem;
+    padding: var(--space-8);
   }
 }

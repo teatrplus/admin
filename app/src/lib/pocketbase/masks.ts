@@ -46,7 +46,7 @@ export function museumDraft(record: RecordModel | undefined, page: boolean): Rec
     for (const field of maskFields)
       for (const locale of contentLocales) draft[`${field}_${locale}`] = String(record?.[`${field}_${locale}`] ?? '')
     draft.slug = String(record?.slug ?? '')
-    draft.sort_order = String(record?.sort_order ?? '0')
+    if (!record) draft.sort_order = '0'
   }
   return draft
 }
@@ -94,4 +94,12 @@ export const museumFieldLabels: Record<string, [string, string]> = {
   excursion_button_label: ['Tour button', 'Кнопка экскурсии'],
   museum_button_url: ['Directions URL', 'Ссылка на маршрут'],
   excursion_button_url: ['Tour tickets URL', 'Ссылка на билеты экскурсии'],
+}
+
+export function saveMaskOrder(ids: string[], masks: RecordModel[]) {
+  const revision = masks
+    .map((mask) => `${mask.id}:${mask.sort_order ?? 0}`)
+    .sort()
+    .join('|')
+  return pb.send<RecordModel[]>('/api/theater/mask-order', { method: 'POST', body: { ids, revision } })
 }

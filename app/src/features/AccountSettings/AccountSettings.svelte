@@ -1,4 +1,6 @@
 <script lang="ts">
+  import PageActions from '@/components/PageActions/PageActions.svelte'
+  import PageHeader from '@/components/PageHeader/PageHeader.svelte'
   import { createMutation, createQuery, useQueryClient } from '@tanstack/svelte-query'
   import * as v from 'valibot'
   import Button from '@/components/Button/Button.svelte'
@@ -134,86 +136,88 @@
 </script>
 
 <section class="account_settings">
-  <header class="account_settings-toolbar">
-    <div class="l_container">
-      <div class="account_settings-heading">
-        <p class="account_settings-eyebrow">{localeCtx.t.nav.sections.global}</p>
-        <h1 class="account_settings-title">{localeCtx.t.account.title}</h1>
-      </div>
-    </div>
-  </header>
-
-  <div class="l_container">
-    {#if accountQuery.isPending}
-      <p class="account_settings-status">{localeCtx.t.common.loading}</p>
-    {:else if accountQuery.isError}
-      <p class="account_settings-status" data-tone="error">
-        {accountQuery.error instanceof Error ? accountQuery.error.message : localeCtx.t.common.error}
-      </p>
-    {:else}
-      <div class="account_settings-body">
+  <PageHeader
+    title={localeCtx.t.account.title}
+    eyebrow={localeCtx.t.nav.sections.global}
+    description={localeCtx.t.workspace.accountDescription}
+  />
+  {#if account}
+    <PageActions label={localeCtx.t.account.title}>
+      <Button type="submit" form="account-settings-form" isLoading={saveMutation.isPending}
+        >{localeCtx.t.common.save}</Button
+      >
+    </PageActions>
+  {/if}
+  {#if accountQuery.isPending}
+    <p class="account_settings-status" role="status">{localeCtx.t.common.loading}</p>
+  {:else if accountQuery.isError}
+    <p class="account_settings-status" data-tone="error" role="alert">
+      {accountQuery.error instanceof Error ? accountQuery.error.message : localeCtx.t.common.error}
+    </p>
+  {:else}
+    <form id="account-settings-form" class="account_settings-form" autocomplete="off" onsubmit={submit}>
+      <section class="account_settings-section">
+        <h2 class="account_settings-section_title">{localeCtx.t.workspace.profile}</h2>
+        <div class="account_settings-fields">
+          <FormField
+            label={localeCtx.t.staff.email}
+            name="email"
+            type="email"
+            autocomplete="off"
+            bind:value={form.values.email}
+            error={form.errors.email}
+            required
+          />
+          {#if isStaffAccount}
+            <FormField label={localeCtx.t.staff.name} name="name" bind:value={form.values.name} />
+            <FormField label={localeCtx.t.staff.phoneNumber} name="phoneNumber" bind:value={form.values.phoneNumber} />
+            <FormField
+              label={localeCtx.t.staff.telegramUsername}
+              name="telegramUsername"
+              bind:value={form.values.telegramUsername}
+            />
+          {/if}
+        </div>
+      </section>
+      <section class="account_settings-section">
+        <div class="l_stack" data-gap="2">
+          <h2 class="account_settings-section_title">{localeCtx.t.workspace.security}</h2>
+          <p class="account_settings-section_hint">{localeCtx.t.workspace.securityHint}</p>
+        </div>
+        <div class="account_settings-fields">
+          <FormField
+            label={localeCtx.t.staff.password}
+            name="password"
+            type="password"
+            autocomplete="new-password"
+            bind:value={form.values.password}
+            error={form.errors.password}
+          />
+          <FormField
+            label={localeCtx.t.staff.passwordConfirm}
+            name="passwordConfirm"
+            type="password"
+            autocomplete="new-password"
+            bind:value={form.values.passwordConfirm}
+            error={form.errors.passwordConfirm}
+          />
+        </div>
+      </section>
+      {#if isStaffAccount}
         <section class="account_settings-section">
-          <form class="account_settings-form" autocomplete="off" onsubmit={submit}>
-            <div class="account_settings-form_header">
-              <h2 class="account_settings-section_title">{localeCtx.t.account.profile}</h2>
-              <Button type="submit" isLoading={saveMutation.isPending}>
-                {localeCtx.t.common.save}
-              </Button>
+          <h2 class="account_settings-section_title">{localeCtx.t.workspace.access}</h2>
+          <div class="account_settings-access">
+            <div class="account_settings-meta">
+              <p class="account_settings-meta_label">{localeCtx.t.staff.role}</p>
+              <p class="account_settings-meta_value">{roleLabel}</p>
             </div>
-
-            <FormField
-              label={localeCtx.t.staff.email}
-              name="email"
-              type="email"
-              autocomplete="off"
-              bind:value={form.values.email}
-              error={form.errors.email}
-              required
-            />
-            {#if isStaffAccount}
-              <FormField label={localeCtx.t.staff.name} name="name" bind:value={form.values.name} />
-              <FormField
-                label={localeCtx.t.staff.phoneNumber}
-                name="phoneNumber"
-                bind:value={form.values.phoneNumber}
-              />
-              <FormField
-                label={localeCtx.t.staff.telegramUsername}
-                name="telegramUsername"
-                bind:value={form.values.telegramUsername}
-              />
-            {/if}
-            <FormField
-              label={localeCtx.t.staff.password}
-              name="password"
-              type="password"
-              autocomplete="new-password"
-              bind:value={form.values.password}
-              error={form.errors.password}
-              hint={localeCtx.t.staff.passwordOptional}
-            />
-            <FormField
-              label={localeCtx.t.staff.passwordConfirm}
-              name="passwordConfirm"
-              type="password"
-              autocomplete="new-password"
-              bind:value={form.values.passwordConfirm}
-              error={form.errors.passwordConfirm}
-            />
-
-            {#if isStaffAccount}
-              <div class="account_settings-meta">
-                <p class="account_settings-meta_label">{localeCtx.t.staff.role}</p>
-                <p class="account_settings-meta_value">{roleLabel}</p>
-              </div>
-              <div class="account_settings-meta">
-                <p class="account_settings-meta_label">{localeCtx.t.staff.scope}</p>
-                <p class="account_settings-meta_value">{formatScopes(account?.scope)}</p>
-              </div>
-            {/if}
-          </form>
+            <div class="account_settings-meta">
+              <p class="account_settings-meta_label">{localeCtx.t.staff.scope}</p>
+              <p class="account_settings-meta_value">{formatScopes(account?.scope)}</p>
+            </div>
+          </div>
         </section>
-      </div>
-    {/if}
-  </div>
+      {/if}
+    </form>
+  {/if}
 </section>

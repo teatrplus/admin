@@ -18,22 +18,26 @@
   const localeCtx = useLocale()
 
   let preference = $state<ThemePreference>(readStoredThemePreference())
+  let effectiveTheme = $state<Theme>(resolveTheme(readStoredThemePreference()))
 
   const toggleTheme = () => {
     const current = resolveTheme(preference)
     const next: Theme = current === 'light' ? 'dark' : 'light'
     preference = next
+    effectiveTheme = next
     writeStoredThemePreference(next)
     applyTheme(next)
   }
 
   onMount(() => {
-    applyTheme(resolveTheme(preference))
+    effectiveTheme = resolveTheme(preference)
+    applyTheme(effectiveTheme)
 
     const media = window.matchMedia(DARK_MODE_QUERY)
     const onSchemeChange = (event: MediaQueryListEvent) => {
       if (preference === 'auto') {
-        applyTheme(event.matches ? 'dark' : 'light')
+        effectiveTheme = event.matches ? 'dark' : 'light'
+        applyTheme(effectiveTheme)
       }
     }
 
@@ -50,10 +54,11 @@
   title={localeCtx.t.common.toggleTheme}
   onclick={toggleTheme}
 >
-  <span class="theme_toggle-icon" data-theme-icon="light">
-    <LightIcon width="20" height="20" aria-hidden="true" />
-  </span>
-  <span class="theme_toggle-icon" data-theme-icon="dark">
-    <DarkIcon width="20" height="20" aria-hidden="true" />
+  <span class="theme_toggle-icon">
+    {#if effectiveTheme === 'dark'}<LightIcon width="20" height="20" aria-hidden="true" />{:else}<DarkIcon
+        width="20"
+        height="20"
+        aria-hidden="true"
+      />{/if}
   </span>
 </Button>

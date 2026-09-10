@@ -66,7 +66,7 @@
 >
   {#if isIconButton}
     {#if isLoading}
-      <span class="g_spinner" aria-hidden="true"></span>
+      <span class="g_spinner button-spinner" aria-hidden="true"></span>
     {:else}
       <span class="button-icon_slot" data-solo="true">
         {@render children?.()}
@@ -76,7 +76,7 @@
     {@render children?.()}
   {:else}
     {#if isLoading}
-      <span class="g_spinner" aria-hidden="true"></span>
+      <span class="g_spinner button-spinner" aria-hidden="true"></span>
     {/if}
 
     {#if leftIcon && !isLoading}

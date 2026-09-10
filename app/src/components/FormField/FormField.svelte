@@ -45,7 +45,8 @@
       id={name}
       {name}
       bind:value
-      data-invalid={error ? 'true' : 'false'}
+      aria-invalid={error ? 'true' : undefined}
+      aria-describedby={error || hint ? `${name}-description` : undefined}
       {required}
       {disabled}
       autocomplete={autocomplete ?? undefined}></textarea>
@@ -56,7 +57,8 @@
       {name}
       {type}
       bind:value
-      data-invalid={error ? 'true' : 'false'}
+      aria-invalid={error ? 'true' : undefined}
+      aria-describedby={error || hint ? `${name}-description` : undefined}
       {required}
       {disabled}
       autocomplete={autocomplete ?? undefined}
@@ -64,8 +66,8 @@
     />
   {/if}
   {#if error}
-    <p class="form_field-error">{error}</p>
+    <p class="form_field-error" id={`${name}-description`}>{error}</p>
   {:else if hint}
-    <p class="form_field-hint">{hint}</p>
+    <p class="form_field-hint" id={`${name}-description`}>{hint}</p>
   {/if}
 </div>

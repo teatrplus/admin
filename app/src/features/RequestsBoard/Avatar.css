@@ -3,9 +3,9 @@
   place-items: center;
   flex-shrink: 0;
   border-radius: var(--radius-full);
-  background: var(--c-avatar-bg, var(--bg-surface-hover));
+  background: var(--bg-selected);
   font-weight: var(--weight-semibold);
-  color: var(--ink-inverse);
+  color: var(--action-primary);
   line-height: 1;
   user-select: none;
 }
