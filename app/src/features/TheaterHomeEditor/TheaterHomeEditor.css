@@ -1,6 +1,7 @@
 .theater_home_editor,
 .theater_home_editor-form,
 .theater_home_editor-fields,
+.theater_home_editor-pair,
 .theater_home_editor-section,
 .theater_home_editor-stat {
   display: grid;
@@ -30,10 +31,6 @@
   background: var(--bg-surface);
   align-content: start;
 }
-.theater_home_editor-stat {
-  border-top: 1px solid var(--border-base);
-  padding-block: var(--space-4);
-}
 .theater_home_editor-actions,
 .theater_home_editor-row {
   display: flex;
@@ -47,8 +44,12 @@
   object-fit: contain;
 }
 @media (min-width: 64rem) {
-  .theater_home_editor-fields {
+  .theater_home_editor-pair {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     align-items: start;
+  }
+  .theater_home_editor-section {
+    position: sticky;
+    top: 1rem;
   }
 }

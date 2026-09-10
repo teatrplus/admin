@@ -4,6 +4,7 @@
   import FormField from '@/components/FormField/FormField.svelte'
   import MediaDropzone from '@/components/MediaDropzone/MediaDropzone.svelte'
   import StatusBanner from '@/components/StatusBanner/StatusBanner.svelte'
+  import SortableList from '@/components/SortableList/SortableList.svelte'
   import { useLocale } from '@/lib/i18n/context.svelte'
   import { pb } from '@/lib/pocketbase/client'
   import {
@@ -126,12 +127,6 @@
       saving = false
     }
   }
-
-  function move(index: number, offset: number) {
-    const next = [...files]
-    ;[next[index], next[index + offset]] = [next[index + offset]!, next[index]!]
-    files = next
-  }
 </script>
 
 <svelte:window
@@ -246,41 +241,40 @@
                 )}
               </p>
             {/if}
-            <div class="theater_masks_panel-media">
-              {#each previews as preview, index (preview.url)}
-                <div class="theater_masks_panel-photo">
-                  <img
-                    class="theater_masks_panel-preview"
-                    src={preview.url}
-                    alt={typeof preview.file === 'string' ? preview.file : preview.file.name}
-                  />
-                  {#if isPage}
-                    <div class="theater_masks_panel-actions">
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        disabled={index === 0 || saving}
-                        onclick={() => move(index, -1)}
-                        aria-label={tr('Move earlier', 'Переместить раньше')}>↑</Button
-                      >
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        disabled={index === files.length - 1 || saving}
-                        onclick={() => move(index, 1)}
-                        aria-label={tr('Move later', 'Переместить позже')}>↓</Button
-                      >
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        disabled={saving}
-                        onclick={() => (files = files.filter((_, i) => i !== index))}>{tr('Remove', 'Убрать')}</Button
-                      >
-                    </div>
-                  {/if}
-                </div>
+            {#if isPage}
+              <SortableList
+                items={files}
+                label={tr('Tour photos', 'Фото экскурсии')}
+                itemLabel={(file) => (typeof file === 'string' ? file : file.name)}
+                layout="grid"
+                disabled={saving}
+                onReorder={(items) => (files = items)}
+              >
+                {#snippet children(file, index)}
+                  <div class="theater_masks_panel-photo">
+                    <img
+                      class="theater_masks_panel-preview"
+                      src={previews.find((preview) => preview.file === file)?.url}
+                      alt={typeof file === 'string' ? file : file.name}
+                    />
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      disabled={saving}
+                      onclick={() => (files = files.filter((_, i) => i !== index))}>{tr('Remove', 'Убрать')}</Button
+                    >
+                  </div>
+                {/snippet}
+              </SortableList>
+            {:else}
+              {#each previews as preview (preview.url)}
+                <img
+                  class="theater_masks_panel-preview"
+                  src={preview.url}
+                  alt={typeof preview.file === 'string' ? preview.file : preview.file.name}
+                />
               {/each}
-            </div>
+            {/if}
             <MediaDropzone
               label={isPage
                 ? tr('Add tour photos', 'Добавить фото экскурсии')
