@@ -1,4 +1,14 @@
 export type TranslationSchema = {
+  publication: {
+    publish: string
+    publishing: string
+    pending: string
+    landing: string
+    theater: string
+    started: string
+    failed: string
+    retryStatus: string
+  }
   workspace: {
     label: string
     overview: string

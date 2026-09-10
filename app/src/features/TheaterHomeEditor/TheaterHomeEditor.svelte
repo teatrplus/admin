@@ -132,7 +132,7 @@
     try {
       accept(await saveHomeContent(draft, images))
       pushToast(
-        tr('Saved. Rebuild the website to publish changes.', 'Сохранено. Пересоберите сайт для публикации изменений.'),
+        tr('Saved. Click Publish to update the site.', 'Сохранено. Нажмите «Опубликовать», чтобы обновить сайт.'),
         'success',
       )
     } catch (cause) {

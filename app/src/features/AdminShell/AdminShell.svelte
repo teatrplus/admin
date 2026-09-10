@@ -7,6 +7,7 @@
   import NavIcon from '@/components/NavIcon/NavIcon.svelte'
   import RawSvg from '@/components/RawSvg/RawSvg.svelte'
   import ThemeToggle from '@/components/ThemeToggle/ThemeToggle.svelte'
+  import PublishButton from '@/features/PublishButton/PublishButton.svelte'
   import '@/components/RawSvg/RawSvg.css'
   import { useLocale } from '@/lib/i18n/context.svelte'
   import { getCurrentUser, logout } from '@/lib/pocketbase/auth'
@@ -168,6 +169,7 @@
         </div>
       </div>
       <div class="admin_shell-header_actions">
+        <PublishButton />
         <div class="admin_shell-locale" role="group" aria-label={localeCtx.t.common.language}>
           {#each ['en', 'ru'] as code, index}
             {#if index}<span aria-hidden="true">/</span>{/if}

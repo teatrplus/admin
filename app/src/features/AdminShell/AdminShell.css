@@ -204,11 +204,13 @@
 }
 .admin_shell-header {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
   gap: var(--space-3);
   flex-shrink: 0;
-  height: 4.5rem;
+  min-height: 4.5rem;
+  padding-block: var(--space-2);
   padding-inline: var(--c-gutter);
   border-bottom: 1px solid var(--border-base);
   background: var(--bg-surface);
@@ -254,6 +256,7 @@
   align-items: center;
   gap: var(--space-2);
   flex-shrink: 0;
+  margin-inline-start: auto;
 }
 .admin_shell-user {
   display: none;

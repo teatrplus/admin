@@ -1,6 +1,16 @@
 import type { TranslationSchema } from '../schema'
 
 export const en: TranslationSchema = {
+  publication: {
+    publish: 'Publish',
+    publishing: 'Publishing…',
+    pending: 'Unpublished changes',
+    landing: 'Landing',
+    theater: 'Theater',
+    started: 'Publishing started. Changes will appear on the site in approximately 2 minutes.',
+    failed: 'Could not start publishing. Your changes are saved. Please try again.',
+    retryStatus: 'Retry status',
+  },
   workspace: {
     label: 'Content workspace',
     overview: 'Overview',
@@ -132,7 +142,7 @@ export const en: TranslationSchema = {
     addRow: 'Add row',
     removeRow: 'Remove',
     deleteImage: 'Remove image',
-    savedToast: 'Saved. Changes will appear on the landing page in 1–2 minutes.',
+    savedToast: 'Saved. Click Publish to update the site.',
     validationHeaderPhone: 'Select a header phone contact.',
     validationMinItems: 'Add at least one item to {section}.',
     validationItemLocales: 'Fill all RU / EN / UZ fields in {section}.',

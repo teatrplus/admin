@@ -1,5 +1,9 @@
 # Deployment
 
+CMS saves and public-site builds are separate: use the admin header's Publish
+button to rebuild only sites with saved changes. See [publishing](../docs/publishing.md)
+for the required migration, hook environment variables, and failure behavior.
+
 ## Copy a database between local and production
 
 Stop your local PocketBase process, then run from `theaterplus-admin`:
