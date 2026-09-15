@@ -69,6 +69,41 @@ def run():
         expect(*request('GET','/api/theater/content/'+name,token=moderator))
     print('PASS: all editor collections and theater-scoped roles')
 
+    sponsors_path = '/api/theater/content/t_page_sponsors'
+    sponsors = expect(*request('GET', sponsors_path, token=moderator))['items'][0]
+    original_sponsors = copy.deepcopy(sponsors['record'])
+    faq = sponsors['record']['faq']
+    assert all(item.get('button') is None for item in faq)
+    faq[0]['button'] = dict(label_ru='Обсудить', label_en='Discuss', label_uz='Muhokama', url='https://theaterplus.uz/contact/')
+    faq[1]['button'] = dict(label_ru='Позвонить', label_en='Call', label_uz='Qo‘ng‘iroq', url='tel:+998920456336')
+    sponsors_url = sponsors_path + '/' + sponsors['record']['id']
+    sponsors = expect(*request('POST', sponsors_url, {'content': json.dumps(sponsors)}, moderator))
+    faq = sponsors['record']['faq']
+    assert faq[0]['button']['id'] != faq[1]['button']['id']
+    assert faq[0]['button']['label_en'] == 'Discuss'
+    assert faq[1]['button']['url'] == 'tel:+998920456336'
+    public = expect(*request('GET', '/api/collections/t_page_sponsors/records?expand=faq.button'))['items'][0]
+    public_faq = {item['id']: item for item in public['expand']['faq']}
+    assert public_faq[faq[0]['id']]['expand']['button']['label_uz'] == 'Muhokama'
+    invalid = copy.deepcopy(sponsors)
+    invalid['record']['faq'][0]['button']['url'] = 'javascript:alert(1)'
+    expect(*request('POST', sponsors_url, {'content': json.dumps(invalid)}, moderator), expected=400)
+    assert expect(*request('GET', sponsors_path, token=moderator))['items'][0] == sponsors
+    invalid = copy.deepcopy(sponsors)
+    invalid['record']['faq'][0]['button'] = copy.deepcopy(faq[1]['button'])
+    expect(*request('POST', sponsors_url, {'content': json.dumps(invalid)}, moderator), expected=400)
+    assert expect(*request('GET', sponsors_path, token=moderator))['items'][0] == sponsors
+    stale = copy.deepcopy(sponsors)
+    faq[0]['button'].update(label_ru='', label_en='', label_uz='', url='')
+    faq[1]['button'] = None
+    sponsors = expect(*request('POST', sponsors_url, {'content': json.dumps(sponsors)}, moderator))
+    assert sponsors['record']['faq'][0]['button']['url'] == ''
+    assert sponsors['record']['faq'][1]['button'] is None
+    expect(*request('POST', sponsors_url, {'content': json.dumps(stale)}, moderator), expected=409)
+    sponsors['record'] = original_sponsors
+    expect(*request('POST', sponsors_url, {'content': json.dumps(sponsors)}, moderator))
+    print('PASS: optional FAQ buttons create, translate, expand publicly, clear, enforce ownership, reject unsafe URLs and stale saves')
+
     masks=expect(*request('GET','/api/collections/t_mask/records?sort=sort_order',token=moderator))['items']
     mask=masks[0]
     assert 'legacy_slug' not in mask

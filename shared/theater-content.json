@@ -1232,6 +1232,24 @@
                 "label": "Body / Текст",
                 "type": "localized",
                 "multiline": true
+              },
+              {
+                "name": "button",
+                "label": "Action (optional) / Действие (необязательно)",
+                "type": "owned",
+                "collection": "_button",
+                "fields": [
+                  {
+                    "name": "label",
+                    "label": "Label / Надпись",
+                    "type": "localized"
+                  },
+                  {
+                    "name": "url",
+                    "label": "Link / Ссылка",
+                    "type": "link"
+                  }
+                ]
               }
             ],
             "addLabel": "Add questions and answer / Добавить пункт"

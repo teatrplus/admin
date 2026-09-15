@@ -49,6 +49,13 @@ ordered lists include **Arrange on website**; drag items and save the order.
   collection figures, selected masks and search metadata, using labels specific to those sections.
 - **Sponsors:** the full proposal alongside partner names, websites, a single replaceable logo,
   sponsor status and visibility. Unnamed partners use their website domain in the list.
+  Each FAQ can include an optional button with translated labels and a link. Leave its fields
+  empty to omit the action; it appears below the answer only when that question is expanded.
+  Apply `1789470000_sponsor_faq_buttons.js` with the updated shared catalogue before editing.
+  It adds an optional `button` relation from `_copy_block` to the existing `_button` collection,
+  preserving all questions and answers. Use full website URLs (for example,
+  `https://theaterplus.uz/contact/`); the website adds the active locale. Phone and email links
+  are supported too. Publish/rebuild the website after saving content changes.
   **News:** introduction alongside articles.
 - **Contacts:** the page introduction and the shared contact details in one panel.
 
