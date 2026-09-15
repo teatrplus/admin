@@ -3274,6 +3274,7 @@
     "label": "Partners and sponsors / Партнёры и спонсоры",
     "singleton": false,
     "embedded": false,
+    "sort": "sort_order",
     "sections": [
       {
         "name": "content",

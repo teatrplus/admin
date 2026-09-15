@@ -214,7 +214,12 @@ const save = (app, name, id, input, uploads) => {
       throw new ApiError(409, 'This page already exists. Reload before editing.')
     const current = id ? read(tx, name, id) : null
     if ((current?.revision || '') !== input.revision) throw new ApiError(409, 'Content changed. Reload before saving.')
-    const record = writeRecord(tx, name, fields({ collection: name }), input.record, current?.record, uploads)
+    const assigned = {}
+    if (!id && spec.sort === 'sort_order') {
+      const last = tx.findRecordsByFilter(name, '', '-sort_order', 1)[0]
+      assigned.sort_order = last ? last.getInt('sort_order') + 1 : 0
+    }
+    const record = writeRecord(tx, name, fields({ collection: name }), input.record, current?.record, uploads, assigned)
     result = read(tx, name, record.id)
   })
   return result

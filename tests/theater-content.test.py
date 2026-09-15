@@ -207,6 +207,31 @@ def run():
     assert partner['record']['logo']==''
     print('PASS: existing partner details, sponsor/visibility status, single-logo preservation, replacement and removal')
 
+    partner_path = '/api/theater/content/t_partner'
+    order_path = '/api/theater/content-order/t_partner'
+    partners = expect(*request('GET', partner_path, token=moderator))
+    ids = [item['record']['id'] for item in partners['items']]
+    assert len(ids) > 1
+    reversed_ids = list(reversed(ids))
+    payload = {'ids': reversed_ids, 'revision': partners['revision']}
+    for token in [None, tokens['moderator-space'], tokens['manager-theater'], tokens['viewer-theater']]:
+        assert request('POST', order_path, payload, token)[0] in [401, 403]
+    reordered = expect(*request('POST', order_path, payload, moderator))
+    assert [item['record']['id'] for item in reordered['items']] == reversed_ids
+    assert [item['record']['sort_order'] for item in reordered['items']] == list(range(len(ids)))
+    assert [item['record']['id'] for item in listing('t_partner')] == reversed_ids
+    expect(*request('POST', order_path, payload, moderator), expected=409)
+    expect(*request('POST', order_path, {'ids': reversed_ids[:-1], 'revision': reordered['revision']}, moderator), expected=409)
+    public = expect(*request('GET', '/api/collections/t_partner/records?sort=sort_order,created,id&perPage=500'))['items']
+    visible_ids = [item['record']['id'] for item in reordered['items'] if not item['record']['is_hidden']]
+    assert [item['id'] for item in public] == visible_ids
+    new_partner = blank(specs('t_partner'))
+    translated(new_partner, 'name', 'New last partner')
+    added = save('t_partner', {'record': new_partner, 'revision': ''})
+    assert [item['record']['id'] for item in listing('t_partner')] == reversed_ids + [added['record']['id']]
+    remove('t_partner', added)
+    print('PASS: partner reordering persists publicly, rejects stale/incomplete orders, enforces roles and appends new partners')
+
     staff=blank(specs('t_staff'))
     translated(staff,'name','Fixture team member')
     translated(staff,'description','A complete personal biography.')

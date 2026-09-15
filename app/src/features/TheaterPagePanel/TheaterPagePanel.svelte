@@ -56,14 +56,32 @@
   let uploadUrls = $state<Record<string, string>>({})
   let sorting = $state(false)
   let order = $state<ContentItem[]>([])
+  let partnerOrderIds = $state<string[] | null>(null)
+  const inlineOrder = $derived(panel.entries?.collection === 't_partner')
   const definition = $derived(contentDefinitions[active])
   const entryList = $derived(panel.entries ? lists[panel.entries.collection] : undefined)
+  const orderedEntries = $derived(
+    inlineOrder && partnerOrderIds
+      ? [
+          ...partnerOrderIds
+            .map((id) => entryList?.items.find((item) => item.record.id === id))
+            .filter((item) => item !== undefined),
+          ...(entryList?.items.filter((item) => !partnerOrderIds!.includes(item.record.id!)) ?? []),
+        ]
+      : (entryList?.items ?? []),
+  )
+  const partnerOrderDirty = $derived(
+    inlineOrder &&
+      partnerOrderIds !== null &&
+      orderedEntries.map((item) => item.record.id).join() !== entryList?.items.map((item) => item.record.id).join(),
+  )
   const dirty = $derived(Boolean(draft) && JSON.stringify(draft) !== baseline)
   const orderDirty = $derived(
-    sorting && order.map((item) => item.record.id).join() !== entryList?.items.map((item) => item.record.id).join(),
+    partnerOrderDirty ||
+      (sorting && order.map((item) => item.record.id).join() !== entryList?.items.map((item) => item.record.id).join()),
   )
   const visible = $derived(
-    (entryList?.items || []).filter((item) =>
+    orderedEntries.filter((item) =>
       recordLabel(item.record, language, choices).toLocaleLowerCase().includes(search.toLocaleLowerCase()),
     ),
   )
@@ -82,11 +100,14 @@
     uploads = []
     uploadUrls = {}
   }
-  function mayLeave() {
-    return !(dirty || orderDirty) || window.confirm(tr('Discard unsaved changes?', 'Отменить несохранённые изменения?'))
+  function mayLeave(includeOrder = true) {
+    return (
+      !(dirty || (includeOrder && orderDirty)) ||
+      window.confirm(tr('Discard unsaved changes?', 'Отменить несохранённые изменения?'))
+    )
   }
   function select(collection: string, item?: ContentItem) {
-    if (!mayLeave()) return
+    if (!mayLeave(!inlineOrder)) return
     clearUploads()
     active = collection
     sorting = false
@@ -124,6 +145,7 @@
         })),
       )
       lists = Object.fromEntries(results.map((result) => [result.collection, result.list]))
+      partnerOrderIds = null
       choices = Object.assign({}, ...results.map((result) => result.choices))
       const selectedId = new URLSearchParams(window.location.search).get('item')
       const entry = entryList?.items.find((item) => item.record.id === selectedId)
@@ -137,15 +159,32 @@
   }
   async function save(event: SubmitEvent) {
     event.preventDefault()
-    if (!draft || saving) return
+    if (!draft || saving || (!dirty && !partnerOrderDirty)) return
     saving = true
     error = ''
     try {
-      const saved = await saveContent(active, draft, uploads)
-      baseline = JSON.stringify(draft)
-      select(active, saved)
-      lists[active] = await getContent(active)
-      choices = { ...choices, ...(await loadContentChoices(definition!)) }
+      if (dirty) {
+        const saved = await saveContent(active, draft, uploads)
+        baseline = JSON.stringify(draft)
+        select(active, saved)
+        lists[active] = await getContent(active)
+        choices = { ...choices, ...(await loadContentChoices(definition!)) }
+      }
+      if (partnerOrderDirty && panel.entries && entryList) {
+        lists[panel.entries.collection] = await reorderContent(
+          panel.entries.collection,
+          entryList,
+          orderedEntries.map((item) => item.record.id!),
+        )
+        partnerOrderIds = null
+        if (active === panel.entries.collection) {
+          const refreshed = lists[active]?.items.find((item) => item.record.id === draft?.record.id)
+          if (refreshed) {
+            draft = JSON.parse(JSON.stringify(refreshed))
+            baseline = JSON.stringify(draft)
+          }
+        }
+      }
       pushToast(tr('Changes saved', 'Изменения сохранены'), 'success')
     } catch (cause) {
       error = message(cause)
@@ -268,8 +307,12 @@
     {#if sorting}<Button disabled={!orderDirty || saving} isLoading={saving} onclick={saveOrder}
         >{tr('Save order', 'Сохранить порядок')}</Button
       >
-    {:else}<Button type="submit" form="theater-page-form" disabled={!dirty || loading} isLoading={saving}
-        >{locale.t.common.save}</Button
+    {:else}<Button
+        type="submit"
+        form="theater-page-form"
+        formnovalidate={!dirty}
+        disabled={(!dirty && !partnerOrderDirty) || loading}
+        isLoading={saving}>{locale.t.common.save}</Button
       >{/if}
     {#if dirty || orderDirty}<span class="theater_page_panel-muted" role="status"
         >{tr('Unsaved changes', 'Есть изменения')}</span
@@ -308,46 +351,70 @@
                 <h2 class="theater_page_panel-label">{label(panel.entries.label)}</h2>
                 <span class="theater_page_panel-muted">{entryList?.items.length || 0}</span>
               </div>
+              {#if inlineOrder}<p class="theater_page_panel-muted">
+                  {search
+                    ? tr('Clear the search to reorder partners.', 'Очистите поиск, чтобы изменить порядок партнёров.')
+                    : tr('Drag partners to reorder, then save.', 'Перетащите партнёров в нужном порядке и сохраните.')}
+                </p>{/if}
               {#if !panel.entries.singleton && (entryList?.items.length || 0) > 4}<FormField
                   label={tr('Search', 'Поиск')}
                   name="page-entry-search"
                   bind:value={search}
                 />{/if}
               <div class="theater_page_panel-list">
-                {#each visible as item (item.record.id)}
-                  <button
-                    class="theater_page_panel-entry u_reset_button"
-                    data-active={active === panel.entries.collection && draft.record.id === item.record.id && !sorting}
-                    disabled={saving}
-                    onclick={() => select(panel.entries!.collection, item)}
-                  >
-                    {#if panel.entries.image && item.record[panel.entries.image]}<img
-                        class="theater_page_panel-thumbnail"
-                        src={pb.files.getURL(item.record as any, item.record[panel.entries.image])}
-                        alt=""
-                        loading="lazy"
-                      />{/if}
-                    <span class="theater_page_panel-entry_copy"
-                      ><span
-                        >{panel.entries.singleton
-                          ? label(panel.entries.label)
-                          : recordLabel(item.record, language, choices)}</span
-                      >{#if 'published' in item.record}<span
-                          class="theater_page_panel-status"
-                          data-published={item.record.published}
-                          >{item.record.published ? tr('Published', 'Опубликовано') : tr('Draft', 'Черновик')}</span
-                        >{:else if panel.entries.collection === 't_partner'}<span
-                          class="theater_page_panel-status"
-                          data-published={!item.record.is_hidden}
-                          >{item.record.is_hidden
-                            ? tr('Hidden', 'Скрыто')
-                            : item.record.is_sponsor
-                              ? tr('Sponsor', 'Спонсор')
-                              : tr('Partner', 'Партнёр')}</span
-                        >{/if}</span
+                {#snippet entry(item: ContentItem)}
+                  {#if panel.entries && draft}
+                    <button
+                      type="button"
+                      class="theater_page_panel-entry u_reset_button"
+                      data-active={active === panel.entries.collection &&
+                        draft.record.id === item.record.id &&
+                        !sorting}
+                      disabled={saving}
+                      onclick={() => select(panel.entries!.collection, item)}
                     >
-                  </button>
-                {/each}
+                      {#if panel.entries.image && item.record[panel.entries.image]}<img
+                          class="theater_page_panel-thumbnail"
+                          src={pb.files.getURL(item.record as any, item.record[panel.entries.image])}
+                          alt=""
+                          loading="lazy"
+                        />{/if}
+                      <span class="theater_page_panel-entry_copy"
+                        ><span
+                          >{panel.entries.singleton
+                            ? label(panel.entries.label)
+                            : recordLabel(item.record, language, choices)}</span
+                        >{#if 'published' in item.record}<span
+                            class="theater_page_panel-status"
+                            data-published={item.record.published}
+                            >{item.record.published ? tr('Published', 'Опубликовано') : tr('Draft', 'Черновик')}</span
+                          >{:else if panel.entries.collection === 't_partner'}<span
+                            class="theater_page_panel-status"
+                            data-published={!item.record.is_hidden}
+                            >{item.record.is_hidden
+                              ? tr('Hidden', 'Скрыто')
+                              : item.record.is_sponsor
+                                ? tr('Sponsor', 'Спонсор')
+                                : tr('Partner', 'Партнёр')}</span
+                          >{/if}</span
+                      >
+                    </button>
+                  {/if}
+                {/snippet}
+                {#if inlineOrder}
+                  <SortableList
+                    items={visible}
+                    label={label(panel.entries.label)}
+                    itemLabel={(item) => recordLabel(item.record, language, choices)}
+                    disabled={saving || Boolean(search)}
+                    density="compact"
+                    onReorder={(items) => (partnerOrderIds = items.map((item) => item.record.id!))}
+                  >
+                    {#snippet children(item)}{@render entry(item)}{/snippet}
+                  </SortableList>
+                {:else}
+                  {#each visible as item (item.record.id)}{@render entry(item)}{/each}
+                {/if}
                 {#if !visible.length}<p class="theater_page_panel-muted">
                     {search
                       ? tr('No matches', 'Ничего не найдено')
@@ -357,7 +424,7 @@
                         )}
                   </p>{/if}
               </div>
-              {#if contentDefinitions[panel.entries.collection]?.sort === 'sort_order' && (entryList?.items.length || 0) > 1}<Button
+              {#if !inlineOrder && contentDefinitions[panel.entries.collection]?.sort === 'sort_order' && (entryList?.items.length || 0) > 1}<Button
                   variant="ghost"
                   size="sm"
                   disabled={saving}
