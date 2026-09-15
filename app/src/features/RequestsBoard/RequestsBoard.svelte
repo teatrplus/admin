@@ -396,6 +396,7 @@
                             <input
                               class="requests_board-date"
                               type="date"
+                              autocomplete="off"
                               value={toDateInputValue(card.date_requested)}
                               aria-label={localeCtx.t.requests.dateRequested}
                               onchange={(event) => assignDate(card, event.currentTarget.value)}

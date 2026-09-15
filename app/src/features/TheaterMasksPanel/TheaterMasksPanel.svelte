@@ -243,7 +243,7 @@
         </SortableList>
       </nav>
       {#if selected}
-        <form id="museum-content-form" class="theater_masks_panel-editor" onsubmit={save}>
+        <form autocomplete="off" id="museum-content-form" class="theater_masks_panel-editor" onsubmit={save}>
           <fieldset class="theater_masks_panel-fields" disabled={saving}>
             <legend class="theater_masks_panel-legend"
               >{isPage ? tr('Museum page', 'Страница музея') : tr('Mask', 'Маска')}</legend

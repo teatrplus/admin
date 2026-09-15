@@ -247,6 +247,7 @@
       <input
         class="requests_table-date"
         type="date"
+        autocomplete="off"
         value={toDateInputValue(row.date_requested)}
         aria-label={localeCtx.t.requests.dateRequested}
         onchange={(event) => onDateChange(row, event.currentTarget.value)}

@@ -364,6 +364,7 @@
                 class="content_fields-date"
                 id={name}
                 type="datetime-local"
+                autocomplete="off"
                 value={record[key] ? localDate(record[key]) : ''}
                 required={field.required}
                 {disabled}

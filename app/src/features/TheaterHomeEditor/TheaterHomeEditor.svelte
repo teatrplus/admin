@@ -199,7 +199,7 @@
           label: sectionLabels[key]![localeCtx.locale === 'ru' ? 1 : 0],
         }))}
       />
-      <form id="theater-home-form" class="theater_home_editor-form" onsubmit={save}>
+      <form autocomplete="off" id="theater-home-form" class="theater_home_editor-form" onsubmit={save}>
         <fieldset class="theater_home_editor-fields" disabled={saving}>
           {#each sectionKeys as section}
             {#if section === 'featured_plays'}

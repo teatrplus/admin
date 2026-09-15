@@ -323,7 +323,7 @@
           {landingQuery.error instanceof Error ? landingQuery.error.message : localeCtx.t.common.error}
         </p>
       {:else}
-        <form id="landing-editor-form" class="landing_editor-form" novalidate onsubmit={submit}>
+        <form autocomplete="off" id="landing-editor-form" class="landing_editor-form" novalidate onsubmit={submit}>
           <section class="landing_editor-section" id="landing-general">
             <h2 class="landing_editor-section_title">{localeCtx.t.landing.general}</h2>
             <div class="landing_editor-grid">

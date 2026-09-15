@@ -500,7 +500,7 @@
                   }}>{label(section.label)}</a
                 >{/each}
             </nav>{/if}
-          <form id="theater-page-form" onsubmit={save}>
+          <form autocomplete="off" id="theater-page-form" onsubmit={save}>
             <fieldset class="theater_page_panel-fields" disabled={saving}>
               {#each definition.sections.filter( (section) => section.fields.some((field) => !field.hidden) ) as section (section.name)}
                 <section id={`page-${section.name}`} class="theater_page_panel-section" data-section={section.name}>

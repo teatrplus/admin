@@ -14,7 +14,7 @@
     required = false,
     multiline = false,
     disabled = false,
-    autocomplete,
+    autocomplete = 'off',
     oninput,
     input,
   }: {
@@ -49,7 +49,7 @@
       aria-describedby={error || hint ? `${name}-description` : undefined}
       {required}
       {disabled}
-      autocomplete={autocomplete ?? undefined}></textarea>
+      {autocomplete}></textarea>
   {:else}
     <input
       class="form_field-control"
@@ -61,7 +61,7 @@
       aria-describedby={error || hint ? `${name}-description` : undefined}
       {required}
       {disabled}
-      autocomplete={autocomplete ?? undefined}
+      {autocomplete}
       {oninput}
     />
   {/if}

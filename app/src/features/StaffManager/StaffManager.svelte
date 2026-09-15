@@ -251,7 +251,6 @@
               label={localeCtx.t.staff.password}
               name="password"
               type="password"
-              autocomplete="new-password"
               bind:value={form.values.password}
               error={form.errors.password}
               hint={isEditing ? localeCtx.t.staff.passwordOptional : undefined}
@@ -261,7 +260,6 @@
               label={localeCtx.t.staff.passwordConfirm}
               name="passwordConfirm"
               type="password"
-              autocomplete="new-password"
               bind:value={form.values.passwordConfirm}
               error={form.errors.passwordConfirm}
               required={!isEditing}
