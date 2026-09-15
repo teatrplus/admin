@@ -103,7 +103,7 @@
       if (dirty) {
         if (!isPage && !files.length) throw new Error(tr('Select a mask image.', 'Выберите изображение маски.'))
         for (const [field, value] of Object.entries(draft)) {
-          if (field === 'slug') continue
+          if (field === 'slug' || (!isPage && field.startsWith('origin_'))) continue
           if (!String(value).trim()) fieldErrors[field] = tr('Required', 'Обязательное поле')
         }
         if (Object.keys(fieldErrors).length)
@@ -267,7 +267,7 @@
                 label={label(field)}
                 name={`${field}-${language}`}
                 bind:value={draft[`${field}_${language}`]}
-                required
+                required={field !== 'origin'}
                 multiline={field.includes('description') || field === 'lede'}
                 error={fieldErrors[`${field}_${language}`]}
               />

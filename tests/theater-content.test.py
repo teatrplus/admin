@@ -73,6 +73,14 @@ def run():
     mask=masks[0]
     assert 'legacy_slug' not in mask
     mask_path='/api/collections/t_mask/records/'+mask['id']
+    origins = {'origin_ru': 'Япония', 'origin_en': 'Japan', 'origin_uz': 'Yaponiya'}
+    updated = expect(*request('PATCH', mask_path, origins, moderator))
+    assert all(updated[key] == value for key, value in origins.items())
+    public_mask = expect(*request('GET', mask_path))
+    assert all(public_mask[key] == value for key, value in origins.items())
+    cleared = expect(*request('PATCH', mask_path, {key: '' for key in origins}, moderator))
+    assert all(cleared[key] == '' for key in origins)
+    print('PASS: localized mask origins persist, are public, and can be cleared')
     for token in [None,tokens['moderator-space'],tokens['manager-theater'],tokens['viewer-theater']]:
         assert request('PATCH',mask_path,{'slug':'forbidden-address'},token)[0] in [403,404]
     for token in [tokens['admin-space'],moderator]:

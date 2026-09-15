@@ -2,7 +2,7 @@ import type { RecordModel } from 'pocketbase'
 import { pb } from './client'
 
 export const contentLocales = ['ru', 'en', 'uz'] as const
-export const maskFields = ['name', 'description'] as const
+export const maskFields = ['name', 'origin', 'description'] as const
 const museumCopyFields: Record<string, [string, string]> = {
   meta_title: ['seo_block', 'title'],
   meta_description: ['seo_block', 'description'],
@@ -91,6 +91,7 @@ export const museumFieldLabels: Record<string, [string, string]> = {
   kicker: ['Page kicker', 'Надзаголовок страницы'],
   gallery_alt: ['Tour photo description', 'Описание фото экскурсии'],
   name: ['Name', 'Название'],
+  origin: ['Country of origin', 'Страна происхождения'],
   description: ['Description', 'Описание'],
   title: ['Title', 'Заголовок'],
   lede: ['Introduction', 'Вступление'],
