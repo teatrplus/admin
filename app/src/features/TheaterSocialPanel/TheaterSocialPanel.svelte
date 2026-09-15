@@ -1,5 +1,7 @@
 <script lang="ts">
   import PageActions from '@/components/PageActions/PageActions.svelte'
+  import VideoIcon from '~icons/mdi/play'
+  import CarouselIcon from '~icons/mdi/image-multiple-outline'
   import InstagramIcon from '~icons/mdi/instagram'
   import PageHeader from '@/components/PageHeader/PageHeader.svelte'
   import { createMutation, createQuery, useQueryClient } from '@tanstack/svelte-query'
@@ -9,6 +11,7 @@
   import { useLocale } from '@/lib/i18n/context.svelte'
   import {
     getInstagramRefreshStatus,
+    getInstagramPosts,
     instagramRefreshErrorMessage,
     isRefreshInProgress,
     startInstagramRefresh,
@@ -28,6 +31,12 @@
   }))
 
   const job = $derived(statusQuery.data)
+
+  const postsQuery = createQuery(() => ({
+    queryKey: ['instagram-posts', job?.finishedAt],
+    queryFn: getInstagramPosts,
+  }))
+
   const isRunning = $derived(job?.status === 'running')
 
   let seenRunning = $state(false)
@@ -141,5 +150,46 @@
         </div>
       {/if}
     </div>
+    {#if postsQuery.isPending}
+      <p class="theater_social_panel-copy" role="status">{localeCtx.t.theater_social_panel.loadingPosts}</p>
+    {:else if postsQuery.isError}
+      <StatusBanner tone="error">{localeCtx.t.theater_social_panel.postsError}</StatusBanner>
+      <Button variant="outline" onclick={() => postsQuery.refetch()}>{localeCtx.t.theater_social_panel.retry}</Button>
+    {:else if !postsQuery.data?.length}
+      <p class="theater_social_panel-copy">{localeCtx.t.theater_social_panel.emptyPosts}</p>
+    {:else}
+      <ul class="theater_social_panel-grid u_reset_list" aria-label={localeCtx.t.theater_social_panel.postsLabel}>
+        {#each postsQuery.data as post (post.id)}
+          <li class="theater_social_panel-post">
+            <a class="theater_social_panel-card" href={post.permalink} target="_blank" rel="noopener noreferrer">
+              <span class="theater_social_panel-post_header">
+                <InstagramIcon width="20" height="20" aria-hidden="true" />
+                <span>Instagram</span>
+              </span>
+              <span class="theater_social_panel-frame">
+                <img
+                  class="theater_social_panel-image"
+                  src={post.imageUrl}
+                  alt={post.caption
+                    ? post.caption.length > 140
+                      ? `${post.caption.slice(0, 137)}…`
+                      : post.caption
+                    : localeCtx.t.theater_social_panel.postAlt}
+                  loading="lazy"
+                  decoding="async"
+                  referrerpolicy="no-referrer"
+                />
+                {#if post.mediaType !== 'image'}
+                  <span class="theater_social_panel-badge" data-variant={post.mediaType} aria-hidden="true">
+                    {#if post.mediaType === 'video'}<VideoIcon width="20" height="20" />
+                    {:else}<CarouselIcon width="20" height="20" />{/if}
+                  </span>
+                {/if}
+              </span>
+            </a>
+          </li>
+        {/each}
+      </ul>
+    {/if}
   </div>
 </section>

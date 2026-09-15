@@ -225,6 +225,13 @@ export const ru: TranslationSchema = {
     validationFailed: 'Исправьте выделенные поля перед сохранением.',
   },
   theater_social_panel: {
+    loadingPosts: 'Загрузка постов Instagram…',
+    postsError: 'Не удалось загрузить посты Instagram.',
+    retry: 'Повторить',
+    emptyPosts: 'Постов пока нет. Обновите посты Instagram, чтобы загрузить их.',
+    postsLabel: 'Последние посты Instagram',
+    postAlt: 'Пост Instagram',
+
     title: 'Соцсети',
     body: 'Обновите девять последних постов Instagram. Это может занять несколько минут; страница обновится автоматически, когда они будут готовы.',
     refresh: 'Обновить посты Instagram',

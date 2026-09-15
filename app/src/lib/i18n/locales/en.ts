@@ -225,6 +225,13 @@ export const en: TranslationSchema = {
     validationFailed: 'Fix the highlighted fields before saving.',
   },
   theater_social_panel: {
+    loadingPosts: 'Loading Instagram posts…',
+    postsError: 'Could not load Instagram posts.',
+    retry: 'Retry',
+    emptyPosts: 'No posts yet. Refresh Instagram posts to load them.',
+    postsLabel: 'Latest Instagram posts',
+    postAlt: 'Instagram post',
+
     title: 'Social',
     body: 'Refresh the nine latest Instagram posts. This can take a few minutes; the page updates automatically when they are ready.',
     refresh: 'Refresh Instagram posts',

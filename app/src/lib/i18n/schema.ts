@@ -208,6 +208,13 @@ export type TranslationSchema = {
     validationFailed: string
   }
   theater_social_panel: {
+    loadingPosts: string
+    postsError: string
+    retry: string
+    emptyPosts: string
+    postsLabel: string
+    postAlt: string
+
     title: string
     body: string
     refresh: string
