@@ -29,11 +29,39 @@ const text = (value) => {
   return value.trim()
 }
 const saveMuseumPage = (app, input, uploads) => {
+  if (!input.draft || typeof input.draft !== 'object' || Array.isArray(input.draft))
+    throw new BadRequestError('Invalid museum draft.')
   let result
   app.runInTransaction((tx) => {
     const current = readMuseumPage(tx)
     if (revision(current) !== input.revision) throw new ApiError(409, 'The museum page changed. Reload before saving.')
     const page = tx.findRecordById('t_page_masks', current.id)
+    // Older clients may omit both fields; keep the saved pricing in that case.
+    if ('excursion_total_uzs' in (input.draft || {}) || 'excursion_group_sizes' in (input.draft || {})) {
+      const total = input.draft.excursion_total_uzs
+      const sizes = input.draft.excursion_group_sizes
+      if (
+        typeof total !== 'string' ||
+        !/^\d+$/.test(total.trim()) ||
+        Number(total) < 1 ||
+        Number(total) > 1000000000000
+      )
+        throw new BadRequestError('Enter a whole tour total between 1 and 1,000,000,000,000 UZS.')
+      if (typeof sizes !== 'string' || !/^\d+(\s*,\s*\d+)*$/.test(sizes.trim()))
+        throw new BadRequestError('Enter group sizes as whole numbers separated by commas.')
+      const groups = sizes.split(',').map(Number)
+      if (
+        groups.length > 12 ||
+        new Set(groups).size !== groups.length ||
+        groups.some((size) => size < 1 || size > 1000)
+      )
+        throw new BadRequestError('Use up to 12 distinct group sizes, from 1 to 1,000 people.')
+      page.set('excursion_total_uzs', Number(total))
+      page.set(
+        'excursion_group_sizes',
+        groups.sort((a, b) => b - a),
+      )
+    }
     for (const locale of ['ru', 'en', 'uz'])
       page.set('gallery_alt_' + locale, text(input.draft?.['gallery_alt_' + locale]))
     for (const [relation, fields] of Object.entries(copies)) {

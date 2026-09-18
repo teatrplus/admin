@@ -72,6 +72,7 @@ migrate((app) => {
                 assert record['url'] == original[prefix+'_button_url'].replace('{locale}','ru')
         shutil.copy(ROOT / 'pb_migrations/1789040010_theater_page_metadata.js', migrations)
         shutil.copy(ROOT / 'pb_migrations/museum-metadata.json', migrations)
+        shutil.copy(ROOT / 'pb_migrations/1789680000_museum_tour_pricing.js', migrations)
         subprocess.run(args + ['migrate', 'up'], check=True, capture_output=True, text=True)
         subprocess.run(args + ["superuser", "upsert", "museum-root@example.com", PASSWORD], check=True, capture_output=True)
         with socket.socket() as sock:
@@ -149,6 +150,9 @@ migrate((app) => {
             assert code == 200 and len(result["items"]) == 1, result
             page = result["items"][0]
             assert len(page["excursion_photos"]) == 4
+            assert page['excursion_total_uzs'] == 6600000
+            assert page['excursion_group_sizes'] == [60, 50, 40, 30]
+            assert [page['excursion_total_uzs'] / size for size in page['excursion_group_sizes']] == [110000, 132000, 165000, 220000]
             for item in masks + [page]:
                 for locale in ["ru", "en", "uz"]:
                     if item in masks: assert item[f'description_{locale}']
@@ -199,6 +203,8 @@ migrate((app) => {
                 return request('GET', page_path + '/' + page['id'] + '?expand=' + expand)[1]
             def draft_page(item):
                 data = {'gallery_alt_'+locale:item['gallery_alt_'+locale] for locale in ['en','ru','uz']}
+                data['excursion_total_uzs'] = str(item['excursion_total_uzs'])
+                data['excursion_group_sizes'] = ', '.join(map(str, item['excursion_group_sizes']))
                 for relation, fields in {'seo_block':{'title':'meta_title','lede':'kicker','description':'meta_description'}, 'intro_block':{'title':'title','lede':'lede','description':'description'}, 'visit_block':{'title':'museum_title','description':'museum_description'}, 'excursion_block':{'title':'excursion_title','lede':'excursion_kicker','description':'excursion_description'}}.items():
                     for source, target in fields.items():
                         for locale in ['en','ru','uz']: data[target+'_'+locale] = item['expand'][relation][source+'_'+locale]
@@ -212,6 +218,8 @@ migrate((app) => {
             edit = draft_page(current)
             edit['draft']['title_en'] = 'Edited museum introduction'
             edit['draft']['museum_button_label_en'] = 'Visit us'
+            edit['draft']['excursion_total_uzs'] = '7200000'
+            edit['draft']['excursion_group_sizes'] = '24, 60'
             edit['photos'] = [0] + list(reversed(current['excursion_photos']))
             for token in [None, tokens['manager'],tokens['viewer']]:
                 assert request('POST',endpoint,{'content':json.dumps(edit)},token)[0] in [401,403]
@@ -220,24 +228,50 @@ migrate((app) => {
             assert changed['expand']['intro_block']['title_en'] == edit['draft']['title_en']
             assert changed['expand']['visit_button']['label_en'] == 'Visit us'
             assert changed['excursion_photos'][1:] == edit['photos'][1:]
+            assert changed['excursion_total_uzs'] == 7200000
+            assert changed['excursion_group_sizes'] == [60, 24]
             assert request('POST',endpoint,{'content':json.dumps(edit)},tokens['admin'])[0] == 409
             invalid = draft_page(changed)
             invalid['draft']['title_en'] = 'Should roll back'
             invalid['photos'] = ['foreign-file.jpg']
             assert request('POST',endpoint,{'content':json.dumps(invalid)},tokens['admin'])[0] == 400
             assert load_page() == changed
+            for field, values in {
+                'excursion_total_uzs': ['', '0', '-1', '1.5', 'Infinity', '1000000000001', '6,600,000', None, 6600000],
+                'excursion_group_sizes': ['', '0, 60', '-1, 60', '30.5, 60', '60, 60', '1001', '60,', 'one', ','.join(map(str, range(1, 14))), None, [60, 30]],
+            }.items():
+                for value in values:
+                    invalid = draft_page(changed)
+                    invalid['draft'][field] = value
+                    invalid['draft']['title_en'] = 'Invalid pricing must not save other changes'
+                    code, result = request('POST', endpoint, {'content': json.dumps(invalid)}, tokens['admin'])
+                    assert code == 400, (field, value, code, result)
+                    assert load_page() == changed
+            legacy = draft_page(changed)
+            del legacy['draft']['excursion_total_uzs']
+            del legacy['draft']['excursion_group_sizes']
+            code, changed = request('POST', endpoint, {'content': json.dumps(legacy)}, tokens['admin'])
+            assert code == 200 and changed['excursion_total_uzs'] == 7200000 and changed['excursion_group_sizes'] == [60, 24], changed
             restore = draft_page(current)
             restore['revision'] = draft_page(changed)['revision']
             code, restored = request('POST',endpoint,{'content':json.dumps(restore)},tokens['admin'])
             assert code == 200 and restored['excursion_photos'] == current['excursion_photos'], restored
+            assert restored['excursion_total_uzs'] == 6600000 and restored['excursion_group_sizes'] == [60, 50, 40, 30]
             assert request('PATCH',page_path+'/'+page['id'],{'intro_block':''},tokens['admin'])[0] in [403,404]
-            print('PASS: minimal relation schema; preserved 3-language copy/media; public expansions; admin/moderator transactional edits; stale conflicts; rollback; gallery add/reorder/remove; mask URLs and permissions.', flush=True)
+            print('PASS: relation schema; preserved 3-language copy/media; public pricing; validated totals/group sizes; legacy saves preserve pricing; admin/moderator transactional edits; stale conflicts; atomic rollback; gallery add/reorder/remove; mask URLs and permissions.', flush=True)
             if "--serve" in sys.argv:
                 print(f"UI fixture: {origin}; press Enter to stop.", flush=True)
                 input()
         finally:
             process.terminate()
             process.wait(timeout=10)
+        if '--serve' not in sys.argv:
+            subprocess.run(args + ['migrate', 'down', '1'], input='y\n', check=True, capture_output=True, text=True)
+            with sqlite3.connect(base / 'pb_data/data.db') as db:
+                fields = {row[1] for row in db.execute('pragma table_info(t_page_masks)')}
+                assert 'excursion_total_uzs' not in fields and 'excursion_group_sizes' not in fields
+                assert db.execute('select excursion_photos from t_page_masks').fetchone()[0] == original['excursion_photos']
+            print('PASS: pricing migration rollback preserves museum copy and gallery.', flush=True)
 
 
 if __name__ == "__main__":

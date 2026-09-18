@@ -38,6 +38,10 @@ export async function getMuseumContent() {
 export function museumDraft(record: RecordModel | undefined, page: boolean): Record<string, string> {
   const draft: Record<string, string> = {}
   if (page) {
+    draft.excursion_total_uzs = String(record?.excursion_total_uzs ?? '')
+    draft.excursion_group_sizes = Array.isArray(record?.excursion_group_sizes)
+      ? record.excursion_group_sizes.join(', ')
+      : ''
     for (const locale of contentLocales)
       draft[`gallery_alt_${locale}`] = String(record?.[`gallery_alt_${locale}`] ?? '')
     for (const [field, [relation, source]] of Object.entries(museumCopyFields)) {
@@ -86,6 +90,8 @@ export async function saveMuseumContent(
 }
 
 export const museumFieldLabels: Record<string, [string, string]> = {
+  excursion_total_uzs: ['Tour total (UZS)', 'Стоимость экскурсии (сум)'],
+  excursion_group_sizes: ['Group sizes (people)', 'Размеры групп (человек)'],
   meta_title: ['Search title', 'Заголовок для поиска'],
   meta_description: ['Search description', 'Описание для поиска'],
   kicker: ['Page kicker', 'Надзаголовок страницы'],

@@ -52,6 +52,34 @@
   let saving = $state(false)
   let error = $state('')
   let fieldErrors = $state<Record<string, string>>({})
+  const pricingTotal = $derived(Number(draft.excursion_total_uzs))
+  const pricingGroups = $derived((draft.excursion_group_sizes ?? '').split(',').map(Number))
+  const pricingErrors = $derived.by(() => {
+    const errors: Record<string, string> = {}
+    if (
+      !/^\d+$/.test(String(draft.excursion_total_uzs ?? '').trim()) ||
+      pricingTotal < 1 ||
+      pricingTotal > 1000000000000
+    )
+      errors.excursion_total_uzs = tr(
+        'Enter a whole amount from 1 to 1,000,000,000,000 without separators.',
+        'Введите целую сумму от 1 до 1 000 000 000 000 без разделителей.',
+      )
+    if (
+      !/^\d+(\s*,\s*\d+)*$/.test((draft.excursion_group_sizes ?? '').trim()) ||
+      pricingGroups.length > 12 ||
+      new Set(pricingGroups).size !== pricingGroups.length ||
+      pricingGroups.some((size) => size < 1 || size > 1000)
+    )
+      errors.excursion_group_sizes = tr(
+        'Enter up to 12 distinct whole group sizes (1–1,000), separated by commas.',
+        'Укажите через запятую до 12 разных размеров групп: целые числа от 1 до 1 000.',
+      )
+    return errors
+  })
+  const pricingRows = $derived(Object.keys(pricingErrors).length ? [] : [...pricingGroups].sort((a, b) => b - a))
+  const formatPrice = (amount: number) =>
+    new Intl.NumberFormat(localeCtx.locale, { maximumFractionDigits: 2 }).format(amount)
   const isPage = $derived(selected === 'page')
   const record = $derived(isPage ? query.data?.page : query.data?.masks.find((mask) => mask.id === selected))
   const dirty = $derived(
@@ -106,11 +134,12 @@
           if (field === 'slug' || (!isPage && field.startsWith('origin_'))) continue
           if (!String(value).trim()) fieldErrors[field] = tr('Required', 'Обязательное поле')
         }
+        if (isPage) fieldErrors = { ...fieldErrors, ...pricingErrors }
         if (Object.keys(fieldErrors).length)
           throw new Error(
             tr(
-              'Complete the required fields in all three languages.',
-              'Заполните обязательные поля на всех трёх языках.',
+              'Check the highlighted fields in all three languages.',
+              'Проверьте выделенные поля на всех трёх языках.',
             ),
           )
         if (isPage) {
@@ -290,6 +319,67 @@
               </p>
             {/if}
             {#if isPage}
+              <section class="theater_masks_panel-pricing" aria-labelledby="museum-pricing-heading">
+                <h3 class="theater_masks_panel-pricing_heading" id="museum-pricing-heading">
+                  {tr('Tour pricing', 'Стоимость экскурсии')}
+                </h3>
+                <p class="theater_masks_panel-hint">
+                  {tr(
+                    'The total applies to every group. Per-person prices are calculated automatically. Prices are shared across all languages.',
+                    'Общая стоимость одинакова для всех групп. Цена на человека рассчитывается автоматически. Цены общие для всех языков.',
+                  )}
+                </p>
+                <FormField
+                  label={label('excursion_total_uzs')}
+                  name="excursion_total_uzs"
+                  bind:value={draft.excursion_total_uzs}
+                  hint={tr(
+                    'Whole sums, without separators. Example: 6600000.',
+                    'Целая сумма без разделителей. Например: 6600000.',
+                  )}
+                  required
+                  error={fieldErrors.excursion_total_uzs}
+                />
+                <FormField
+                  label={label('excursion_group_sizes')}
+                  name="excursion_group_sizes"
+                  bind:value={draft.excursion_group_sizes}
+                  hint={tr(
+                    'Separate sizes with commas. Example: 60, 50, 40, 30.',
+                    'Разделяйте числа запятыми. Например: 60, 50, 40, 30.',
+                  )}
+                  required
+                  error={fieldErrors.excursion_group_sizes}
+                />
+                {#if pricingRows.length}
+                  <div class="theater_masks_panel-pricing_preview">
+                    <table class="theater_masks_panel-pricing_table">
+                      <caption class="theater_masks_panel-pricing_caption"
+                        >{tr('Price preview · UZS', 'Предпросмотр цен · сум')}</caption
+                      >
+                      <thead>
+                        <tr>
+                          <th class="theater_masks_panel-pricing_cell" scope="col">{tr('People', 'Человек')}</th>
+                          <th class="theater_masks_panel-pricing_cell" scope="col">{tr('Per person', 'Цена / чел.')}</th
+                          >
+                          <th class="theater_masks_panel-pricing_cell" scope="col">{tr('Total', 'Стоимость')}</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {#each pricingRows as size}
+                          <tr>
+                            <th class="theater_masks_panel-pricing_cell" scope="row">{size}</th>
+                            <td class="theater_masks_panel-pricing_cell"
+                              >{(pricingTotal * 100) % size ? '≈ ' : ''}{formatPrice(pricingTotal / size)}</td
+                            >
+                            <td class="theater_masks_panel-pricing_cell">{formatPrice(pricingTotal)}</td>
+                          </tr>
+                        {/each}
+                      </tbody>
+                    </table>
+                  </div>
+                {/if}
+              </section>
               <h3 class="theater_masks_panel-gallery_heading">{tr('Tour photos', 'Фото экскурсии')}</h3>
               <SortableList
                 items={files}
