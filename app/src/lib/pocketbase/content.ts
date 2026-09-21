@@ -45,6 +45,11 @@ export function blankRecord(fields: ContentField[]): ContentRecord {
   return Object.fromEntries(
     fields.flatMap((field): [string, unknown][] => {
       if (field.type === 'localized') return ['ru', 'en', 'uz'].map((locale) => [`${field.name}_${locale}`, ''])
+      if (field.type === 'richtext')
+        return ['ru', 'en', 'uz'].map((locale) => [
+          `${field.name}_${locale}`,
+          { type: 'doc', content: [{ type: 'paragraph' }] },
+        ])
       return [
         [
           field.name,

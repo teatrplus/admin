@@ -47,7 +47,40 @@ def expect(code, result, expected=200):
     return result
 
 
-def run():
+def run_legal(root, moderator):
+    def listing(name): return expect(*request('GET','/api/theater/content/'+name,token=moderator))['items']
+    def save(name, item): return expect(*request('POST','/api/theater/content/'+name+'/'+item['record']['id'],item,moderator,files=[]))
+    schemas={item['name']:item for item in expect(*request('GET','/api/collections?perPage=500',token=root))['items']}
+    # Legal pages use the same revision-checked editor endpoint, with JSON documents.
+    for name in ['t_page_privacy_policy','t_page_public_offer','t_page_theater_visit_rules']:
+        fields={field['name']:field for field in schemas[name]['fields']}
+        original=listing(name)[0]
+        for lang in ['ru','en','uz']:
+            assert fields['content_'+lang]['type']=='json'
+            assert original['record']['content_'+lang]['type']=='doc'
+        edited=copy.deepcopy(original)
+        edited['record']['content_en']['content'].extend([
+            {'type':'horizontalRule'},
+            {'type':'paragraph','content':[
+                {'type':'text','text':'Formatted legal copy','marks':[{'type':'bold'},{'type':'italic'}]},
+                {'type':'text','text':' Read more','marks':[{'type':'link','attrs':{'href':'https://example.com/legal'}}]},
+            ]},
+        ])
+        saved=save(name,edited)
+        assert saved['record']['content_en']==edited['record']['content_en']
+        for lang in ['ru','uz']: assert saved['record']['content_'+lang]==original['record']['content_'+lang]
+        public=expect(*request('GET','/api/collections/'+name+'/records/'+saved['record']['id']))
+        assert public['content_en']==saved['record']['content_en']
+        path='/api/theater/content/'+name+'/'+saved['record']['id']
+        expect(*request('POST',path,{'content':json.dumps(original)},moderator),expected=409)
+        invalid=copy.deepcopy(saved)
+        invalid['record']['content_en']={'type':'doc','content':[{'type':'paragraph'}]}
+        expect(*request('POST',path,{'content':json.dumps(invalid)},moderator),expected=400)
+        assert listing(name)[0]==saved
+    print('PASS: legal JSON fields, rich-text save/read, locale isolation, empty-content rejection and revision conflicts')
+
+
+def run(legal_only=False):
     root = expect(*request('POST', '/api/collections/_superusers/auth-with-password', {'identity': 'content-fixture@example.com', 'password': PASSWORD}))['token']
     tokens = {}
     for role, scope in [('admin','space'),('moderator','theater'),('moderator','space'),('manager','theater'),('viewer','theater')]:
@@ -56,6 +89,9 @@ def run():
         assert status in [200,400], result
         tokens[role+'-'+scope] = expect(*request('POST','/api/collections/_user_staff/auth-with-password',{'identity':email,'password':PASSWORD}))['token']
     moderator = tokens['moderator-theater']
+    if legal_only:
+        run_legal(root, moderator)
+        return
     path = '/api/theater/content/t_page_about'
     for token in [None,tokens['moderator-space'],tokens['manager-theater'],tokens['viewer-theater']]:
         for method, url in [('GET',path),('POST',path+'/new'),('DELETE',path+'/anything')]:
@@ -224,6 +260,8 @@ def run():
         check_multiplicity(name,specs(name))
     print('PASS: editor file and relation multiplicities match the migrated database, including nested forms')
 
+    run_legal(root, moderator)
+
     partner=copy.deepcopy(listing('t_partner')[0])
     assert isinstance(partner['record']['logo'],str) and partner['record']['logo']
     original_logo=partner['record']['logo']
@@ -357,7 +395,7 @@ def run():
     print('PASS: deleting a course, person or production cleans up its owned child records')
 
 
-def disposable(source):
+def disposable(source, legal_only=False):
     global ORIGIN
     with tempfile.TemporaryDirectory(prefix='theater-content-') as tmp:
         base=pathlib.Path(tmp)
@@ -390,7 +428,7 @@ def disposable(source):
                     try:
                         if request('GET','/api/health')[0]==200: break
                     except OSError: time.sleep(.05)
-                run()
+                run(legal_only)
             finally:
                 process.terminate()
                 process.wait(timeout=10)
@@ -400,6 +438,7 @@ if __name__=='__main__':
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--database',type=pathlib.Path,default=ROOT/'pb_data/data.db')
     parser.add_argument('--existing',action='store_true')
+    parser.add_argument('--legal-only',action='store_true',help='Run only the legal rich-text API checks')
     options=parser.parse_args()
-    if options.existing: run()
-    else: disposable(options.database)
+    if options.existing: run(options.legal_only)
+    else: disposable(options.database, options.legal_only)

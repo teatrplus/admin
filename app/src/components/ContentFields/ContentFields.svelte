@@ -7,6 +7,7 @@
   import GalleryImage from '@/components/GalleryImage/GalleryImage.svelte'
   import MediaDropzone from '@/components/MediaDropzone/MediaDropzone.svelte'
   import SortableList from '@/components/SortableList/SortableList.svelte'
+  import RichTextEditor from '@/components/RichTextEditor/RichTextEditor.svelte'
   import ContentFields from './ContentFields.svelte'
   import { pb } from '@/lib/pocketbase/client'
   import { useLocale } from '@/lib/i18n/context.svelte'
@@ -64,7 +65,11 @@
     {@const name = `${path}-${field.name}`}
     <div
       class="content_fields-field"
-      data-wide={field.multiline || ['owned', 'children', 'membership', 'bool'].includes(field.type) || field.many}
+      data-wide={field.multiline ||
+      ['owned', 'children', 'membership', 'bool', 'richtext'].includes(field.type) ||
+      field.many
+        ? 'true'
+        : undefined}
     >
       {#if field.type === 'owned' || field.type === 'children'}
         <div class="content_fields-group">
@@ -354,6 +359,16 @@
             required={field.required}
           />
         {/if}
+      {:else if field.type === 'richtext'}
+        {#key `${record.id || 'new'}-${name}-${language}`}
+          <RichTextEditor
+            name={`${name}-${language}`}
+            label={label(field.label)}
+            bind:value={record[`${field.name}_${language}`]}
+            required={field.required}
+            {disabled}
+          />
+        {/key}
       {:else if field.type === 'bool'}
         <Checkbox label={label(field.label)} bind:checked={record[field.name]} {disabled} />
       {:else}

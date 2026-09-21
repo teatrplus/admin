@@ -3416,8 +3416,7 @@
           {
             "name": "content",
             "label": "Content / Содержание",
-            "type": "localized",
-            "multiline": true,
+            "type": "richtext",
             "required": true
           }
         ]
@@ -3442,8 +3441,7 @@
           {
             "name": "content",
             "label": "Content / Содержание",
-            "type": "localized",
-            "multiline": true,
+            "type": "richtext",
             "required": true
           }
         ]
@@ -3468,8 +3466,7 @@
           {
             "name": "content",
             "label": "Content / Содержание",
-            "type": "localized",
-            "multiline": true,
+            "type": "richtext",
             "required": true
           }
         ]

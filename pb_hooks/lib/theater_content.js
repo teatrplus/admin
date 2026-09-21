@@ -76,11 +76,26 @@ const writeRecord = (app, name, specs, input, current, uploads, assigned = {}) =
       spec.required && (!spec.showWhen || spec.showWhen.values.includes(input[spec.showWhen.field] || ''))
     if (
       required &&
-      spec.type !== 'localized' &&
+      !['localized', 'richtext'].includes(spec.type) &&
       (value === '' || value == null || (Array.isArray(value) && !value.length))
     )
       throw new BadRequestError(spec.label.split(' / ')[0] + ' is required.')
-    if (spec.type === 'localized') {
+    if (spec.type === 'richtext') {
+      for (const locale of locales) {
+        const key = spec.name + '_' + locale
+        const document = input[key]
+        const hasText = (node, depth = 0) => {
+          if (!node || typeof node !== 'object' || depth > 20) return false
+          return (
+            (typeof node.text === 'string' && Boolean(node.text.trim())) ||
+            (Array.isArray(node.content) && node.content.some((child) => hasText(child, depth + 1)))
+          )
+        }
+        if (document?.type !== 'doc' || !Array.isArray(document.content) || !hasText(document))
+          throw new BadRequestError(spec.label.split(' / ')[0] + ' is required in ' + locale.toUpperCase() + '.')
+        record.set(key, document)
+      }
+    } else if (spec.type === 'localized') {
       for (const locale of locales) {
         const key = spec.name + '_' + locale
         if (required && !String(input[key] || '').trim())
