@@ -145,8 +145,15 @@
         if (isPage) {
           for (const key of ['museum_button_url', 'excursion_button_url']) {
             const url = new URL(draft[key]!)
-            if (!['https:', 'http:'].includes(url.protocol))
-              throw new Error(tr('Links must use HTTP(S).', 'Ссылки должны использовать HTTP(S).'))
+            const protocols =
+              key === 'excursion_button_url' ? ['https:', 'http:', 'mailto:', 'tel:'] : ['https:', 'http:']
+            if (!protocols.includes(url.protocol))
+              throw new Error(
+                tr(
+                  'Directions must use HTTP(S); tour tickets may also use mailto: or tel:.',
+                  'Маршрут должен использовать HTTP(S); билеты экскурсии также могут использовать mailto: или tel:.',
+                ),
+              )
           }
         }
         const saved = await saveMuseumContent(record, isPage, draft, files)
@@ -313,8 +320,8 @@
               {/each}
               <p class="theater_masks_panel-hint">
                 {tr(
-                  'Use a full URL. iTicket links follow the visitor’s language automatically.',
-                  'Укажите полную ссылку. Язык ссылок iTicket выбирается автоматически.',
+                  'Use a full URL. Tour tickets also accept mailto: and tel: links. iTicket links follow the visitor’s language automatically.',
+                  'Укажите полную ссылку. Для билетов экскурсии также доступны mailto: и tel:. Язык ссылок iTicket выбирается автоматически.',
                 )}
               </p>
             {/if}
