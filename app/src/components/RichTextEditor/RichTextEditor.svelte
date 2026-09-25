@@ -16,7 +16,7 @@
   }: {
     name: string
     label: string
-    value: JSONContent
+    value: JSONContent | null
     required?: boolean
     disabled?: boolean
   } = $props()
@@ -153,7 +153,7 @@
           },
         }),
       ],
-      content: value,
+      content: value ?? { type: 'doc', content: [{ type: 'paragraph' }] },
       editorProps: {
         attributes: {
           id: name,
@@ -191,7 +191,7 @@
     const serialized = JSON.stringify(value)
     if (editor && serialized !== lastValue) {
       lastValue = serialized
-      editor.commands.setContent(value, { emitUpdate: false })
+      editor.commands.setContent(value ?? { type: 'doc', content: [{ type: 'paragraph' }] }, { emitUpdate: false })
     }
   })
 

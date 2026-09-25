@@ -148,3 +148,19 @@ preserves their values only for administration and production, and clears the
 remaining departments. Rollback renames columns back but cannot restore purged text;
 restore a database backup if that text is needed. Apply this migration and restart
 PocketBase before building the website or using the updated admin editor.
+
+## Staff descriptions
+
+Migration `1790294500_staff_description.js` adds optional JSON fields
+`description_en`, `description_ru`, and `description_uz` to `t_staff`. These are
+new descriptions, separate from the existing position fields; all start empty.
+The person editor uses `RichTextEditor` below education, with an independent
+Tiptap document per language. Clearing a document stores `null`; required legal
+documents still reject empty text.
+
+The website uses its validated `RichText` renderer below education on the person
+page. Empty translations are omitted, and positions remain the team-card text.
+The desktop portrait sits to the right at its natural aspect ratio, with its size
+limited by its column and the viewport. Portrait and copy stick within the profile
+section, so the shorter column stays visible while scrolling through the longer one.
+Apply the migration and restart PocketBase before using the updated editor.

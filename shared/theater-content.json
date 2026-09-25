@@ -2460,6 +2460,12 @@
             "multiline": true
           },
           {
+            "name": "description",
+            "label": "Description / Описание",
+            "type": "richtext",
+            "hint": "Optional. Shown below education on the personal page. / Необязательно. Показывается под образованием на личной странице."
+          },
+          {
             "name": "quote",
             "label": "Quote / Цитата",
             "type": "localized",

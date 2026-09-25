@@ -80,7 +80,48 @@ def run_legal(root, moderator):
     print('PASS: legal JSON fields, rich-text save/read, locale isolation, empty-content rejection and revision conflicts')
 
 
-def run(legal_only=False):
+
+def run_staff_descriptions(root, moderator):
+    schema = expect(*request('GET', '/api/collections/t_staff', token=root))
+    fields = {field['name']: field for field in schema['fields']}
+    for lang in ['en', 'ru', 'uz']:
+        assert fields['description_' + lang]['type'] == 'json'
+        assert not fields['description_' + lang]['required']
+        assert fields['position_' + lang]['type'] == 'text'
+    path = '/api/theater/content/t_staff'
+    item = expect(*request('GET', path, token=moderator))['items'][0]
+    original = copy.deepcopy(item['record'])
+    def save(item):
+        return expect(*request('POST', path + '/' + item['record']['id'], item, moderator, files=[]))
+    for lang in ['en', 'ru', 'uz']:
+        item['record']['description_' + lang] = {'type': 'doc', 'content': [
+            {'type': 'heading', 'attrs': {'level': 2}, 'content': [{'type': 'text', 'text': 'Profile ' + lang}]},
+            {'type': 'paragraph', 'content': [{'type': 'text', 'text': 'Formatted description ' + lang, 'marks': [{'type': 'bold'}]}]},
+            {'type': 'bulletList', 'content': [{'type': 'listItem', 'content': [{'type': 'paragraph', 'content': [{'type': 'text', 'text': 'Credit'}]}]}]},
+        ]}
+    edited = copy.deepcopy(item)
+    item = save(item)
+    for lang in ['en', 'ru', 'uz']:
+        assert item['record']['description_' + lang] == edited['record']['description_' + lang]
+        assert item['record']['position_' + lang] == original['position_' + lang]
+        assert item['record']['education_' + lang] == original['education_' + lang]
+    public = expect(*request('GET', '/api/collections/t_staff/records/' + item['record']['id']))
+    assert public['description_ru'] == edited['record']['description_ru']
+    invalid = copy.deepcopy(item)
+    invalid['record']['description_ru'] = 'Plain text is not a document'
+    expect(*request('POST', path + '/' + item['record']['id'], invalid, moderator, files=[]), expected=400)
+    item['record']['description_en'] = {'type': 'doc', 'content': [{'type': 'paragraph'}]}
+    item = save(item)
+    assert item['record']['description_en'] is None
+    assert item['record']['description_ru'] == edited['record']['description_ru']
+    item['record']['description_ru'] = None
+    item['record']['description_uz'] = {'type': 'doc', 'content': []}
+    item = save(item)
+    assert all(item['record']['description_' + lang] is None for lang in ['en', 'ru', 'uz'])
+    print('PASS: staff JSON descriptions, formatting, public reads, per-locale clearing, invalid text rejection, position and education preservation')
+
+
+def run(legal_only=False, staff_only=False):
     root = expect(*request('POST', '/api/collections/_superusers/auth-with-password', {'identity': 'content-fixture@example.com', 'password': PASSWORD}))['token']
     tokens = {}
     for role, scope in [('admin','space'),('moderator','theater'),('moderator','space'),('manager','theater'),('viewer','theater')]:
@@ -89,6 +130,10 @@ def run(legal_only=False):
         assert status in [200,400], result
         tokens[role+'-'+scope] = expect(*request('POST','/api/collections/_user_staff/auth-with-password',{'identity':email,'password':PASSWORD}))['token']
     moderator = tokens['moderator-theater']
+    if staff_only:
+        run_staff_descriptions(root, moderator)
+        run_legal(root, moderator)
+        return
     if legal_only:
         run_legal(root, moderator)
         return
@@ -395,7 +440,7 @@ def run(legal_only=False):
     print('PASS: deleting a course, person or production cleans up its owned child records')
 
 
-def disposable(source, legal_only=False):
+def disposable(source, legal_only=False, staff_only=False):
     global ORIGIN
     with tempfile.TemporaryDirectory(prefix='theater-content-') as tmp:
         base=pathlib.Path(tmp)
@@ -428,7 +473,7 @@ def disposable(source, legal_only=False):
                     try:
                         if request('GET','/api/health')[0]==200: break
                     except OSError: time.sleep(.05)
-                run(legal_only)
+                run(legal_only, staff_only)
             finally:
                 process.terminate()
                 process.wait(timeout=10)
@@ -439,6 +484,7 @@ if __name__=='__main__':
     parser.add_argument('--database',type=pathlib.Path,default=ROOT/'pb_data/data.db')
     parser.add_argument('--existing',action='store_true')
     parser.add_argument('--legal-only',action='store_true',help='Run only the legal rich-text API checks')
+    parser.add_argument('--staff-only',action='store_true',help='Run staff descriptions and required rich-text regressions')
     options=parser.parse_args()
-    if options.existing: run(options.legal_only)
-    else: disposable(options.database, options.legal_only)
+    if options.existing: run(options.legal_only, options.staff_only)
+    else: disposable(options.database, options.legal_only, options.staff_only)

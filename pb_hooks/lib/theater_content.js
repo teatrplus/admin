@@ -84,6 +84,10 @@ const writeRecord = (app, name, specs, input, current, uploads, assigned = {}) =
       for (const locale of locales) {
         const key = spec.name + '_' + locale
         const document = input[key]
+        if (document == null && !required) {
+          record.set(key, null)
+          continue
+        }
         const hasText = (node, depth = 0) => {
           if (!node || typeof node !== 'object' || depth > 20) return false
           return (
@@ -91,8 +95,15 @@ const writeRecord = (app, name, specs, input, current, uploads, assigned = {}) =
             (Array.isArray(node.content) && node.content.some((child) => hasText(child, depth + 1)))
           )
         }
-        if (document?.type !== 'doc' || !Array.isArray(document.content) || !hasText(document))
+        if (document?.type !== 'doc' || !Array.isArray(document.content))
+          throw new BadRequestError('Invalid rich text document in ' + locale.toUpperCase() + '.')
+        if (!hasText(document)) {
+          if (!required) {
+            record.set(key, null)
+            continue
+          }
           throw new BadRequestError(spec.label.split(' / ')[0] + ' is required in ' + locale.toUpperCase() + '.')
+        }
         record.set(key, document)
       }
     } else if (spec.type === 'localized') {
