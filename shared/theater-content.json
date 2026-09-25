@@ -2406,7 +2406,7 @@
           },
           {
             "name": "role",
-            "label": "Role / Роль",
+            "label": "Department / Отдел",
             "type": "select",
             "options": ["actor", "production", "administration", "artistic_director"],
             "many": false,
@@ -2416,6 +2416,14 @@
               "administration": "Administration / Администрация",
               "artistic_director": "Artistic director / Художественный руководитель"
             }
+          },
+          {
+            "name": "gender",
+            "label": "Gender / Пол",
+            "type": "select",
+            "options": ["male", "female"],
+            "many": false,
+            "optionLabels": { "male": "Male / Мужской", "female": "Female / Женский" }
           },
           {
             "name": "photo",
@@ -2435,14 +2443,15 @@
         ]
       },
       {
-        "name": "biography",
-        "label": "Biography / Биография",
+        "name": "profile",
+        "label": "Profile / Профиль",
         "fields": [
           {
-            "name": "description",
-            "label": "Description / Описание",
+            "name": "position",
+            "label": "Position / Должность",
             "type": "localized",
-            "multiline": true
+            "multiline": false,
+            "hint": "Optional. Empty positions use the department; actors use actor or actress according to gender. / Необязательно. Если пусто, используется отдел, а для актёров — актёр или актриса в зависимости от пола."
           },
           {
             "name": "education",

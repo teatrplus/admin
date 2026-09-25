@@ -134,3 +134,17 @@ Browser checks must likewise use a disposable copy when saving test edits.
 The existing `theater-home.test.py`, `theater-museum.test.py`, and `theater-mask-order.test.cjs`
 cover their dedicated editors. Run `pnpm check` and `pnpm build` in `app`, and `pnpm typecheck`
 and `pnpm build` in the website checkout.
+
+## Staff positions
+
+`t_staff.position_en`, `position_ru`, and `position_uz` hold optional job titles.
+The team directory and profile kicker use the position in the current language,
+then the translated department. Actors
+fall back to Actor/Actress, Актёр/Актриса, or Aktyor/Aktrisa according to `gender`.
+The admin team editor exposes both position and gender. Education and quotes remain separate.
+
+Migration `1790294400_staff_position.js` renames the former description columns,
+preserves their values only for administration and production, and clears the
+remaining departments. Rollback renames columns back but cannot restore purged text;
+restore a database backup if that text is needed. Apply this migration and restart
+PocketBase before building the website or using the updated admin editor.
